@@ -701,7 +701,7 @@ export default function App() {
       <Header />
 
       {/* Hero */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-24">
+      <section className="relative min-h-[77vh] flex items-center justify-center overflow-hidden pt-32">
         <div className="absolute inset-0">
           <img src="/images/Community.png" alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center top' }} />
           <div className="absolute inset-0 bg-purple-900/10" />
@@ -726,7 +726,7 @@ export default function App() {
               transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
             }}
           >
-            Join a team of young Tamil professionals building sustainable impact through presence, not just funding.
+            Join our team of high-energy young Tamils building sustainable impact through presence, not just funding.
           </p>
           <div
             className="flex flex-col sm:flex-row gap-3 justify-center"
@@ -740,16 +740,16 @@ export default function App() {
             <a href="#culture" className="border-2 border-white/50 text-white font-bold py-3 px-6 rounded-full hover:bg-white/10 transition-all duration-200 hover:scale-[1.02]">How We Work</a>
           </div>
           <div
-            className="mt-10 pb-8 grid grid-cols-3 gap-6 max-w-sm mx-auto"
+            className="mt-10 pb-8 grid grid-cols-3 gap-4 max-w-md mx-auto"
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
               transition: 'opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s',
             }}
           >
-            <div><div className="text-3xl font-bold text-white">3</div><div className="text-purple-200 text-xs">Trips</div></div>
-            <div><div className="text-3xl font-bold text-white">100+</div><div className="text-purple-200 text-xs">Volunteers Reconnected</div></div>
-            <div><div className="text-3xl font-bold text-white">£40,000+</div><div className="text-purple-200 text-xs">Deployed in Sri Lanka</div></div>
+            <div className="text-center"><div className="text-3xl font-bold text-white">3</div><div className="text-purple-200 text-xs">Trips</div></div>
+            <div className="text-center"><div className="text-3xl font-bold text-white">100+</div><div className="text-purple-200 text-xs">Volunteers</div></div>
+            <div className="text-center"><div className="text-3xl font-bold text-white">£40,000+</div><div className="text-purple-200 text-xs">Raised</div></div>
           </div>
         </div>
       </section>
