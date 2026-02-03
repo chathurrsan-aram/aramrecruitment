@@ -316,7 +316,7 @@ const faqs = [
 const Header = () => (
   <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-40">
     <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
-      <img src="/images/whitetamil-1.png" alt="Aram" className="h-14" />
+      <img src="/images/whitetamil-1.png" alt="Aram" className="h-[73px]" />
       <a
         href="https://aram.org.uk"
         className="text-sm text-gray-600 hover:text-purple-700 transition-colors"
@@ -704,7 +704,7 @@ export default function App() {
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-14">
         <div className="absolute inset-0">
           <img src="/images/Community.png" alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-purple-900/80" />
+          <div className="absolute inset-0 bg-purple-900/55" />
         </div>
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
           <div
