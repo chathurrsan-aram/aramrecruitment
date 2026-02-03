@@ -704,7 +704,7 @@ export default function App() {
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-24">
         <div className="absolute inset-0">
           <img src="/images/Community.png" alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center top' }} />
-          <div className="absolute inset-0 bg-purple-900/35" />
+          <div className="absolute inset-0 bg-purple-900/10" />
         </div>
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
           <h1
@@ -716,7 +716,7 @@ export default function App() {
             }}
           >
             Shape Sri Lanka's Future
-            <span className="block text-orange-400">With Us</span>
+            <span className="block text-white">With Us</span>
           </h1>
           <p
             className="text-lg text-purple-100 mb-6 max-w-xl mx-auto"
@@ -747,9 +747,9 @@ export default function App() {
               transition: 'opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s',
             }}
           >
-            <div><div className="text-3xl font-bold text-orange-400">4</div><div className="text-purple-200 text-xs">Years & Trips</div></div>
-            <div><div className="text-3xl font-bold text-orange-400">160+</div><div className="text-purple-200 text-xs">Volunteers</div></div>
-            <div><div className="text-3xl font-bold text-orange-400">6</div><div className="text-purple-200 text-xs">Sectors</div></div>
+            <div><div className="text-3xl font-bold text-white">3</div><div className="text-purple-200 text-xs">Trips</div></div>
+            <div><div className="text-3xl font-bold text-white">100+</div><div className="text-purple-200 text-xs">Volunteers Reconnected</div></div>
+            <div><div className="text-3xl font-bold text-white">£40,000+</div><div className="text-purple-200 text-xs">Deployed in Sri Lanka</div></div>
           </div>
         </div>
       </section>
