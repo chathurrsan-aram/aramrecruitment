@@ -701,31 +701,18 @@ export default function App() {
       <Header />
 
       {/* Hero */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-14">
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-24">
         <div className="absolute inset-0">
-          <img src="/images/Community.png" alt="" className="w-full h-full object-cover object-top" />
+          <img src="/images/Community.png" alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center top' }} />
           <div className="absolute inset-0 bg-purple-900/35" />
         </div>
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-          <div
-            className="mb-6"
-            style={{
-              opacity: pageLoaded ? 1 : 0,
-              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s',
-            }}
-          >
-            <div className="inline-block bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
-              <span className="text-3xl font-bold text-white">ஆரம்</span>
-              <span className="block text-white/80 text-xs">initiative</span>
-            </div>
-          </div>
           <h1
             className="text-4xl md:text-5xl font-bold text-white mb-4"
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
+              transition: 'opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s',
             }}
           >
             Shape Sri Lanka's Future
@@ -736,7 +723,7 @@ export default function App() {
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s',
+              transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
             }}
           >
             Join a team of young Tamil professionals building sustainable impact through presence, not just funding.
@@ -746,18 +733,18 @@ export default function App() {
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s',
+              transition: 'opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s',
             }}
           >
             <a href="#roles" className="bg-white text-purple-700 font-bold py-3 px-6 rounded-full hover:bg-purple-50 transition-all duration-200 hover:scale-[1.02]">See Open Roles</a>
             <a href="#culture" className="border-2 border-white/50 text-white font-bold py-3 px-6 rounded-full hover:bg-white/10 transition-all duration-200 hover:scale-[1.02]">How We Work</a>
           </div>
           <div
-            className="mt-10 grid grid-cols-3 gap-6 max-w-sm mx-auto"
+            className="mt-10 pb-8 grid grid-cols-3 gap-6 max-w-sm mx-auto"
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.5s, transform 0.5s ease 0.5s',
+              transition: 'opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s',
             }}
           >
             <div><div className="text-3xl font-bold text-orange-400">4</div><div className="text-purple-200 text-xs">Years & Trips</div></div>
@@ -768,11 +755,12 @@ export default function App() {
       </section>
 
       {/* Culture Memo Card */}
-      <section id="culture" className="py-16 bg-gradient-to-b from-purple-50 to-white">
+      <section id="culture" className="py-16 bg-purple-50">
         <AnimatedSection className="max-w-2xl mx-auto px-6">
           <button
             onClick={() => setShowCultureMemo(true)}
             className="w-full bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-purple-100 hover:shadow-xl hover:border-purple-200 hover:scale-[1.01] transition-all duration-200 text-left group"
+            style={{ backgroundColor: '#ffffff' }}
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
