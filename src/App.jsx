@@ -275,6 +275,121 @@ const faqs = [
   },
 ];
 
+const Header = () => (
+  <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-40">
+    <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
+      <div className="flex items-center gap-2">
+        <span className="text-xl font-bold text-purple-700">ஆரம்</span>
+        <span className="text-xs text-gray-500 hidden sm:inline">initiative</span>
+      </div>
+      <a
+        href="https://aram.org.uk"
+        className="text-sm text-gray-600 hover:text-purple-700 transition-colors flex items-center gap-1"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to aram.org.uk
+      </a>
+    </div>
+  </header>
+);
+
+const CultureMemoModal = ({ onClose }) => (
+  <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="bg-amber-50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
+      >
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div className="p-6 md:p-10">
+        {/* Video Placeholder */}
+        <div className="bg-gray-800 rounded-xl aspect-video flex items-center justify-center mb-8">
+          <div className="text-center text-gray-400">
+            <svg className="w-16 h-16 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-sm">Video coming soon</p>
+          </div>
+        </div>
+
+        {/* Letter Content */}
+        <div className="space-y-6 text-gray-700">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">How We Work at Aram</h2>
+            <p className="text-gray-500 italic">A note to anyone considering joining</p>
+          </div>
+
+          <p className="text-lg leading-relaxed">
+            Hi there,
+          </p>
+
+          <p className="leading-relaxed">
+            If you're reading this, you're thinking about joining Aram. Before you apply, we want to be honest about who we are and what we're looking for.
+          </p>
+
+          <div className="border-l-4 border-purple-300 pl-4 space-y-4">
+            <div>
+              <h3 className="font-bold text-purple-700">We believe in presence over funding.</h3>
+              <p>Anyone can send money. We show up. Every year, 40 volunteers travel to Sri Lanka — not as saviours, but as partners.</p>
+            </div>
+            <div>
+              <h3 className="font-bold text-purple-700">We believe in sustainability over charity.</h3>
+              <p>We don't do one-off handouts. Every initiative builds local capacity.</p>
+            </div>
+            <div>
+              <h3 className="font-bold text-purple-700">We believe in ownership over tasks.</h3>
+              <p>We want people who see a problem and figure out how to solve it. If you join as a Lead, that domain is <em>yours</em>.</p>
+            </div>
+            <div>
+              <h3 className="font-bold text-purple-700">We're honest about what's hard.</h3>
+              <p>We're volunteer-run. Things don't always get done. That's why we need people who drive work forward.</p>
+            </div>
+          </div>
+
+          <div className="bg-white/60 rounded-xl p-5 mt-6">
+            <h3 className="font-bold text-gray-900 mb-3">What we're looking for:</h3>
+            <ul className="space-y-2">
+              {['People who finish what they start', 'People who can rally others', 'People who want to build, not just add to their CV'].map((item, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="text-orange-500 mt-1">✓</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="bg-gradient-to-r from-purple-100/50 to-orange-100/50 rounded-xl p-5">
+            <h3 className="font-bold text-gray-900 mb-3">What you'll get:</h3>
+            <ul className="space-y-2">
+              {['Real project management experience', 'A network of talented Tamil professionals', 'Tangible change from your work', 'A voice that shapes our direction'].map((item, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="text-purple-500 mt-1">→</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <p className="leading-relaxed pt-4">
+            If this sounds like you, we'd love to hear from you.
+          </p>
+
+          <p className="leading-relaxed">
+            — The Aram Team
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const RoleCard = ({ role, isExpanded, onToggle, onApply }) => (
   <div className={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 ${isExpanded ? 'ring-2 ring-purple-500' : 'hover:shadow-lg'}`}>
     <div className="p-5 cursor-pointer" onClick={onToggle}>
@@ -434,6 +549,7 @@ export default function App() {
   const [selectedRoleForForm, setSelectedRoleForForm] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [showCultureMemo, setShowCultureMemo] = useState(false);
 
   const handleApply = (role) => { setSelectedRoleForForm(role); setShowForm(true); };
   const handleSubmit = (data) => {
@@ -462,8 +578,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Header />
+
       {/* Hero */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-14">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
         </div>
@@ -493,54 +611,26 @@ export default function App() {
         </div>
       </section>
 
-      {/* Culture Memo */}
+      {/* Culture Memo Card */}
       <section id="culture" className="py-16 bg-gradient-to-b from-purple-50 to-white">
         <div className="max-w-2xl mx-auto px-6">
-          <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-purple-100">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                <span className="text-xl">📝</span>
+          <button
+            onClick={() => setShowCultureMemo(true)}
+            className="w-full bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-purple-100 hover:shadow-xl hover:border-purple-200 transition-all text-left group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span className="text-2xl">📝</span>
               </div>
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">How We Work at Aram</h2>
-                <p className="text-gray-500 text-sm">A note to anyone considering joining</p>
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-purple-700 transition-colors">How We Work at Aram</h2>
+                <p className="text-gray-500 text-sm">Click to read our note to applicants</p>
               </div>
+              <svg className="w-6 h-6 text-purple-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </div>
-            <div className="space-y-4 text-sm text-gray-700">
-              <div>
-                <h3 className="font-bold text-purple-700 mb-1">We believe in presence over funding.</h3>
-                <p>Anyone can send money. We show up. Every year, 40 volunteers travel to Sri Lanka — not as saviours, but as partners.</p>
-              </div>
-              <div>
-                <h3 className="font-bold text-purple-700 mb-1">We believe in sustainability over charity.</h3>
-                <p>We don't do one-off handouts. Every initiative builds local capacity.</p>
-              </div>
-              <div>
-                <h3 className="font-bold text-purple-700 mb-1">We believe in ownership over tasks.</h3>
-                <p>We want people who see a problem and figure out how to solve it. If you join as a Lead, that domain is <em>yours</em>.</p>
-              </div>
-              <div>
-                <h3 className="font-bold text-purple-700 mb-1">We're honest about what's hard.</h3>
-                <p>We're volunteer-run. Things don't always get done. That's why we need people who drive work forward.</p>
-              </div>
-              <div className="border-t border-gray-200 pt-4 mt-4">
-                <h3 className="font-bold text-gray-900 mb-2">What we're looking for:</h3>
-                <ul className="space-y-1">
-                  {['People who finish what they start', 'People who can rally others', 'People who want to build, not just add to CV'].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2"><span className="text-orange-500">✓</span><span>{item}</span></li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-gradient-to-r from-purple-50 to-orange-50 rounded-xl p-4 -mx-1">
-                <h3 className="font-bold text-gray-900 mb-2">What you'll get:</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {['Real project management experience', 'Network of talented Tamil professionals', 'Tangible change from your work', 'Your voice shapes our direction'].map((item, i) => (
-                    <div key={i} className="flex items-start gap-1"><span className="text-purple-500">→</span><span>{item}</span></div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          </button>
         </div>
       </section>
 
@@ -643,6 +733,7 @@ export default function App() {
       </section>
 
       {showForm && <ApplicationForm selectedRole={selectedRoleForForm} onClose={() => setShowForm(false)} onSubmit={handleSubmit} />}
+      {showCultureMemo && <CultureMemoModal onClose={() => setShowCultureMemo(false)} />}
     </div>
   );
 }
