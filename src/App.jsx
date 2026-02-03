@@ -880,12 +880,12 @@ export default function App() {
       </section>
 
       {/* Footer CTA */}
-      <section className="py-16 bg-gradient-to-br from-purple-900 to-purple-800">
+      <section className="py-16" style={{ backgroundColor: '#E4D7F5' }}>
         <AnimatedSection className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to Make an Impact?</h2>
-          <p className="text-purple-200 text-lg mb-6">Join 160+ volunteers building a thriving Sri Lanka.</p>
-          <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-10 rounded-full text-lg transition-all duration-200 hover:scale-[1.02]">Apply Now</button>
-          <p className="text-purple-300 mt-4 text-sm">Questions? <a href="mailto:hello@aram.org.uk" className="underline hover:text-white transition-colors duration-200">hello@aram.org.uk</a></p>
+          <h2 className="text-3xl font-bold text-purple-900 mb-4">Ready to Make an Impact?</h2>
+          <p className="text-purple-700 text-lg mb-6">Join 160+ volunteers building a thriving Sri Lanka.</p>
+          <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-10 rounded-full text-lg transition-all duration-200 hover:scale-[1.02]">Apply Now</button>
+          <p className="text-purple-600 mt-4 text-sm">Questions? <a href="mailto:hello@aram.org.uk" className="underline hover:text-purple-900 transition-colors duration-200">hello@aram.org.uk</a></p>
         </AnimatedSection>
       </section>
 
