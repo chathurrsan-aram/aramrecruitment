@@ -703,7 +703,7 @@ export default function App() {
       {/* Hero */}
       <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-14">
         <div className="absolute inset-0">
-          <img src="/images/community.jpg" alt="" className="w-full h-full object-cover" />
+          <img src="/images/Community.png" alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-purple-900/80" />
         </div>
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
