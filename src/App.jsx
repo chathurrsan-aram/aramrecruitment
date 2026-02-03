@@ -277,19 +277,12 @@ const faqs = [
 
 const Header = () => (
   <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-40">
-    <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
-      <div className="flex items-center gap-2">
-        <span className="text-xl font-bold text-purple-700">ஆரம்</span>
-        <span className="text-xs text-gray-500 hidden sm:inline">initiative</span>
-      </div>
+    <div className="max-w-6xl mx-auto px-6 py-3 flex justify-end items-center">
       <a
         href="https://aram.org.uk"
-        className="text-sm text-gray-600 hover:text-purple-700 transition-colors flex items-center gap-1"
+        className="text-sm text-gray-600 hover:text-purple-700 transition-colors"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        Back to aram.org.uk
+        ← aram.org.uk
       </a>
     </div>
   </header>
