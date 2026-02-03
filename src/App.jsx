@@ -316,7 +316,7 @@ const faqs = [
 const Header = () => (
   <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-40">
     <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
-      <img src="/images/aramlogo.png" alt="Aram" className="h-10" />
+      <img src="/images/whitetamil-1.png" alt="Aram" className="h-14" />
       <a
         href="https://aram.org.uk"
         className="text-sm text-gray-600 hover:text-purple-700 transition-colors"
