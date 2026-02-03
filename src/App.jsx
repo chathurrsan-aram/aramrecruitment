@@ -740,16 +740,16 @@ export default function App() {
             <a href="#culture" className="border-2 border-white/50 text-white font-bold py-3 px-6 rounded-full hover:bg-white/10 transition-all duration-200 hover:scale-[1.02]">How We Work</a>
           </div>
           <div
-            className="mt-10 pb-8 grid grid-cols-3 gap-4 max-w-md mx-auto"
+            className="mt-10 pb-8 grid grid-cols-3 gap-8 w-full max-w-lg mx-auto justify-items-center"
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
               transition: 'opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s',
             }}
           >
-            <div className="text-center"><div className="text-3xl font-bold text-white">3</div><div className="text-purple-200 text-xs">Trips</div></div>
-            <div className="text-center"><div className="text-3xl font-bold text-white">100+</div><div className="text-purple-200 text-xs">Volunteers</div></div>
-            <div className="text-center"><div className="text-3xl font-bold text-white">£40,000+</div><div className="text-purple-200 text-xs">Raised</div></div>
+            <div className="text-center flex-1"><div className="text-3xl font-bold text-white">3</div><div className="text-purple-200 text-xs">Trips</div></div>
+            <div className="text-center flex-1"><div className="text-3xl font-bold text-white">100+</div><div className="text-purple-200 text-xs">Volunteers</div></div>
+            <div className="text-center flex-1"><div className="text-3xl font-bold text-white">£40k+</div><div className="text-purple-200 text-xs">Raised</div></div>
           </div>
         </div>
       </section>
