@@ -1,4 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
+// Custom hook for scroll-triggered animations
+const useInView = (options = {}) => {
+  const ref = useRef(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsInView(true);
+        observer.unobserve(entry.target);
+      }
+    }, { threshold: 0.1, ...options });
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, isInView];
+};
+
+// Animated section wrapper
+const AnimatedSection = ({ children, className = '', delay = 0 }) => {
+  const [ref, isInView] = useInView();
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{
+        opacity: isInView ? 1 : 0,
+        transform: isInView ? 'translateY(0)' : 'translateY(20px)',
+        transition: `opacity 0.6s ease ${delay}s, transform 0.6s ease ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 const roles = [
   {
@@ -277,30 +315,50 @@ const faqs = [
 
 const Header = () => (
   <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-40">
-    <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
-      <div className="flex items-center gap-2">
-        <span className="text-xl font-bold text-purple-700">ஆரம்</span>
-        <span className="text-xs text-gray-500 hidden sm:inline">initiative</span>
-      </div>
+    <div className="max-w-6xl mx-auto px-6 py-3 flex justify-end items-center">
       <a
         href="https://aram.org.uk"
-        className="text-sm text-gray-600 hover:text-purple-700 transition-colors flex items-center gap-1"
+        className="text-sm text-gray-600 hover:text-purple-700 transition-colors"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        Back to aram.org.uk
+        ← aram.org.uk
       </a>
     </div>
   </header>
 );
 
-const CultureMemoModal = ({ onClose }) => (
-  <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div className="bg-amber-50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+const CultureMemoModal = ({ onClose }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => setIsVisible(true));
+  }, []);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(onClose, 200);
+  };
+
+  return (
+  <div
+    className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+    style={{
+      backgroundColor: isVisible ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0)',
+      transition: 'background-color 0.2s ease',
+    }}
+    onClick={handleClose}
+  >
+    <div
+      className="bg-amber-50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative"
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(10px)',
+        transition: 'opacity 0.2s ease, transform 0.2s ease',
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
       <button
-        onClick={onClose}
-        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10"
+        onClick={handleClose}
+        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10 transition-transform duration-200 hover:scale-110"
       >
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -388,9 +446,23 @@ const CultureMemoModal = ({ onClose }) => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
-const RoleCard = ({ role, isExpanded, onToggle, onApply }) => (
+const RoleCard = ({ role, isExpanded, onToggle, onApply }) => {
+  const [showContent, setShowContent] = useState(false);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (isExpanded) {
+      setShowContent(true);
+    } else {
+      const timer = setTimeout(() => setShowContent(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isExpanded]);
+
+  return (
   <div className={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 ${isExpanded ? 'ring-2 ring-purple-500' : 'hover:shadow-lg'}`}>
     <div className="p-5 cursor-pointer" onClick={onToggle}>
       <div className="flex justify-between items-start mb-2">
@@ -407,30 +479,42 @@ const RoleCard = ({ role, isExpanded, onToggle, onApply }) => (
         <svg className={`ml-1 w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
       </div>
     </div>
-    {isExpanded && (
-      <div className="px-5 pb-5 border-t border-gray-100 pt-4">
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Responsibilities</h4>
-            <ul className="space-y-1">{role.responsibilities.map((r, i) => <li key={i} className="flex items-start text-xs text-gray-600"><span className="text-purple-500 mr-1">•</span>{r}</li>)}</ul>
+    <div
+      ref={contentRef}
+      style={{
+        maxHeight: isExpanded ? '500px' : '0',
+        opacity: isExpanded ? 1 : 0,
+        overflow: 'hidden',
+        transition: 'max-height 0.3s ease, opacity 0.3s ease',
+      }}
+    >
+      {showContent && (
+        <div className="px-5 pb-5 border-t border-gray-100 pt-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2 text-sm">Responsibilities</h4>
+              <ul className="space-y-1">{role.responsibilities.map((r, i) => <li key={i} className="flex items-start text-xs text-gray-600"><span className="text-purple-500 mr-1">•</span>{r}</li>)}</ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2 text-sm">Your Impact</h4>
+              <p className="text-xs text-gray-600 mb-3">{role.impact}</p>
+              <h4 className="font-semibold text-gray-900 mb-2 text-sm">Skills</h4>
+              <div className="flex flex-wrap gap-1">{role.skills.map((s, i) => <span key={i} className="text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded">{s}</span>)}</div>
+            </div>
           </div>
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Your Impact</h4>
-            <p className="text-xs text-gray-600 mb-3">{role.impact}</p>
-            <h4 className="font-semibold text-gray-900 mb-2 text-sm">Skills</h4>
-            <div className="flex flex-wrap gap-1">{role.skills.map((s, i) => <span key={i} className="text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded">{s}</span>)}</div>
+          <div className="mt-4 pt-3 border-t border-gray-100">
+            <p className="text-xs text-gray-500 mb-3"><strong>Works with:</strong> {role.worksWith}</p>
+            <button onClick={(e) => { e.stopPropagation(); onApply(role); }} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 hover:scale-[1.02] text-sm">Apply for this role</button>
           </div>
         </div>
-        <div className="mt-4 pt-3 border-t border-gray-100">
-          <p className="text-xs text-gray-500 mb-3"><strong>Works with:</strong> {role.worksWith}</p>
-          <button onClick={(e) => { e.stopPropagation(); onApply(role); }} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">Apply for this role</button>
-        </div>
-      </div>
-    )}
+      )}
+    </div>
   </div>
-);
+  );
+};
 
 const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
+  const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -441,6 +525,15 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
     previousTrip: '',
     roleSpecific: {},
   });
+
+  useEffect(() => {
+    requestAnimationFrame(() => setIsVisible(true));
+  }, []);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(onClose, 200);
+  };
 
   const toggleRole = (roleId) => {
     setFormData(prev => ({
@@ -457,11 +550,26 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
   );
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+      style={{
+        backgroundColor: isVisible ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0)',
+        transition: 'background-color 0.2s ease',
+      }}
+      onClick={handleClose}
+    >
+      <div
+        className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto"
+        style={{
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(10px)',
+          transition: 'opacity 0.2s ease, transform 0.2s ease',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="sticky top-0 bg-white border-b border-gray-100 p-4 flex justify-between items-center">
           <h2 className="text-xl font-bold text-gray-900">Apply to Join Aram</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-transform duration-200 hover:scale-110">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
@@ -536,7 +644,7 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
               ))}
             </div>
           )}
-          <button onClick={() => onSubmit(formData)} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">Submit Application</button>
+          <button onClick={() => onSubmit(formData)} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-[1.02]">Submit Application</button>
         </div>
       </div>
     </div>
@@ -550,6 +658,11 @@ export default function App() {
   const [openFaq, setOpenFaq] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [showCultureMemo, setShowCultureMemo] = useState(false);
+  const [pageLoaded, setPageLoaded] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => setPageLoaded(true));
+  }, []);
 
   const handleApply = (role) => { setSelectedRoleForForm(role); setShowForm(true); };
   const handleSubmit = (data) => {
@@ -570,14 +683,20 @@ export default function App() {
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-3">Application Received!</h1>
           <p className="text-gray-600 mb-5">Thank you for your interest in joining Aram. We'll be in touch within a week.</p>
-          <button onClick={() => setSubmitted(false)} className="text-purple-600 font-medium hover:text-purple-700">← Back to roles</button>
+          <button onClick={() => setSubmitted(false)} className="text-purple-600 font-medium hover:text-purple-700 transition-colors">← Back to roles</button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div
+      className="min-h-screen bg-white"
+      style={{
+        opacity: pageLoaded ? 1 : 0,
+        transition: 'opacity 0.5s ease',
+      }}
+    >
       <Header />
 
       {/* Hero */}
@@ -586,24 +705,59 @@ export default function App() {
           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
         </div>
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-          <div className="mb-6">
+          <div
+            className="mb-6"
+            style={{
+              opacity: pageLoaded ? 1 : 0,
+              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s',
+            }}
+          >
             <div className="inline-block bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
               <span className="text-3xl font-bold text-white">ஆரம்</span>
               <span className="block text-white/80 text-xs">initiative</span>
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h1
+            className="text-4xl md:text-5xl font-bold text-white mb-4"
+            style={{
+              opacity: pageLoaded ? 1 : 0,
+              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
+            }}
+          >
             Shape Sri Lanka's Future
             <span className="block text-orange-400">With Us</span>
           </h1>
-          <p className="text-lg text-purple-100 mb-6 max-w-xl mx-auto">
+          <p
+            className="text-lg text-purple-100 mb-6 max-w-xl mx-auto"
+            style={{
+              opacity: pageLoaded ? 1 : 0,
+              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s',
+            }}
+          >
             Join a team of young Tamil professionals building sustainable impact through presence, not just funding.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="#roles" className="bg-white text-purple-700 font-bold py-3 px-6 rounded-full hover:bg-purple-50 transition-colors">See Open Roles</a>
-            <a href="#culture" className="border-2 border-white/50 text-white font-bold py-3 px-6 rounded-full hover:bg-white/10 transition-colors">How We Work</a>
+          <div
+            className="flex flex-col sm:flex-row gap-3 justify-center"
+            style={{
+              opacity: pageLoaded ? 1 : 0,
+              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s',
+            }}
+          >
+            <a href="#roles" className="bg-white text-purple-700 font-bold py-3 px-6 rounded-full hover:bg-purple-50 transition-all duration-200 hover:scale-[1.02]">See Open Roles</a>
+            <a href="#culture" className="border-2 border-white/50 text-white font-bold py-3 px-6 rounded-full hover:bg-white/10 transition-all duration-200 hover:scale-[1.02]">How We Work</a>
           </div>
-          <div className="mt-10 grid grid-cols-3 gap-6 max-w-sm mx-auto">
+          <div
+            className="mt-10 grid grid-cols-3 gap-6 max-w-sm mx-auto"
+            style={{
+              opacity: pageLoaded ? 1 : 0,
+              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 0.5s ease 0.5s, transform 0.5s ease 0.5s',
+            }}
+          >
             <div><div className="text-3xl font-bold text-orange-400">4</div><div className="text-purple-200 text-xs">Years & Trips</div></div>
             <div><div className="text-3xl font-bold text-orange-400">160+</div><div className="text-purple-200 text-xs">Volunteers</div></div>
             <div><div className="text-3xl font-bold text-orange-400">6</div><div className="text-purple-200 text-xs">Sectors</div></div>
@@ -613,10 +767,10 @@ export default function App() {
 
       {/* Culture Memo Card */}
       <section id="culture" className="py-16 bg-gradient-to-b from-purple-50 to-white">
-        <div className="max-w-2xl mx-auto px-6">
+        <AnimatedSection className="max-w-2xl mx-auto px-6">
           <button
             onClick={() => setShowCultureMemo(true)}
-            className="w-full bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-purple-100 hover:shadow-xl hover:border-purple-200 transition-all text-left group"
+            className="w-full bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-purple-100 hover:shadow-xl hover:border-purple-200 hover:scale-[1.01] transition-all duration-200 text-left group"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -626,22 +780,22 @@ export default function App() {
                 <h2 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-purple-700 transition-colors">How We Work at Aram</h2>
                 <p className="text-gray-500 text-sm">Click to read our note to applicants</p>
               </div>
-              <svg className="w-6 h-6 text-purple-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-purple-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </button>
-        </div>
+        </AnimatedSection>
       </section>
 
       {/* Roles */}
       <section id="roles" className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-10">
+          <AnimatedSection className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">Open Roles</h2>
             <p className="text-lg text-gray-600">We're building a leadership team to scale our impact.</p>
-          </div>
-          <div className="mb-10">
+          </AnimatedSection>
+          <AnimatedSection className="mb-10" delay={0.1}>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-xl">🔥</span>
               <h3 className="text-lg font-bold text-gray-900">Priority Hires</h3>
@@ -652,8 +806,8 @@ export default function App() {
                 <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} />
               ))}
             </div>
-          </div>
-          <div>
+          </AnimatedSection>
+          <AnimatedSection delay={0.2}>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-xl">🌱</span>
               <h3 className="text-lg font-bold text-gray-900">Other Open Roles</h3>
@@ -663,23 +817,23 @@ export default function App() {
                 <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} />
               ))}
             </div>
-          </div>
-          <div className="mt-12 text-center">
+          </AnimatedSection>
+          <AnimatedSection className="mt-12 text-center" delay={0.3}>
             <div className="bg-gradient-to-r from-purple-100 to-orange-100 rounded-2xl p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-2">Not sure which role fits?</h3>
               <p className="text-gray-600 mb-4">Apply anyway — we'll find the right fit together.</p>
-              <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition-colors">Start General Application</button>
+              <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-200 hover:scale-[1.02]">Start General Application</button>
             </div>
-          </div>
+          </AnimatedSection>
         </div>
       </section>
 
       {/* How It Works */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-3xl mx-auto px-6">
-          <div className="text-center mb-10">
+          <AnimatedSection className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">How It Works</h2>
-          </div>
+          </AnimatedSection>
           <div className="space-y-0">
             {[
               { num: '1', title: 'Apply', desc: 'Fill out a short form (5 mins)' },
@@ -687,16 +841,18 @@ export default function App() {
               { num: '3', title: 'Match', desc: "We'll confirm the right role" },
               { num: '4', title: 'Onboard', desc: 'Join your team and start contributing' },
             ].map((step, i) => (
-              <div key={i} className="relative flex gap-4">
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center text-lg font-bold">{step.num}</div>
-                  {i < 3 && <div className="w-0.5 h-16 bg-purple-200" />}
+              <AnimatedSection key={i} delay={i * 0.1}>
+                <div className="relative flex gap-4">
+                  <div className="flex flex-col items-center">
+                    <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center text-lg font-bold">{step.num}</div>
+                    {i < 3 && <div className="w-0.5 h-16 bg-purple-200" />}
+                  </div>
+                  <div className="pt-1 pb-8">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">{step.title}</h3>
+                    <p className="text-gray-600 text-sm">{step.desc}</p>
+                  </div>
                 </div>
-                <div className="pt-1 pb-8">
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">{step.title}</h3>
-                  <p className="text-gray-600 text-sm">{step.desc}</p>
-                </div>
-              </div>
+              </AnimatedSection>
             ))}
           </div>
         </div>
@@ -705,31 +861,42 @@ export default function App() {
       {/* FAQ */}
       <section className="py-16 bg-white">
         <div className="max-w-2xl mx-auto px-6">
-          <div className="text-center mb-10">
+          <AnimatedSection className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">FAQ</h2>
-          </div>
-          <div className="bg-gray-50 rounded-2xl p-4">
-            {faqs.map((faq, i) => (
-              <div key={i} className="border-b border-gray-200 last:border-0">
-                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full py-3 flex justify-between items-center text-left">
-                  <span className="font-medium text-gray-900 text-sm">{faq.q}</span>
-                  <svg className={`w-4 h-4 text-purple-500 transition-transform ${openFaq === i ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                </button>
-                {openFaq === i && <p className="pb-3 text-gray-600 text-sm">{faq.a}</p>}
-              </div>
-            ))}
-          </div>
+          </AnimatedSection>
+          <AnimatedSection delay={0.1}>
+            <div className="bg-gray-50 rounded-2xl p-4">
+              {faqs.map((faq, i) => (
+                <div key={i} className="border-b border-gray-200 last:border-0">
+                  <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full py-3 flex justify-between items-center text-left hover:bg-gray-100 -mx-2 px-2 rounded transition-colors duration-200">
+                    <span className="font-medium text-gray-900 text-sm">{faq.q}</span>
+                    <svg className={`w-4 h-4 text-purple-500 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                  <div
+                    style={{
+                      maxHeight: openFaq === i ? '200px' : '0',
+                      opacity: openFaq === i ? 1 : 0,
+                      overflow: 'hidden',
+                      transition: 'max-height 0.3s ease, opacity 0.3s ease',
+                    }}
+                  >
+                    <p className="pb-3 text-gray-600 text-sm">{faq.a}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </AnimatedSection>
         </div>
       </section>
 
       {/* Footer CTA */}
       <section className="py-16 bg-gradient-to-br from-purple-900 to-purple-800">
-        <div className="max-w-3xl mx-auto px-6 text-center">
+        <AnimatedSection className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Make an Impact?</h2>
           <p className="text-purple-200 text-lg mb-6">Join 160+ volunteers building a thriving Sri Lanka.</p>
-          <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-10 rounded-full text-lg transition-colors">Apply Now</button>
-          <p className="text-purple-300 mt-4 text-sm">Questions? <a href="mailto:hello@aram.org.uk" className="underline">hello@aram.org.uk</a></p>
-        </div>
+          <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-10 rounded-full text-lg transition-all duration-200 hover:scale-[1.02]">Apply Now</button>
+          <p className="text-purple-300 mt-4 text-sm">Questions? <a href="mailto:hello@aram.org.uk" className="underline hover:text-white transition-colors duration-200">hello@aram.org.uk</a></p>
+        </AnimatedSection>
       </section>
 
       {showForm && <ApplicationForm selectedRole={selectedRoleForForm} onClose={() => setShowForm(false)} onSubmit={handleSubmit} />}
