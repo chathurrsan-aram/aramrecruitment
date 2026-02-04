@@ -487,10 +487,10 @@ const PageHeader = () => (
 
       <div className="text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          Join Our 2026-27 Team
+          Join Our 2026 Team
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          Volunteer with us to deliver meaningful change in Sri Lanka. Roles range from 2-5 hours per week and run from September 2026 to August 2027.
+          Volunteer with us to deliver meaningful change in Sri Lanka. Roles range from 2-5 hours per week.
         </p>
       </div>
     </div>
@@ -1211,6 +1211,11 @@ export default function App() {
   const [submitted, setSubmitted] = useState(false);
   const [showCultureMemo, setShowCultureMemo] = useState(false);
   const [pageLoaded, setPageLoaded] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({ coreLeadership: true, sectorLeads: true });
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   useEffect(() => {
     requestAnimationFrame(() => setPageLoaded(true));
@@ -1351,32 +1356,74 @@ export default function App() {
               <span className="text-sm text-gray-500 font-medium">— We're actively recruiting for these roles</span>
             </div>
 
-            {/* Core Leadership */}
+            {/* Core Leadership - Collapsible */}
             {coreLeadershipRoles.length > 0 && (
               <div className="mb-8">
-                <h4 className="text-sm font-bold text-leadership-text uppercase tracking-wide mb-4 flex items-center gap-2">
+                <button
+                  onClick={() => toggleSection('coreLeadership')}
+                  className="w-full text-sm font-bold text-leadership-text uppercase tracking-wide mb-4 flex items-center gap-2 hover:text-leadership transition-colors group"
+                >
                   <span className="w-3 h-0.5 bg-leadership rounded-full"></span>
                   Core Leadership
-                </h4>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {coreLeadershipRoles.map(role => (
-                    <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
-                  ))}
+                  <span className="text-xs font-normal normal-case text-gray-400">({coreLeadershipRoles.length} roles)</span>
+                  <svg
+                    className={`w-4 h-4 ml-auto transition-transform duration-200 ${expandedSections.coreLeadership ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div
+                  style={{
+                    maxHeight: expandedSections.coreLeadership ? '2000px' : '0',
+                    opacity: expandedSections.coreLeadership ? 1 : 0,
+                    overflow: 'hidden',
+                    transition: 'max-height 0.3s ease, opacity 0.3s ease',
+                  }}
+                >
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {coreLeadershipRoles.map(role => (
+                      <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Sector Leads */}
+            {/* Sector Leads - Collapsible */}
             {sectorLeadRoles.length > 0 && (
               <div>
-                <h4 className="text-sm font-bold text-sector-text uppercase tracking-wide mb-4 flex items-center gap-2">
+                <button
+                  onClick={() => toggleSection('sectorLeads')}
+                  className="w-full text-sm font-bold text-sector-text uppercase tracking-wide mb-4 flex items-center gap-2 hover:text-sector transition-colors group"
+                >
                   <span className="w-3 h-0.5 bg-sector rounded-full"></span>
                   Sector Leads
-                </h4>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {sectorLeadRoles.map(role => (
-                    <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
-                  ))}
+                  <span className="text-xs font-normal normal-case text-gray-400">({sectorLeadRoles.length} roles)</span>
+                  <svg
+                    className={`w-4 h-4 ml-auto transition-transform duration-200 ${expandedSections.sectorLeads ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div
+                  style={{
+                    maxHeight: expandedSections.sectorLeads ? '4000px' : '0',
+                    opacity: expandedSections.sectorLeads ? 1 : 0,
+                    overflow: 'hidden',
+                    transition: 'max-height 0.3s ease, opacity 0.3s ease',
+                  }}
+                >
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {sectorLeadRoles.map(role => (
+                      <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
