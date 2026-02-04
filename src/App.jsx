@@ -1297,7 +1297,7 @@ export default function App() {
             }}
           >
             <a href="#roles" className="bg-white text-aram-purple font-bold py-3 px-6 rounded-full hover:bg-aram-purple-50 transition-all duration-200 hover:scale-[1.02] min-h-[48px] flex items-center justify-center">See Open Roles</a>
-            <a href="#culture" className="border-2 border-white/50 text-white font-bold py-3 px-6 rounded-full hover:bg-white/10 transition-all duration-200 hover:scale-[1.02] min-h-[48px] flex items-center justify-center">How We Work</a>
+            <button onClick={() => setShowCultureMemo(true)} className="border-2 border-white/50 text-white font-bold py-3 px-6 rounded-full hover:bg-white/10 transition-all duration-200 hover:scale-[1.02] min-h-[48px] flex items-center justify-center">How We Work</button>
           </div>
           <div
             className="mt-10 pb-8 grid grid-cols-3 gap-8 w-full max-w-lg mx-auto justify-items-center"
@@ -1314,29 +1314,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* Culture Memo Card */}
-      <section id="culture" className="py-16 bg-aram-purple-50">
-        <AnimatedSection className="max-w-2xl mx-auto px-6">
-          <button
-            onClick={() => setShowCultureMemo(true)}
-            className="w-full bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-aram-purple-100 hover:shadow-xl hover:border-aram-purple/30 hover:scale-[1.01] transition-all duration-200 text-left group min-h-[88px]"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-aram-purple-100 to-priority-bg rounded-xl flex items-center justify-center flex-shrink-0">
-                <span className="text-2xl">📝</span>
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-aram-purple transition-colors">How We Work at Aram</h2>
-                <p className="text-gray-500 text-sm">Click to read our note to applicants</p>
-              </div>
-              <svg className="w-6 h-6 text-aram-purple/60 group-hover:text-aram-purple group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-          </button>
-        </AnimatedSection>
-      </section>
-
       {/* Page Header */}
       <PageHeader />
 
@@ -1346,6 +1323,28 @@ export default function App() {
           <AnimatedSection className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">Open Roles</h2>
             <p className="text-lg text-gray-600 leading-relaxed">We're building a leadership team to scale our impact.</p>
+          </AnimatedSection>
+
+          {/* How We Work - Inline Callout Banner */}
+          <AnimatedSection className="mb-8" delay={0.05}>
+            <button
+              onClick={() => setShowCultureMemo(true)}
+              className="w-full bg-gray-50 border-l-4 border-aram-purple rounded-r-lg px-4 py-3 flex items-center justify-between hover:bg-aram-purple-50 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-lg">📋</span>
+                <span className="text-sm text-gray-700">
+                  <span className="font-medium">New to Aram?</span>
+                  <span className="hidden sm:inline"> Learn about our culture and what we look for in volunteers</span>
+                </span>
+              </div>
+              <span className="flex items-center text-sm font-semibold text-aram-purple group-hover:text-aram-purple-dark transition-colors">
+                Read our note
+                <svg className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </button>
           </AnimatedSection>
 
           {/* Priority Roles Section */}
