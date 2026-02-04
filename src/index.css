@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
+@theme {
+  /* Aram brand purple */
+  --color-aram-purple: #6D4A9E;
+  --color-aram-purple-light: #8B6BB5;
+  --color-aram-purple-dark: #5A3D82;
+  --color-aram-purple-50: #F5F0FA;
+  --color-aram-purple-100: #E8DFF3;
+
+  /* Core Leadership - muted purple */
+  --color-leadership: #9D8BB8;
+  --color-leadership-bg: #F0EBF5;
+  --color-leadership-text: #5A4775;
+
+  /* Sector Lead - teal */
+  --color-sector: #0D9488;
+  --color-sector-bg: #CCFBF1;
+  --color-sector-text: #0F766E;
+
+  /* Team Lead - slate blue */
+  --color-team: #64748B;
+  --color-team-bg: #F1F5F9;
+  --color-team-text: #475569;
+
+  /* Priority - warm amber/orange */
+  --color-priority: #F59E0B;
+  --color-priority-bg: #FEF3C7;
+  --color-priority-text: #B45309;
+
+  /* Card backgrounds */
+  --color-card-bg: #FAFAFA;
+  --color-card-border: #E5E7EB;
+}
+
 html {
   scroll-behavior: smooth;
 }

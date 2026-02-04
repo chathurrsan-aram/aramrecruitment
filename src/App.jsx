@@ -61,6 +61,12 @@ const roles = [
     impact: 'Your work directly shapes how the world sees Sri Lanka and brings in the people who make our initiatives possible.',
     skills: ['Content creation (reels, posts, video)', 'Team leadership', 'Brand strategy', 'Storytelling'],
     worksWith: ['Executive Lead', 'All Sector Leads', 'Head of Socials'],
+    whatYoullGain: [
+      'Hands-on experience in brand strategy and content creation',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'portfolio', label: "Share a link to content you've created (reel, post, video, or portfolio)" },
       { id: 'team-experience', label: 'Describe your experience leading a team or creative project' },
@@ -88,6 +94,12 @@ const roles = [
     impact: 'You enable every initiative by ensuring we have the resources and accountability to deliver.',
     skills: ['Budgeting & accounting', 'Spreadsheets & financial tools', 'Process design', 'Clear communication'],
     worksWith: ['Executive Lead', 'Sector Leads', 'Trip Director'],
+    whatYoullGain: [
+      'Hands-on experience in financial management and nonprofit accounting',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'finance-exp', label: 'Describe your experience with budgeting, accounting, or financial reporting' },
       { id: 'tools', label: 'What financial tools or software are you comfortable with?' },
@@ -115,6 +127,12 @@ const roles = [
     impact: 'You create the experience that transforms volunteers and delivers real value to communities.',
     skills: ['Event/trip planning', 'Logistics coordination', 'Team management', 'Problem-solving under pressure'],
     worksWith: ['Executive Lead', 'Sector Leads', 'Sri Lanka Partners'],
+    whatYoullGain: [
+      'Hands-on experience in large-scale event and logistics management',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'event-exp', label: 'Have you organised events or trips before? Describe briefly.' },
       { id: 'improvement', label: 'What would make the 2027 trip better than previous years?' },
@@ -142,6 +160,12 @@ const roles = [
     impact: 'You directly improve health outcomes for communities across Sri Lanka.',
     skills: ['Healthcare knowledge (professional or personal)', 'Project management', 'Partner coordination'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Healthcare Volunteers'],
+    whatYoullGain: [
+      'Hands-on experience in healthcare programme design and delivery',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'why-sector', label: 'Why healthcare specifically? What draws you to this sector?' },
       { id: 'initiative-idea', label: "What's one initiative you'd want to drive in healthcare?" },
@@ -169,6 +193,12 @@ const roles = [
     impact: 'You help ensure children with disabilities and their families get the support they deserve.',
     skills: ['SEN knowledge or passion', 'Empathy and sensitivity', 'Project management'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'SEN Volunteers'],
+    whatYoullGain: [
+      'Hands-on experience in special educational needs support and advocacy',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'why-sector', label: 'Why SEN specifically? What draws you to this sector?' },
       { id: 'initiative-idea', label: "What's one initiative you'd want to drive in SEN?" },
@@ -196,6 +226,12 @@ const roles = [
     impact: 'You open doors for young people who otherwise might not see a path forward.',
     skills: ['Education sector knowledge', 'Workshop design', 'Mentoring experience'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Education Volunteers'],
+    whatYoullGain: [
+      'Hands-on experience in education programme design and mentoring',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'why-sector', label: 'Why education specifically? What draws you to this sector?' },
       { id: 'initiative-idea', label: "What's one initiative you'd want to drive in education?" },
@@ -223,6 +259,12 @@ const roles = [
     impact: 'You connect communities to the digital world and the opportunities it creates.',
     skills: ['Tech industry knowledge', 'Digital skills training', 'Innovation mindset'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Tech Volunteers'],
+    whatYoullGain: [
+      'Hands-on experience in tech-for-good and digital skills training',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'why-sector', label: 'Why technology specifically? What draws you to this sector?' },
       { id: 'initiative-idea', label: "What's one initiative you'd want to drive in technology?" },
@@ -250,6 +292,12 @@ const roles = [
     impact: 'You help people build the inner resources they need to thrive.',
     skills: ['Mental health awareness', 'Workshop facilitation', 'Safeguarding knowledge'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Wellbeing Volunteers'],
+    whatYoullGain: [
+      'Hands-on experience in mental health awareness and wellbeing programmes',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'why-sector', label: 'Why wellbeing specifically? What draws you to this sector?' },
       { id: 'initiative-idea', label: "What's one initiative you'd want to drive in wellbeing?" },
@@ -277,6 +325,12 @@ const roles = [
     impact: 'You help families build sustainable incomes and break cycles of poverty.',
     skills: ['Business/economics knowledge', 'Entrepreneurship experience', 'Community development'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Econ Dev Volunteers'],
+    whatYoullGain: [
+      'Hands-on experience in economic development and social enterprise',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'why-sector', label: 'Why economic development specifically? What draws you to this sector?' },
       { id: 'initiative-idea', label: "What's one initiative you'd want to drive in economic development?" },
@@ -304,6 +358,12 @@ const roles = [
     impact: 'You ensure our work is grounded in reality and our learnings reach others.',
     skills: ['Research & analysis', 'Academic writing', 'Data interpretation'],
     worksWith: ['Media Director', 'Sector Leads'],
+    whatYoullGain: [
+      'Hands-on experience in research and data analysis',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'research-exp', label: "Share an example of research or analysis you've done" },
     ],
@@ -330,6 +390,12 @@ const roles = [
     impact: 'You build the community that powers everything we do.',
     skills: ['Social media management', 'Content creation', 'Community building'],
     worksWith: ['Media Director'],
+    whatYoullGain: [
+      'Hands-on experience in social media management and community building',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'social-exp', label: "Link to a social account you manage or content you've created" },
     ],
@@ -356,6 +422,12 @@ const roles = [
     impact: 'You bring people together and generate resources for our mission.',
     skills: ['Event planning', 'Logistics', 'Vendor management'],
     worksWith: ['Community Lead', 'Finance Director'],
+    whatYoullGain: [
+      'Hands-on experience in event planning and logistics management',
+      'Work alongside a passionate, supportive team',
+      'Opportunity to make tangible impact in Sri Lanka',
+      'Reference and LinkedIn recommendation upon completion',
+    ],
     questions: [
       { id: 'event-exp', label: "Describe an event you've planned or helped organise" },
     ],
@@ -391,12 +463,40 @@ const Header = () => (
       <img src="/images/whitetamil-1.png" alt="Aram" className="h-[73px]" />
       <a
         href="https://aram.org.uk"
-        className="text-sm text-gray-600 hover:text-purple-700 transition-colors"
+        className="text-sm text-gray-600 hover:text-aram-purple transition-colors"
       >
         ← aram.org.uk
       </a>
     </div>
   </header>
+);
+
+// Page header section above roles
+const PageHeader = () => (
+  <section className="bg-white py-16 border-b border-gray-100">
+    <div className="max-w-5xl mx-auto px-6">
+      {/* Hero image placeholder */}
+      <div className="mb-10 rounded-2xl bg-gray-100 overflow-hidden" style={{ aspectRatio: '3/1' }}>
+        <div className="w-full h-full flex items-center justify-center text-gray-400">
+          <div className="text-center">
+            <svg className="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p className="text-sm">Hero image placeholder</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="text-center">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Join Our 2025-26 Team
+        </h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          Volunteer with us to deliver meaningful change in Sri Lanka. Roles range from 2-5 hours per week and run from September 2025 to August 2026.
+        </p>
+      </div>
+    </div>
+  </section>
 );
 
 const CultureMemoModal = ({ onClose }) => {
@@ -465,22 +565,22 @@ const CultureMemoModal = ({ onClose }) => {
             If you're reading this, you're thinking about joining Aram. Before you apply, we want to be honest about who we are and what we're looking for.
           </p>
 
-          <div className="border-l-4 border-purple-300 pl-4 space-y-4">
+          <div className="border-l-4 border-aram-purple/30 pl-4 space-y-4">
             <div>
-              <h3 className="font-bold text-purple-700">We believe in presence over funding.</h3>
-              <p>Anyone can send money. We show up. Every year, 40 volunteers travel to Sri Lanka — not as saviours, but as partners.</p>
+              <h3 className="font-bold text-aram-purple">We believe in presence over funding.</h3>
+              <p className="leading-relaxed">Anyone can send money. We show up. Every year, 40 volunteers travel to Sri Lanka — not as saviours, but as partners.</p>
             </div>
             <div>
-              <h3 className="font-bold text-purple-700">We believe in sustainability over charity.</h3>
-              <p>We don't do one-off handouts. Every initiative builds local capacity.</p>
+              <h3 className="font-bold text-aram-purple">We believe in sustainability over charity.</h3>
+              <p className="leading-relaxed">We don't do one-off handouts. Every initiative builds local capacity.</p>
             </div>
             <div>
-              <h3 className="font-bold text-purple-700">We believe in ownership over tasks.</h3>
-              <p>We want people who see a problem and figure out how to solve it. If you join as a Lead, that domain is <em>yours</em>.</p>
+              <h3 className="font-bold text-aram-purple">We believe in ownership over tasks.</h3>
+              <p className="leading-relaxed">We want people who see a problem and figure out how to solve it. If you join as a Lead, that domain is <em>yours</em>.</p>
             </div>
             <div>
-              <h3 className="font-bold text-purple-700">We're honest about what's hard.</h3>
-              <p>We're volunteer-run. Things don't always get done. That's why we need people who drive work forward.</p>
+              <h3 className="font-bold text-aram-purple">We're honest about what's hard.</h3>
+              <p className="leading-relaxed">We're volunteer-run. Things don't always get done. That's why we need people who drive work forward.</p>
             </div>
           </div>
 
@@ -489,20 +589,20 @@ const CultureMemoModal = ({ onClose }) => {
             <ul className="space-y-2">
               {['People who finish what they start', 'People who can rally others', 'People who want to build, not just add to their CV'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <span className="text-orange-500 mt-1">✓</span>
-                  <span>{item}</span>
+                  <span className="text-priority mt-1">✓</span>
+                  <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-gradient-to-r from-purple-100/50 to-orange-100/50 rounded-xl p-5">
+          <div className="bg-gradient-to-r from-aram-purple-100/50 to-priority-bg/50 rounded-xl p-5">
             <h3 className="font-bold text-gray-900 mb-3">What you'll get:</h3>
             <ul className="space-y-2">
               {['Real project management experience', 'A network of talented Tamil professionals', 'Tangible change from your work', 'A voice that shapes our direction'].map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <span className="text-purple-500 mt-1">→</span>
-                  <span>{item}</span>
+                  <span className="text-aram-purple mt-1">→</span>
+                  <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
@@ -522,6 +622,20 @@ const CultureMemoModal = ({ onClose }) => {
   );
 };
 
+// Helper function to get tier badge styles
+const getTierStyles = (tier) => {
+  switch (tier) {
+    case 'Core Leadership':
+      return 'bg-leadership-bg text-leadership-text border border-leadership/30';
+    case 'Sector Lead':
+      return 'bg-sector-bg text-sector-text';
+    case 'Team Lead':
+      return 'bg-team-bg text-team-text';
+    default:
+      return 'bg-gray-100 text-gray-700';
+  }
+};
+
 const RoleCard = ({ role, isExpanded, onToggle, onApply, onViewDetails }) => {
   const [showContent, setShowContent] = useState(false);
   const contentRef = useRef(null);
@@ -538,50 +652,89 @@ const RoleCard = ({ role, isExpanded, onToggle, onApply, onViewDetails }) => {
   const worksWithText = Array.isArray(role.worksWith) ? role.worksWith.join(', ') : role.worksWith;
 
   return (
-  <div className={`bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 ${isExpanded ? 'ring-2 ring-purple-500' : 'hover:shadow-lg'}`}>
+  <div className={`bg-card-bg rounded-xl shadow-md overflow-hidden transition-all duration-300 border border-card-border ${isExpanded ? 'ring-2 ring-aram-purple' : 'hover:shadow-lg hover:border-aram-purple/30'}`}>
     <div className="p-5 cursor-pointer" onClick={onToggle}>
-      <div className="flex justify-between items-start mb-2">
-        <div className="flex flex-wrap gap-1">
-          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${role.tier === 'Core Leadership' ? 'bg-purple-100 text-purple-700' : role.tier === 'Sector Lead' ? 'bg-orange-100 text-orange-700' : 'bg-teal-100 text-teal-700'}`}>{role.tier}</span>
-          {role.priority && <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-pink-100 text-pink-700">Priority</span>}
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex flex-wrap gap-1.5">
+          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${getTierStyles(role.tier)}`}>{role.tier}</span>
+          {role.priority && <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-priority-bg text-priority-text">Priority</span>}
         </div>
-        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{role.commitment}</span>
+        <span className="text-xs text-gray-500 bg-gray-100 px-2.5 py-1 rounded-md font-medium">{role.commitment}</span>
       </div>
-      <h3 className="text-lg font-bold text-gray-900 mb-1">{role.title}</h3>
-      <p className="text-sm text-gray-600">{role.shortDesc}</p>
-      <div className="mt-3 flex items-center text-purple-600 font-medium text-sm">
+      <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">{role.title}</h3>
+      <p className="text-sm text-gray-600 leading-relaxed">{role.shortDesc}</p>
+      <button className="mt-4 flex items-center text-aram-purple font-semibold text-sm hover:text-aram-purple-dark transition-colors px-3 py-1.5 -ml-3 rounded-lg hover:bg-aram-purple-50">
         {isExpanded ? 'Show less' : 'Learn more'}
-        <svg className={`ml-1 w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-      </div>
+        <svg className={`ml-1.5 w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+      </button>
     </div>
     <div
       ref={contentRef}
       style={{
-        maxHeight: isExpanded ? '500px' : '0',
+        maxHeight: isExpanded ? '700px' : '0',
         opacity: isExpanded ? 1 : 0,
         overflow: 'hidden',
         transition: 'max-height 0.3s ease, opacity 0.3s ease',
       }}
     >
       {showContent && (
-        <div className="px-5 pb-5 border-t border-gray-100 pt-4">
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="px-5 pb-5 border-t border-gray-200 pt-4">
+          <div className="grid md:grid-cols-2 gap-5">
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2 text-sm">Responsibilities</h4>
-              <ul className="space-y-1">{role.responsibilities.map((r, i) => <li key={i} className="flex items-start text-xs text-gray-600"><span className="text-purple-500 mr-1">•</span>{r}</li>)}</ul>
+              <h4 className="font-bold text-gray-900 mb-3 text-sm">Responsibilities</h4>
+              <ul className="space-y-2">
+                {role.responsibilities.map((r, i) => (
+                  <li key={i} className="flex items-start text-sm text-gray-600 leading-relaxed">
+                    <span className="w-1.5 h-1.5 bg-aram-purple rounded-full mr-2.5 mt-2 flex-shrink-0"></span>
+                    {r}
+                  </li>
+                ))}
+              </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2 text-sm">Your Impact</h4>
-              <p className="text-xs text-gray-600 mb-3">{role.impact}</p>
-              <h4 className="font-semibold text-gray-900 mb-2 text-sm">Skills</h4>
-              <div className="flex flex-wrap gap-1">{role.skills.map((s, i) => <span key={i} className="text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded">{s}</span>)}</div>
+              <h4 className="font-bold text-gray-900 mb-3 text-sm">Your Impact</h4>
+              <p className="text-sm text-gray-600 mb-4 leading-relaxed">{role.impact}</p>
+              <h4 className="font-bold text-gray-900 mb-3 text-sm">Skills</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {role.skills.map((s, i) => (
+                  <span key={i} className="text-xs bg-aram-purple-50 text-aram-purple px-2.5 py-1 rounded-md font-medium">{s}</span>
+                ))}
+              </div>
             </div>
           </div>
-          <div className="mt-4 pt-3 border-t border-gray-100">
-            <p className="text-xs text-gray-500 mb-3"><strong>Works with:</strong> {worksWithText}</p>
-            <div className="flex gap-2">
-              <button onClick={(e) => { e.stopPropagation(); onViewDetails(role); }} className="flex-1 border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-semibold py-2 px-4 rounded-lg transition-all duration-200 hover:scale-[1.02] text-sm">View full details</button>
-              <button onClick={(e) => { e.stopPropagation(); onApply(role); }} className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 hover:scale-[1.02] text-sm">Apply</button>
+
+          {/* What You'll Gain section */}
+          {role.whatYoullGain && role.whatYoullGain.length > 0 && (
+            <div className="mt-5 pt-4 border-t border-gray-200">
+              <h4 className="font-bold text-gray-900 mb-3 text-sm">What You'll Gain</h4>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {role.whatYoullGain.map((gain, i) => (
+                  <li key={i} className="flex items-start text-sm text-gray-600">
+                    <svg className="w-4 h-4 text-sector mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {gain}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="mt-5 pt-4 border-t border-gray-200">
+            <p className="text-sm text-gray-500 mb-4"><span className="font-semibold text-gray-700">Works with:</span> {worksWithText}</p>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={(e) => { e.stopPropagation(); onApply(role); }}
+                className="w-full bg-aram-purple hover:bg-aram-purple-dark text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 text-sm"
+              >
+                Apply for this role
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); onViewDetails(role); }}
+                className="w-full border-2 border-aram-purple text-aram-purple hover:bg-aram-purple-50 font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 text-sm"
+              >
+                View full details
+              </button>
             </div>
           </div>
         </div>
@@ -647,7 +800,7 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
       >
         <div className="sticky top-0 bg-white border-b border-gray-100 p-4 flex justify-between items-center">
           <h2 className="text-xl font-bold text-gray-900">Apply to Join Aram</h2>
-          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-transform duration-200 hover:scale-110">
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-transform duration-200 hover:scale-110 min-w-[44px] min-h-[44px] flex items-center justify-center">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
@@ -655,36 +808,36 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-              <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" />
+              <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aram-purple focus:border-transparent text-sm min-h-[44px]" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-              <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" />
+              <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aram-purple focus:border-transparent text-sm min-h-[44px]" />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Which role(s) interest you? *</label>
             <div className="grid grid-cols-2 gap-1 max-h-40 overflow-y-auto p-2 border border-gray-200 rounded-lg">
               {roles.map(role => (
-                <label key={role.id} className="flex items-center space-x-1 text-xs cursor-pointer hover:bg-gray-50 p-1 rounded">
-                  <input type="checkbox" checked={formData.roles.includes(role.id)} onChange={() => toggleRole(role.id)} className="rounded text-purple-600 focus:ring-purple-500" />
-                  <span className={formData.roles.includes(role.id) ? 'font-medium text-purple-700' : 'text-gray-600'}>{role.title}</span>
+                <label key={role.id} className="flex items-center space-x-2 text-xs cursor-pointer hover:bg-gray-50 p-1.5 rounded min-h-[32px]">
+                  <input type="checkbox" checked={formData.roles.includes(role.id)} onChange={() => toggleRole(role.id)} className="rounded text-aram-purple focus:ring-aram-purple w-4 h-4" />
+                  <span className={formData.roles.includes(role.id) ? 'font-medium text-aram-purple' : 'text-gray-600'}>{role.title}</span>
                 </label>
               ))}
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Why does Aram interest you? *</label>
-            <textarea rows={2} value={formData.about} onChange={(e) => setFormData({...formData, about: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="A few sentences about what draws you to Aram..." />
+            <textarea rows={2} value={formData.about} onChange={(e) => setFormData({...formData, about: e.target.value})} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aram-purple focus:border-transparent text-sm leading-relaxed" placeholder="A few sentences about what draws you to Aram..." />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">What relevant experience do you bring? *</label>
-            <textarea rows={2} value={formData.experience} onChange={(e) => setFormData({...formData, experience: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Professional experience, volunteer work, projects..." />
+            <textarea rows={2} value={formData.experience} onChange={(e) => setFormData({...formData, experience: e.target.value})} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aram-purple focus:border-transparent text-sm leading-relaxed" placeholder="Professional experience, volunteer work, projects..." />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Hours/week *</label>
-              <select value={formData.hours} onChange={(e) => setFormData({...formData, hours: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
+              <select value={formData.hours} onChange={(e) => setFormData({...formData, hours: e.target.value})} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aram-purple focus:border-transparent text-sm min-h-[44px]">
                 <option value="">Select...</option>
                 <option value="1-2">1-2 hours</option>
                 <option value="2-4">2-4 hours</option>
@@ -694,7 +847,7 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Attended Aram trip? *</label>
-              <select value={formData.previousTrip} onChange={(e) => setFormData({...formData, previousTrip: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm">
+              <select value={formData.previousTrip} onChange={(e) => setFormData({...formData, previousTrip: e.target.value})} className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aram-purple focus:border-transparent text-sm min-h-[44px]">
                 <option value="">Select...</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -707,7 +860,7 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
               {allRoleQuestions.map((q) => (
                 <div key={`${q.roleId}-${q.id}`} className="mb-3">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-purple-600 text-xs">[{q.roleTitle}]</span> {q.label}
+                    <span className="text-aram-purple text-xs font-semibold">[{q.roleTitle}]</span> {q.label}
                   </label>
                   <textarea
                     rows={2}
@@ -716,13 +869,13 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
                       ...formData,
                       roleSpecific: {...formData.roleSpecific, [`${q.roleId}-${q.id}`]: e.target.value}
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aram-purple focus:border-transparent text-sm leading-relaxed"
                   />
                 </div>
               ))}
             </div>
           )}
-          <button onClick={() => onSubmit(formData)} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-[1.02]">Submit Application</button>
+          <button onClick={() => onSubmit(formData)} className="w-full bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-3.5 px-6 rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[48px]">Submit Application</button>
         </div>
       </div>
     </div>
@@ -732,15 +885,63 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
 const JobDetailsPanel = ({ role, onClose, onApply }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const panelRef = useRef(null);
+  const closeButtonRef = useRef(null);
 
   useEffect(() => {
     requestAnimationFrame(() => setIsVisible(true));
     // Prevent body scroll when panel is open
     document.body.style.overflow = 'hidden';
+
+    // Focus the close button when panel opens for accessibility
+    setTimeout(() => closeButtonRef.current?.focus(), 100);
+
     return () => {
       document.body.style.overflow = '';
     };
   }, []);
+
+  // Handle Escape key to close panel
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Focus trap - keep focus within panel
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const focusableElements = panel.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    const handleTabKey = (e) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement?.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement?.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTabKey);
+    return () => document.removeEventListener('keydown', handleTabKey);
+  }, [isVisible]);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -762,13 +963,19 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
         transition: 'background-color 0.3s ease',
       }}
       onClick={handleClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="panel-title"
     >
       {/* Panel */}
       <div
+        ref={panelRef}
         className="job-details-panel absolute top-0 right-0 h-full bg-white shadow-2xl overflow-hidden flex flex-col w-full md:max-w-[65%]"
         style={{
           transform: isVisible ? 'translateX(0)' : 'translateX(100%)',
           transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          minWidth: '320px',
+          maxWidth: '800px',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -778,18 +985,21 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
           <div className="flex justify-between items-start">
             <div className="flex-1 min-w-0 pr-4">
               <div className="flex flex-wrap gap-2 mb-2">
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${role.tier === 'Core Leadership' ? 'bg-purple-100 text-purple-700' : role.tier === 'Sector Lead' ? 'bg-orange-100 text-orange-700' : 'bg-teal-100 text-teal-700'}`}>
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${getTierStyles(role.tier)}`}>
                   {role.tier}
                 </span>
                 {role.priority && (
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-pink-100 text-pink-700">Priority</span>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-priority-bg text-priority-text">Priority</span>
                 )}
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">{role.commitment}</span>
               </div>
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900 truncate">{role.title}</h2>
+              <h2 id="panel-title" className="text-xl md:text-2xl font-bold text-gray-900">{role.title}</h2>
             </div>
             <button
+              ref={closeButtonRef}
               onClick={handleClose}
-              className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
+              className="flex-shrink-0 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center"
+              aria-label="Close panel"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -801,9 +1011,9 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
           <div className="flex gap-1 mt-4 bg-gray-100 p-1 rounded-lg">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+              className={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-all duration-200 min-h-[44px] ${
                 activeTab === 'overview'
-                  ? 'bg-white text-purple-700 shadow-sm'
+                  ? 'bg-white text-aram-purple shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -811,9 +1021,9 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
             </button>
             <button
               onClick={() => setActiveTab('application')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+              className={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-all duration-200 min-h-[44px] ${
                 activeTab === 'application'
-                  ? 'bg-white text-purple-700 shadow-sm'
+                  ? 'bg-white text-aram-purple shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -869,7 +1079,7 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
                     <div className="space-y-1">
                       {worksWithList.map((person, i) => (
                         <div key={i} className="text-sm text-gray-700 flex items-center gap-1">
-                          <span className="text-purple-400">•</span> {person}
+                          <span className="text-aram-purple">•</span> {person}
                         </div>
                       ))}
                     </div>
@@ -879,13 +1089,13 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
 
               {/* Main Content */}
               <div className="flex-1 p-6">
-                <p className="text-gray-600 text-lg mb-6">{role.shortDesc}</p>
+                <p className="text-gray-600 text-lg mb-6 leading-relaxed">{role.shortDesc}</p>
 
                 {/* About the Role */}
                 {role.aboutRole && role.aboutRole.length > 0 && (
                   <div className="mb-8">
                     <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                      <span className="w-1 h-5 bg-purple-500 rounded-full"></span>
+                      <span className="w-1 h-5 bg-aram-purple rounded-full"></span>
                       About the Role
                     </h3>
                     <div className="space-y-4">
@@ -899,13 +1109,13 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
                 {/* Responsibilities */}
                 <div className="mb-8">
                   <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <span className="w-1 h-5 bg-orange-500 rounded-full"></span>
+                    <span className="w-1 h-5 bg-sector rounded-full"></span>
                     Responsibilities
                   </h3>
-                  <ul className="space-y-2">
+                  <ul className="space-y-3">
                     {role.responsibilities.map((resp, i) => (
-                      <li key={i} className="flex items-start gap-3 text-gray-600">
-                        <svg className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <li key={i} className="flex items-start gap-3 text-gray-600 leading-relaxed">
+                        <svg className="w-5 h-5 text-aram-purple flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         {resp}
@@ -917,23 +1127,43 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
                 {/* Your Impact */}
                 <div className="mb-8">
                   <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <span className="w-1 h-5 bg-teal-500 rounded-full"></span>
+                    <span className="w-1 h-5 bg-priority rounded-full"></span>
                     Your Impact
                   </h3>
-                  <div className="bg-gradient-to-r from-purple-50 to-orange-50 rounded-xl p-4 border border-purple-100">
-                    <p className="text-gray-700 leading-relaxed">{role.impact}</p>
+                  <div className="bg-gradient-to-r from-aram-purple-50 to-priority-bg/50 rounded-xl p-4 border border-aram-purple-100">
+                    <p className="text-gray-700 leading-relaxed font-medium">{role.impact}</p>
                   </div>
                 </div>
+
+                {/* What You'll Gain */}
+                {role.whatYoullGain && role.whatYoullGain.length > 0 && (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                      <span className="w-1 h-5 bg-sector rounded-full"></span>
+                      What You'll Gain
+                    </h3>
+                    <ul className="space-y-2">
+                      {role.whatYoullGain.map((gain, i) => (
+                        <li key={i} className="flex items-start gap-3 text-gray-600 leading-relaxed">
+                          <svg className="w-5 h-5 text-sector flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          {gain}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* Skills */}
                 <div className="mb-8">
                   <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <span className="w-1 h-5 bg-pink-500 rounded-full"></span>
+                    <span className="w-1 h-5 bg-leadership rounded-full"></span>
                     Skills We're Looking For
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {role.skills.map((skill, i) => (
-                      <span key={i} className="bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-sm font-medium">
+                      <span key={i} className="bg-aram-purple-100 text-aram-purple px-3 py-1.5 rounded-full text-sm font-medium">
                         {skill}
                       </span>
                     ))}
@@ -944,7 +1174,7 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
                 <div className="pt-4 border-t border-gray-200">
                   <button
                     onClick={handleApplyClick}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 hover:scale-[1.02] flex items-center justify-center gap-2"
+                    className="w-full bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-2 min-h-[52px]"
                   >
                     Apply for this role
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -958,8 +1188,8 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
             /* Application Tab */
             <div className="p-6">
               <div className="max-w-lg mx-auto text-center py-12">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-16 h-16 bg-aram-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-aram-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
@@ -969,13 +1199,13 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
                 </p>
                 <button
                   onClick={handleApplyClick}
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-xl transition-all duration-200 hover:scale-[1.02]"
+                  className="bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-3 px-8 rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[48px]"
                 >
                   Start Application
                 </button>
                 <p className="text-sm text-gray-500 mt-4">
                   Questions? Email us at{' '}
-                  <a href="mailto:hello@aram.org.uk" className="text-purple-600 hover:underline">
+                  <a href="mailto:hello@aram.org.uk" className="text-aram-purple hover:text-aram-purple-dark hover:underline transition-colors">
                     hello@aram.org.uk
                   </a>
                 </p>
@@ -1010,19 +1240,22 @@ export default function App() {
     setSubmitted(true);
   };
 
+  // Group roles by type for organized display
   const priorityRoles = roles.filter(r => r.priority);
+  const coreLeadershipRoles = priorityRoles.filter(r => r.tier === 'Core Leadership');
+  const sectorLeadRoles = priorityRoles.filter(r => r.tier === 'Sector Lead');
   const otherRoles = roles.filter(r => !r.priority);
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-orange-50 flex items-center justify-center p-8">
+      <div className="min-h-screen bg-gradient-to-br from-aram-purple-50 to-priority-bg/30 flex items-center justify-center p-8">
         <div className="bg-white rounded-2xl p-10 max-w-md text-center shadow-xl">
           <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
             <svg className="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-3">Application Received!</h1>
           <p className="text-gray-600 mb-5">Thank you for your interest in joining Aram. We'll be in touch within a week.</p>
-          <button onClick={() => setSubmitted(false)} className="text-purple-600 font-medium hover:text-purple-700 transition-colors">← Back to roles</button>
+          <button onClick={() => setSubmitted(false)} className="text-aram-purple font-medium hover:text-aram-purple-dark transition-colors">← Back to roles</button>
         </div>
       </div>
     );
@@ -1042,7 +1275,7 @@ export default function App() {
       <section className="relative min-h-[77vh] flex items-center justify-center overflow-hidden pt-32">
         <div className="absolute inset-0">
           <img src="/images/Community.png" alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center top' }} />
-          <div className="absolute inset-0 bg-purple-900/10" />
+          <div className="absolute inset-0 bg-[#6D4A9E]/10" />
         </div>
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
           <h1
@@ -1057,7 +1290,7 @@ export default function App() {
             <span className="block text-white">With Us</span>
           </h1>
           <p
-            className="text-lg text-purple-100 mb-6 max-w-xl mx-auto"
+            className="text-lg text-white/90 mb-6 max-w-xl mx-auto"
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
@@ -1074,8 +1307,8 @@ export default function App() {
               transition: 'opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s',
             }}
           >
-            <a href="#roles" className="bg-white text-purple-700 font-bold py-3 px-6 rounded-full hover:bg-purple-50 transition-all duration-200 hover:scale-[1.02]">See Open Roles</a>
-            <a href="#culture" className="border-2 border-white/50 text-white font-bold py-3 px-6 rounded-full hover:bg-white/10 transition-all duration-200 hover:scale-[1.02]">How We Work</a>
+            <a href="#roles" className="bg-white text-aram-purple font-bold py-3 px-6 rounded-full hover:bg-aram-purple-50 transition-all duration-200 hover:scale-[1.02] min-h-[48px] flex items-center justify-center">See Open Roles</a>
+            <a href="#culture" className="border-2 border-white/50 text-white font-bold py-3 px-6 rounded-full hover:bg-white/10 transition-all duration-200 hover:scale-[1.02] min-h-[48px] flex items-center justify-center">How We Work</a>
           </div>
           <div
             className="mt-10 pb-8 grid grid-cols-3 gap-8 w-full max-w-lg mx-auto justify-items-center"
@@ -1085,30 +1318,29 @@ export default function App() {
               transition: 'opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s',
             }}
           >
-            <div className="text-center flex-1"><div className="text-3xl font-bold text-white">3</div><div className="text-purple-200 text-xs">Trips</div></div>
-            <div className="text-center flex-1"><div className="text-3xl font-bold text-white">100+</div><div className="text-purple-200 text-xs">Volunteers</div></div>
-            <div className="text-center flex-1"><div className="text-3xl font-bold text-white">£40k+</div><div className="text-purple-200 text-xs">Raised</div></div>
+            <div className="text-center flex-1"><div className="text-3xl font-bold text-white">3</div><div className="text-white/70 text-xs">Trips</div></div>
+            <div className="text-center flex-1"><div className="text-3xl font-bold text-white">100+</div><div className="text-white/70 text-xs">Volunteers</div></div>
+            <div className="text-center flex-1"><div className="text-3xl font-bold text-white">£40k+</div><div className="text-white/70 text-xs">Raised</div></div>
           </div>
         </div>
       </section>
 
       {/* Culture Memo Card */}
-      <section id="culture" className="py-16 bg-purple-50">
+      <section id="culture" className="py-16 bg-aram-purple-50">
         <AnimatedSection className="max-w-2xl mx-auto px-6">
           <button
             onClick={() => setShowCultureMemo(true)}
-            className="w-full bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-purple-100 hover:shadow-xl hover:border-purple-200 hover:scale-[1.01] transition-all duration-200 text-left group"
-            style={{ backgroundColor: '#ffffff' }}
+            className="w-full bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-aram-purple-100 hover:shadow-xl hover:border-aram-purple/30 hover:scale-[1.01] transition-all duration-200 text-left group min-h-[88px]"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-14 h-14 bg-gradient-to-br from-aram-purple-100 to-priority-bg rounded-xl flex items-center justify-center flex-shrink-0">
                 <span className="text-2xl">📝</span>
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-purple-700 transition-colors">How We Work at Aram</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-aram-purple transition-colors">How We Work at Aram</h2>
                 <p className="text-gray-500 text-sm">Click to read our note to applicants</p>
               </div>
-              <svg className="w-6 h-6 text-purple-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-aram-purple/60 group-hover:text-aram-purple group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
@@ -1116,41 +1348,75 @@ export default function App() {
         </AnimatedSection>
       </section>
 
+      {/* Page Header */}
+      <PageHeader />
+
       {/* Roles */}
       <section id="roles" className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <AnimatedSection className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">Open Roles</h2>
-            <p className="text-lg text-gray-600">We're building a leadership team to scale our impact.</p>
+            <p className="text-lg text-gray-600 leading-relaxed">We're building a leadership team to scale our impact.</p>
           </AnimatedSection>
-          <AnimatedSection className="mb-10" delay={0.1}>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xl">🔥</span>
-              <h3 className="text-lg font-bold text-gray-900">Priority Hires</h3>
-              <span className="text-sm text-gray-500">— Roles we need urgently</span>
+
+          {/* Priority Roles Section */}
+          <AnimatedSection className="mb-12" delay={0.1}>
+            <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-200">
+              <span className="w-2 h-2 bg-priority rounded-full"></span>
+              <h3 className="text-xl font-bold text-gray-900">Priority Roles</h3>
+              <span className="text-sm text-gray-500 font-medium">— We're actively recruiting for these roles</span>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              {priorityRoles.map(role => (
-                <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
-              ))}
-            </div>
+
+            {/* Core Leadership */}
+            {coreLeadershipRoles.length > 0 && (
+              <div className="mb-8">
+                <h4 className="text-sm font-bold text-leadership-text uppercase tracking-wide mb-4 flex items-center gap-2">
+                  <span className="w-3 h-0.5 bg-leadership rounded-full"></span>
+                  Core Leadership
+                </h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {coreLeadershipRoles.map(role => (
+                    <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Sector Leads */}
+            {sectorLeadRoles.length > 0 && (
+              <div>
+                <h4 className="text-sm font-bold text-sector-text uppercase tracking-wide mb-4 flex items-center gap-2">
+                  <span className="w-3 h-0.5 bg-sector rounded-full"></span>
+                  Sector Leads
+                </h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {sectorLeadRoles.map(role => (
+                    <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
+                  ))}
+                </div>
+              </div>
+            )}
           </AnimatedSection>
+
+          {/* Other Open Roles */}
           <AnimatedSection delay={0.2}>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xl">🌱</span>
-              <h3 className="text-lg font-bold text-gray-900">Other Open Roles</h3>
+            <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-200">
+              <span className="w-2 h-2 bg-team rounded-full"></span>
+              <h3 className="text-xl font-bold text-gray-900">Other Open Roles</h3>
             </div>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {otherRoles.map(role => (
                 <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
               ))}
             </div>
           </AnimatedSection>
+
+          {/* General Application CTA */}
           <AnimatedSection className="mt-12 text-center" delay={0.3}>
-            <div className="bg-gradient-to-r from-purple-100 to-orange-100 rounded-2xl p-6">
+            <div className="bg-gradient-to-r from-aram-purple-100 to-priority-bg/50 rounded-2xl p-8">
               <h3 className="text-xl font-bold text-gray-900 mb-2">Not sure which role fits?</h3>
-              <p className="text-gray-600 mb-4">Apply anyway — we'll find the right fit together.</p>
-              <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-200 hover:scale-[1.02]">Start General Application</button>
+              <p className="text-gray-600 mb-5 leading-relaxed">Apply anyway — we'll find the right fit together.</p>
+              <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-3 px-8 rounded-full transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[48px]">Start General Application</button>
             </div>
           </AnimatedSection>
         </div>
@@ -1172,12 +1438,12 @@ export default function App() {
               <AnimatedSection key={i} delay={i * 0.1}>
                 <div className="relative flex gap-4">
                   <div className="flex flex-col items-center">
-                    <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center text-lg font-bold">{step.num}</div>
-                    {i < 3 && <div className="w-0.5 h-16 bg-purple-200" />}
+                    <div className="w-10 h-10 bg-aram-purple text-white rounded-full flex items-center justify-center text-lg font-bold min-w-[40px]">{step.num}</div>
+                    {i < 3 && <div className="w-0.5 h-16 bg-aram-purple-100" />}
                   </div>
                   <div className="pt-1 pb-8">
                     <h3 className="text-lg font-bold text-gray-900 mb-1">{step.title}</h3>
-                    <p className="text-gray-600 text-sm">{step.desc}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed">{step.desc}</p>
                   </div>
                 </div>
               </AnimatedSection>
@@ -1196,9 +1462,9 @@ export default function App() {
             <div className="bg-gray-50 rounded-2xl p-4">
               {faqs.map((faq, i) => (
                 <div key={i} className="border-b border-gray-200 last:border-0">
-                  <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full py-3 flex justify-between items-center text-left hover:bg-gray-100 -mx-2 px-2 rounded transition-colors duration-200">
-                    <span className="font-medium text-gray-900 text-sm">{faq.q}</span>
-                    <svg className={`w-4 h-4 text-purple-500 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full py-4 flex justify-between items-center text-left hover:bg-gray-100 -mx-2 px-2 rounded transition-colors duration-200 min-h-[48px]">
+                    <span className="font-semibold text-gray-900 text-sm pr-4">{faq.q}</span>
+                    <svg className={`w-5 h-5 text-aram-purple transition-transform duration-200 flex-shrink-0 ${openFaq === i ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                   </button>
                   <div
                     style={{
@@ -1208,7 +1474,7 @@ export default function App() {
                       transition: 'max-height 0.3s ease, opacity 0.3s ease',
                     }}
                   >
-                    <p className="pb-3 text-gray-600 text-sm">{faq.a}</p>
+                    <p className="pb-4 text-gray-600 text-sm leading-relaxed">{faq.a}</p>
                   </div>
                 </div>
               ))}
@@ -1218,12 +1484,12 @@ export default function App() {
       </section>
 
       {/* Footer CTA */}
-      <section className="py-16" style={{ backgroundColor: '#E4D7F5' }}>
+      <section className="py-16 bg-aram-purple-100">
         <AnimatedSection className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-purple-900 mb-4">Ready to Make an Impact?</h2>
-          <p className="text-purple-700 text-lg mb-6">Join 160+ volunteers building a thriving Sri Lanka.</p>
-          <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-10 rounded-full text-lg transition-all duration-200 hover:scale-[1.02]">Apply Now</button>
-          <p className="text-purple-600 mt-4 text-sm">Questions? <a href="mailto:hello@aram.org.uk" className="underline hover:text-purple-900 transition-colors duration-200">hello@aram.org.uk</a></p>
+          <h2 className="text-3xl font-bold text-aram-purple-dark mb-4">Ready to Make an Impact?</h2>
+          <p className="text-aram-purple text-lg mb-6 leading-relaxed">Join 160+ volunteers building a thriving Sri Lanka.</p>
+          <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-4 px-10 rounded-full text-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[52px]">Apply Now</button>
+          <p className="text-aram-purple/80 mt-4 text-sm">Questions? <a href="mailto:hello@aram.org.uk" className="underline hover:text-aram-purple-dark transition-colors duration-200">hello@aram.org.uk</a></p>
         </AnimatedSection>
       </section>
 
