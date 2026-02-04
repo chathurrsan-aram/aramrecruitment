@@ -652,7 +652,7 @@ const RoleCard = ({ role, isExpanded, onToggle, onApply, onViewDetails }) => {
   const worksWithText = Array.isArray(role.worksWith) ? role.worksWith.join(', ') : role.worksWith;
 
   return (
-  <div className={`bg-card-bg rounded-xl shadow-md overflow-hidden transition-all duration-300 border border-card-border ${isExpanded ? 'ring-2 ring-aram-purple' : 'hover:shadow-lg hover:border-aram-purple/30'}`}>
+  <div className={`bg-card-bg rounded-xl shadow-md transition-all duration-300 border-2 ${isExpanded ? 'border-aram-purple shadow-lg' : 'border-card-border hover:shadow-lg hover:border-aram-purple/30'}`}>
     <div className="p-5 cursor-pointer" onClick={onToggle}>
       <div className="flex justify-between items-start mb-3">
         <div className="flex flex-wrap gap-1.5">
@@ -670,10 +670,10 @@ const RoleCard = ({ role, isExpanded, onToggle, onApply, onViewDetails }) => {
     </div>
     <div
       ref={contentRef}
+      className="overflow-hidden rounded-b-xl"
       style={{
         maxHeight: isExpanded ? '700px' : '0',
         opacity: isExpanded ? 1 : 0,
-        overflow: 'hidden',
         transition: 'max-height 0.3s ease, opacity 0.3s ease',
       }}
     >
