@@ -44,7 +44,7 @@ const roles = [
     title: 'Media Director',
     tier: 'Core Leadership',
     commitment: '3-5 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: true,
     shortDesc: "Tell Aram's story to build trust, recruit volunteers, and change perceptions of Sri Lanka.",
     aboutRole: [
@@ -77,7 +77,7 @@ const roles = [
     title: 'Finance Director',
     tier: 'Core Leadership',
     commitment: '2-4 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: true,
     shortDesc: 'Keep Aram financially sustainable and transparent through proper budgeting, fundraising, and reporting.',
     aboutRole: [
@@ -110,7 +110,7 @@ const roles = [
     title: 'Trip Director (2027)',
     tier: 'Core Leadership',
     commitment: '3-5 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: true,
     shortDesc: 'Deliver a safe, impactful annual trip and develop systems so future organisers can run it.',
     aboutRole: [
@@ -143,7 +143,7 @@ const roles = [
     title: 'Healthcare Sector Lead',
     tier: 'Sector Lead',
     commitment: '2-4 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: true,
     shortDesc: 'Own healthcare initiatives end-to-end, from health camps to nutrition programs to mental health awareness.',
     aboutRole: [
@@ -176,7 +176,7 @@ const roles = [
     title: 'SEN Sector Lead',
     tier: 'Sector Lead',
     commitment: '2-4 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: true,
     shortDesc: 'Own special educational needs initiatives, supporting children with disabilities and their families.',
     aboutRole: [
@@ -209,7 +209,7 @@ const roles = [
     title: 'Education Sector Lead',
     tier: 'Sector Lead',
     commitment: '2-4 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: true,
     shortDesc: 'Own education initiatives from career guidance to curriculum support to teacher training.',
     aboutRole: [
@@ -242,7 +242,7 @@ const roles = [
     title: 'Technology Sector Lead',
     tier: 'Sector Lead',
     commitment: '2-4 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: true,
     shortDesc: 'Own technology initiatives from digital skills training to IT infrastructure to innovation partnerships.',
     aboutRole: [
@@ -275,7 +275,7 @@ const roles = [
     title: 'Wellbeing Sector Lead',
     tier: 'Sector Lead',
     commitment: '2-4 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: true,
     shortDesc: 'Own holistic wellbeing initiatives covering mental health, life skills, soft skills, and safeguarding.',
     aboutRole: [
@@ -308,7 +308,7 @@ const roles = [
     title: 'Economic Development Lead',
     tier: 'Sector Lead',
     commitment: '2-4 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: true,
     shortDesc: 'Own economic initiatives from livelihoods to entrepreneurship to cooperative development.',
     aboutRole: [
@@ -341,7 +341,7 @@ const roles = [
     title: 'Research Lead',
     tier: 'Team Lead',
     commitment: '2-3 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: false,
     shortDesc: 'Drive research that informs our initiatives and shares our learnings with the world.',
     aboutRole: [
@@ -373,7 +373,7 @@ const roles = [
     title: 'Head of Socials',
     tier: 'Team Lead',
     commitment: '2-3 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: false,
     shortDesc: 'Own our social media presence day-to-day, growing our community and engagement.',
     aboutRole: [
@@ -405,7 +405,7 @@ const roles = [
     title: 'Events Lead',
     tier: 'Team Lead',
     commitment: '2-3 hrs/week',
-    term: '2025-2026 cycle',
+    term: '2026-2027 cycle',
     priority: false,
     shortDesc: 'Plan and execute UK-based events that build community and raise funds.',
     aboutRole: [
@@ -475,24 +475,22 @@ const Header = () => (
 const PageHeader = () => (
   <section className="bg-white py-16 border-b border-gray-100">
     <div className="max-w-5xl mx-auto px-6">
-      {/* Hero image placeholder */}
-      <div className="mb-10 rounded-2xl bg-gray-100 overflow-hidden" style={{ aspectRatio: '3/1' }}>
-        <div className="w-full h-full flex items-center justify-center text-gray-400">
-          <div className="text-center">
-            <svg className="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p className="text-sm">Hero image placeholder</p>
-          </div>
-        </div>
+      {/* Hero image */}
+      <div className="mb-10 rounded-2xl overflow-hidden" style={{ aspectRatio: '3/1' }}>
+        <img
+          src="/images/Hope.jpg"
+          alt="Aram volunteers working with communities in Sri Lanka"
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
       </div>
 
       <div className="text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          Join Our 2025-26 Team
+          Join Our 2026-27 Team
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          Volunteer with us to deliver meaningful change in Sri Lanka. Roles range from 2-5 hours per week and run from September 2025 to August 2026.
+          Volunteer with us to deliver meaningful change in Sri Lanka. Roles range from 2-5 hours per week and run from September 2026 to August 2027.
         </p>
       </div>
     </div>
@@ -679,48 +677,32 @@ const RoleCard = ({ role, isExpanded, onToggle, onApply, onViewDetails }) => {
     >
       {showContent && (
         <div className="px-5 pb-5 border-t border-gray-200 pt-4">
-          <div className="grid md:grid-cols-2 gap-5">
-            <div>
-              <h4 className="font-bold text-gray-900 mb-3 text-sm">Responsibilities</h4>
-              <ul className="space-y-2">
-                {role.responsibilities.map((r, i) => (
-                  <li key={i} className="flex items-start text-sm text-gray-600 leading-relaxed">
-                    <span className="w-1.5 h-1.5 bg-aram-purple rounded-full mr-2.5 mt-2 flex-shrink-0"></span>
-                    {r}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-gray-900 mb-3 text-sm">Your Impact</h4>
-              <p className="text-sm text-gray-600 mb-4 leading-relaxed">{role.impact}</p>
-              <h4 className="font-bold text-gray-900 mb-3 text-sm">Skills</h4>
-              <div className="flex flex-wrap gap-1.5">
-                {role.skills.map((s, i) => (
-                  <span key={i} className="text-xs bg-aram-purple-50 text-aram-purple px-2.5 py-1 rounded-md font-medium">{s}</span>
-                ))}
-              </div>
+          {/* Key Responsibilities - limited to 4 */}
+          <div className="mb-4">
+            <h4 className="font-bold text-gray-900 mb-3 text-sm">Key Responsibilities</h4>
+            <ul className="space-y-2">
+              {role.responsibilities.slice(0, 4).map((r, i) => (
+                <li key={i} className="flex items-start text-sm text-gray-600 leading-relaxed">
+                  <span className="w-1.5 h-1.5 bg-aram-purple rounded-full mr-2.5 mt-2 flex-shrink-0"></span>
+                  {r}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Skills - limited to 3 */}
+          <div className="mb-4">
+            <div className="flex flex-wrap gap-1.5">
+              {role.skills.slice(0, 3).map((s, i) => (
+                <span key={i} className="text-xs bg-aram-purple-50 text-aram-purple px-2.5 py-1 rounded-md font-medium">{s}</span>
+              ))}
+              {role.skills.length > 3 && (
+                <span className="text-xs text-gray-400 px-1 py-1">+{role.skills.length - 3} more</span>
+              )}
             </div>
           </div>
 
-          {/* What You'll Gain section */}
-          {role.whatYoullGain && role.whatYoullGain.length > 0 && (
-            <div className="mt-5 pt-4 border-t border-gray-200">
-              <h4 className="font-bold text-gray-900 mb-3 text-sm">What You'll Gain</h4>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {role.whatYoullGain.map((gain, i) => (
-                  <li key={i} className="flex items-start text-sm text-gray-600">
-                    <svg className="w-4 h-4 text-sector mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {gain}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <div className="mt-5 pt-4 border-t border-gray-200">
+          <div className="pt-4 border-t border-gray-200">
             <p className="text-sm text-gray-500 mb-4"><span className="font-semibold text-gray-700">Works with:</span> {worksWithText}</p>
             <div className="flex flex-col gap-2">
               <button
@@ -1066,7 +1048,7 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
                       </svg>
                       Term
                     </div>
-                    <p className="text-gray-900 font-medium">{role.term || '2025-2026 cycle'}</p>
+                    <p className="text-gray-900 font-medium">{role.term || '2026-2027 cycle'}</p>
                   </div>
 
                   <div>
@@ -1362,7 +1344,7 @@ export default function App() {
           {/* Priority Roles Section */}
           <AnimatedSection className="mb-12" delay={0.1}>
             <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-200">
-              <span className="w-2 h-2 bg-priority rounded-full"></span>
+              <span className="status-dot status-dot-urgent"></span>
               <h3 className="text-xl font-bold text-gray-900">Priority Roles</h3>
               <span className="text-sm text-gray-500 font-medium">— We're actively recruiting for these roles</span>
             </div>
@@ -1401,7 +1383,7 @@ export default function App() {
           {/* Other Open Roles */}
           <AnimatedSection delay={0.2}>
             <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-200">
-              <span className="w-2 h-2 bg-team rounded-full"></span>
+              <span className="status-dot status-dot-open"></span>
               <h3 className="text-xl font-bold text-gray-900">Other Open Roles</h3>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
