@@ -40,3 +40,47 @@ html {
 body {
   font-family: 'Poppins', sans-serif;
 }
+
+/* Pulsating status dots */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.status-dot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: inherit;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot-urgent {
+  background-color: #F97316;
+}
+
+.status-dot-open {
+  background-color: #22C55E;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .status-dot::before {
+    animation: none;
+  }
+}
