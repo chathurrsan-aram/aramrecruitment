@@ -1351,7 +1351,7 @@ export default function App() {
           {/* Priority Roles Section */}
           <AnimatedSection className="mb-12" delay={0.1}>
             <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-200">
-              <span className="status-dot status-dot-urgent"></span>
+              <span className="status-dot status-dot-urgent"><span className="circle"></span><span className="ringring"></span></span>
               <h3 className="text-xl font-bold text-gray-900">Priority Roles</h3>
               <span className="text-sm text-gray-500 font-medium">— We're actively recruiting for these roles</span>
             </div>
@@ -1432,7 +1432,7 @@ export default function App() {
           {/* Other Open Roles */}
           <AnimatedSection delay={0.2}>
             <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-200">
-              <span className="status-dot status-dot-open"></span>
+              <span className="status-dot status-dot-open"><span className="circle"></span><span className="ringring"></span></span>
               <h3 className="text-xl font-bold text-gray-900">Other Open Roles</h3>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">

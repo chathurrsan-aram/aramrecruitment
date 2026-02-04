@@ -43,54 +43,67 @@ body {
 
 /* Pulsating status dots */
 .status-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+}
+
+.status-dot-urgent .circle,
+.status-dot-open .circle {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  position: relative;
-  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.status-dot-urgent {
+.status-dot-urgent .circle {
   background-color: #F97316;
 }
 
-.status-dot-urgent::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background-color: #F97316;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.status-dot-open {
+.status-dot-open .circle {
   background-color: #22C55E;
 }
 
-.status-dot-open::before {
-  content: '';
-  position: absolute;
-  inset: 0;
+.status-dot-urgent .ringring,
+.status-dot-open .ringring {
   border-radius: 50%;
-  background-color: #22C55E;
-  animation: pulse 2s ease-in-out infinite;
+  height: 16px;
+  width: 16px;
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  animation: pulsate 1.5s ease-out infinite;
+  opacity: 0;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.8;
+.status-dot-urgent .ringring {
+  border: 3px solid #F97316;
+}
+
+.status-dot-open .ringring {
+  border: 3px solid #22C55E;
+}
+
+@keyframes pulsate {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
   }
   50% {
-    transform: scale(2.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
     opacity: 0;
   }
 }
 
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .status-dot-urgent::before,
-  .status-dot-open::before {
+  .status-dot-urgent .ringring,
+  .status-dot-open .ringring {
     animation: none;
   }
 }
