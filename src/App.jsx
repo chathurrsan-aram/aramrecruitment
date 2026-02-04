@@ -545,7 +545,7 @@ const CultureMemoModal = ({ onClose }) => {
             preload="metadata"
             poster="/images/Hope.jpg"
           >
-            <source src="/images/git_hero.mp4" type="video/mp4" />
+            <source src="/images/Git_hero.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
