@@ -537,15 +537,17 @@ const CultureMemoModal = ({ onClose }) => {
       </button>
 
       <div className="p-6 md:p-10">
-        {/* Video Placeholder */}
-        <div className="bg-gray-800 rounded-xl aspect-video flex items-center justify-center mb-8">
-          <div className="text-center text-gray-400">
-            <svg className="w-16 h-16 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p className="text-sm">Video coming soon</p>
-          </div>
+        {/* Video */}
+        <div className="rounded-xl overflow-hidden mb-8">
+          <video
+            className="w-full aspect-video bg-gray-900"
+            controls
+            preload="metadata"
+            poster="/images/Hope.jpg"
+          >
+            <source src="/images/Git_hero.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
 
         {/* Letter Content */}
