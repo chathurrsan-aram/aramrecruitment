@@ -520,7 +520,13 @@ const faqs = [
 const Header = () => (
   <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-40">
     <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
-      <img src="/images/whitetamil-1.png" alt="Aram" className="h-[73px]" />
+      <div className="flex items-center gap-3">
+        <img src="/images/whitetamil-1.png" alt="Aram" className="h-[73px]" />
+        {/* Sri Lanka Map Icon */}
+        <svg className="h-10 w-auto" viewBox="0 0 100 150" fill="#6D4A9E" aria-label="Sri Lanka">
+          <path d="M55 5 C65 8, 78 15, 82 25 C88 38, 90 52, 88 68 C86 82, 80 98, 72 112 C65 124, 55 135, 45 142 C38 147, 30 148, 25 145 C18 140, 12 130, 10 118 C8 105, 10 90, 15 75 C20 60, 28 45, 38 32 C45 22, 48 10, 55 5 Z" />
+        </svg>
+      </div>
       <a
         href="https://aram.org.uk"
         className="text-sm text-gray-600 hover:text-aram-purple transition-colors"
