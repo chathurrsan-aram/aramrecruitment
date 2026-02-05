@@ -557,51 +557,89 @@ const CultureMemoModal = ({ onClose }) => {
             <p className="text-gray-500 italic">A note to anyone considering joining</p>
           </div>
 
-          <p className="text-lg leading-relaxed">
-            Hi there,
+          <p className="leading-relaxed">
+            The crises scattered Tamils across the world. We grew up in the UK, Canada, Australia, Europe. We built careers, learned skills, and had opportunities that our brothers and sisters back home haven't had. But most of us stayed connected to a place we barely knew.
           </p>
 
           <p className="leading-relaxed">
-            If you're reading this, you're thinking about joining Aram. Before you apply, we want to be honest about who we are and what we're looking for.
+            For our parents' generation, giving back meant sending money. And that matters. But we wanted more than that. We wanted to reconnect to our roots through the work itself, not just fund it from a distance.
           </p>
 
-          <div className="border-l-4 border-aram-purple/30 pl-4 space-y-4">
-            <div>
-              <h3 className="font-bold text-aram-purple">We believe in presence over funding.</h3>
-              <p className="leading-relaxed">Anyone can send money. We show up. Every year, 40 volunteers travel to Sri Lanka — not as saviours, but as partners.</p>
-            </div>
-            <div>
-              <h3 className="font-bold text-aram-purple">We believe in sustainability over charity.</h3>
-              <p className="leading-relaxed">We don't do one-off handouts. Every initiative builds local capacity.</p>
-            </div>
-            <div>
-              <h3 className="font-bold text-aram-purple">We believe in ownership over tasks.</h3>
-              <p className="leading-relaxed">We want people who see a problem and figure out how to solve it. If you join as a Lead, that domain is <em>yours</em>.</p>
-            </div>
-            <div>
-              <h3 className="font-bold text-aram-purple">We're honest about what's hard.</h3>
-              <p className="leading-relaxed">We're volunteer-run. Things don't always get done. That's why we need people who drive work forward.</p>
-            </div>
+          <p className="leading-relaxed">
+            Aram exists to unite the next generation of diaspora to give back. Not someday when we're older and established. Now, with what we have.
+          </p>
+
+          <p className="leading-relaxed">
+            In our first year, we wanted to break a myth: that you need to be older, well-connected, know the areas inside out, and have money to create impact. We didn't have any of that. We just showed up.
+          </p>
+
+          <p className="leading-relaxed">
+            Three years in, we've taken over 100 young diaspora back home. We've built trust on the ground by being there, not just talking. No one else is doing this, and it can't be replicated easily, because trust takes time.
+          </p>
+
+          <p className="leading-relaxed">
+            Now we're building the foundations for something bigger. Long-term projects. Sustainable systems. Showing up consistently until the work speaks for itself.
+          </p>
+
+          <p className="leading-relaxed font-medium">
+            To go further, we need a stronger team.
+          </p>
+
+          {/* Purple left-border accent block */}
+          <div className="border-l-4 border-aram-purple pl-5 py-2 space-y-4 mt-8">
+            <h3 className="font-bold text-gray-900 text-lg">What this actually looks like</h3>
+
+            <p className="leading-relaxed">
+              We're building a platform for the next generation of diaspora to give back, using the skills we've picked up across the world. We're not there yet, but we're making progress.
+            </p>
+
+            <p className="leading-relaxed">
+              Everyone on the team has a full-time job or university alongside this. We're not asking you to drop everything, but we need people who can commit a few hours a week and follow through on what they take on.
+            </p>
+
+            <p className="leading-relaxed">
+              If you join as a Lead, you'll own your area. We don't have the capacity to manage people closely, so we need people who can figure things out and drive their own work forward.
+            </p>
+
+            <p className="leading-relaxed">
+              We're looking for people who want to be part of this for the long run. The work compounds over time, and so do the relationships.
+            </p>
+
+            <p className="leading-relaxed">
+              What you do get is a team that's genuinely good at what they do, with real momentum. You'll learn a lot here.
+            </p>
           </div>
 
+          {/* What we're looking for card */}
           <div className="bg-white/60 rounded-xl p-5 mt-6">
             <h3 className="font-bold text-gray-900 mb-3">What we're looking for:</h3>
             <ul className="space-y-2">
-              {['People who finish what they start', 'People who can rally others', 'People who want to build, not just add to their CV'].map((item, i) => (
+              {[
+                'People who lead by default, not by title',
+                'People who commit consistently, not huge hours, but reliably showing up week after week',
+                'People who are comfortable with ambiguity and building as they go',
+                'People who feel the pull to do something for the communities back home that gave us everything'
+              ].map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <span className="text-priority mt-1">✓</span>
+                  <span className="text-aram-purple mt-1 flex-shrink-0">✓</span>
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* What you'll get card */}
           <div className="bg-gradient-to-r from-aram-purple-100/50 to-priority-bg/50 rounded-xl p-5">
             <h3 className="font-bold text-gray-900 mb-3">What you'll get:</h3>
             <ul className="space-y-2">
-              {['Real project management experience', 'A network of talented Tamil professionals', 'Tangible change from your work', 'A voice that shapes our direction'].map((item, i) => (
+              {[
+                'Ownership of real work from day one',
+                'A community of driven young Tamils building something together that doesn\'t exist anywhere else',
+                'Impact you can see with your own eyes on the ground',
+                'Skills and experience from people who are strong operators in their own careers'
+              ].map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <span className="text-aram-purple mt-1">→</span>
+                  <span className="text-aram-purple mt-1 flex-shrink-0">→</span>
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -609,10 +647,10 @@ const CultureMemoModal = ({ onClose }) => {
           </div>
 
           <p className="leading-relaxed pt-4">
-            If this sounds like you, we'd love to hear from you.
+            If that's you, apply and find out what the future could look like if we built it together.
           </p>
 
-          <p className="leading-relaxed">
+          <p className="leading-relaxed font-medium">
             — The Aram Team
           </p>
         </div>
