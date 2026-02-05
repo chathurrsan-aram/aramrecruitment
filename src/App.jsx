@@ -63,7 +63,6 @@ const roles = [
     worksWith: ['Executive Lead', 'All Sector Leads', 'Head of Socials'],
     relationships: {
       reportsTo: ['Executive Lead'],
-      adjacent: ['Community Lead', 'Head of Socials'],
       manages: ['Head of Socials'],
     },
     whatYoullGain: [
@@ -101,7 +100,6 @@ const roles = [
     worksWith: ['Executive Lead', 'Sector Leads', 'Trip Director'],
     relationships: {
       reportsTo: ['Executive Lead'],
-      adjacent: ['Trip Director', 'Chief Initiative Lead'],
       manages: [],
     },
     whatYoullGain: [
@@ -139,7 +137,6 @@ const roles = [
     worksWith: ['Executive Lead', 'Sector Leads', 'Sri Lanka Partners'],
     relationships: {
       reportsTo: ['Executive Lead'],
-      adjacent: ['Media Director', 'Finance Director'],
       manages: ['Trip Organising Team', 'Trip Volunteers'],
     },
     whatYoullGain: [
@@ -177,7 +174,6 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Healthcare Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      adjacent: ['Other Sector Leads'],
       manages: ['Initiative Drivers', 'Project Volunteers'],
     },
     whatYoullGain: [
@@ -215,7 +211,6 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'SEN Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      adjacent: ['Other Sector Leads'],
       manages: ['Initiative Drivers', 'Project Volunteers'],
     },
     whatYoullGain: [
@@ -253,7 +248,6 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Education Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      adjacent: ['Other Sector Leads'],
       manages: ['Initiative Drivers', 'Project Volunteers'],
     },
     whatYoullGain: [
@@ -291,7 +285,6 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Tech Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      adjacent: ['Other Sector Leads'],
       manages: ['Initiative Drivers', 'Project Volunteers'],
     },
     whatYoullGain: [
@@ -329,7 +322,6 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Wellbeing Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      adjacent: ['Other Sector Leads'],
       manages: ['Initiative Drivers', 'Project Volunteers'],
     },
     whatYoullGain: [
@@ -367,7 +359,6 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Econ Dev Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      adjacent: ['Other Sector Leads'],
       manages: ['Initiative Drivers', 'Project Volunteers'],
     },
     whatYoullGain: [
@@ -405,7 +396,6 @@ const roles = [
     worksWith: ['Media Director', 'Sector Leads'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      adjacent: ['Sector Leads'],
       manages: [],
     },
     whatYoullGain: [
@@ -442,7 +432,6 @@ const roles = [
     worksWith: ['Media Director'],
     relationships: {
       reportsTo: ['Media Director', 'Community Lead'],
-      adjacent: ['Events Lead'],
       manages: [],
     },
     whatYoullGain: [
@@ -479,7 +468,6 @@ const roles = [
     worksWith: ['Community Lead', 'Finance Director'],
     relationships: {
       reportsTo: ['Community Lead'],
-      adjacent: ['Head of Socials'],
       manages: [],
     },
     whatYoullGain: [
@@ -745,11 +733,10 @@ const RoleRelationshipChart = ({ role }) => {
   if (!relationships) return null;
 
   const hasReportsTo = relationships.reportsTo && relationships.reportsTo.length > 0;
-  const hasAdjacent = relationships.adjacent && relationships.adjacent.length > 0;
   const hasManages = relationships.manages && relationships.manages.length > 0;
 
   // If no relationships at all, don't render
-  if (!hasReportsTo && !hasAdjacent && !hasManages) return null;
+  if (!hasReportsTo && !hasManages) return null;
 
   const RolePill = ({ name, isCurrentRole = false }) => (
     <div
@@ -763,12 +750,8 @@ const RoleRelationshipChart = ({ role }) => {
     </div>
   );
 
-  const ConnectorLine = ({ direction = 'vertical' }) => (
-    <div
-      className={`bg-gray-300 ${
-        direction === 'vertical' ? 'w-px h-4' : 'h-px w-4'
-      }`}
-    />
+  const ConnectorLine = () => (
+    <div className="w-px h-4 bg-gray-300" />
   );
 
   return (
@@ -785,50 +768,26 @@ const RoleRelationshipChart = ({ role }) => {
                 <RolePill key={i} name={name} />
               ))}
             </div>
-            <ConnectorLine direction="vertical" />
+            <ConnectorLine />
           </>
         )}
 
-        {/* Current Role + Adjacent */}
-        <div className="flex items-center gap-2 my-1">
-          {hasAdjacent && (
-            <>
-              <div className="flex items-center gap-1">
-                {relationships.adjacent.slice(0, 2).map((name, i) => (
-                  <RolePill key={i} name={name} />
-                ))}
-              </div>
-              <div className="w-3 border-t border-dashed border-gray-300" />
-            </>
-          )}
+        {/* Current Role */}
+        <div className="my-1">
           <RolePill name={role.title} isCurrentRole={true} />
-          {hasAdjacent && relationships.adjacent.length > 2 && (
-            <>
-              <div className="w-3 border-t border-dashed border-gray-300" />
-              <div className="text-[10px] text-gray-400">+{relationships.adjacent.length - 2}</div>
-            </>
-          )}
         </div>
 
         {/* Manages tier */}
         {hasManages && (
           <>
-            <ConnectorLine direction="vertical" />
+            <ConnectorLine />
             <div className="text-[10px] text-gray-400 uppercase tracking-wide mt-1 mb-1">Manages</div>
             <div className="flex flex-wrap justify-center gap-2">
-              {relationships.manages.slice(0, 3).map((name, i) => (
+              {relationships.manages.map((name, i) => (
                 <RolePill key={i} name={name} />
               ))}
-              {relationships.manages.length > 3 && (
-                <div className="px-2 py-1 text-[10px] text-gray-400">+{relationships.manages.length - 3}</div>
-              )}
             </div>
           </>
-        )}
-
-        {/* Adjacent label if no other tiers */}
-        {hasAdjacent && !hasReportsTo && !hasManages && (
-          <div className="text-[10px] text-gray-400 mt-2">Works alongside</div>
         )}
       </div>
     </div>
