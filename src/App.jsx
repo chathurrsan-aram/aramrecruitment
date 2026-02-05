@@ -1437,7 +1437,7 @@ export default function App() {
   const [submitted, setSubmitted] = useState(false);
   const [showCultureMemo, setShowCultureMemo] = useState(false);
   const [pageLoaded, setPageLoaded] = useState(false);
-  const [expandedSections, setExpandedSections] = useState({ coreLeadership: true, sectorLeads: true });
+  const [expandedSections, setExpandedSections] = useState({ coreLeadership: true, sectorLeads: true, otherRoles: true });
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -1656,17 +1656,46 @@ export default function App() {
             )}
           </AnimatedSection>
 
-          {/* Other Open Roles */}
+          {/* Other Open Roles - Collapsible */}
           <AnimatedSection delay={0.2}>
             <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-200">
               <span className="status-dot status-dot-open"><span className="circle"></span><span className="ringring"></span></span>
               <h3 className="text-xl font-bold text-gray-900">Other Open Roles</h3>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {otherRoles.map(role => (
-                <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
-              ))}
-            </div>
+            {otherRoles.length > 0 && (
+              <div>
+                <button
+                  onClick={() => toggleSection('otherRoles')}
+                  className="w-full text-sm font-bold text-team-text uppercase tracking-wide mb-4 flex items-center gap-2 hover:text-team transition-colors group"
+                >
+                  <span className="w-3 h-0.5 bg-team rounded-full"></span>
+                  Team Leads
+                  <span className="text-xs font-normal normal-case text-gray-400">({otherRoles.length} roles)</span>
+                  <svg
+                    className={`w-4 h-4 ml-auto transition-transform duration-200 ${expandedSections.otherRoles ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div
+                  style={{
+                    maxHeight: expandedSections.otherRoles ? '2000px' : '0',
+                    opacity: expandedSections.otherRoles ? 1 : 0,
+                    overflow: 'hidden',
+                    transition: 'max-height 0.3s ease, opacity 0.3s ease',
+                  }}
+                >
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {otherRoles.map(role => (
+                      <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </AnimatedSection>
 
           {/* General Application CTA */}
