@@ -553,8 +553,7 @@ const CultureMemoModal = ({ onClose }) => {
         {/* Letter Content */}
         <div className="space-y-6 text-gray-700">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">How We Work at Aram</h2>
-            <p className="text-gray-500 italic">A note to anyone considering joining</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">A note for anyone considering joining</h2>
           </div>
 
           <p className="leading-relaxed">
