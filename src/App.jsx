@@ -1326,21 +1326,23 @@ export default function App() {
           </AnimatedSection>
 
           {/* How We Work - Inline Callout Banner */}
-          <AnimatedSection className="mb-8" delay={0.05}>
+          <AnimatedSection className="mb-10" delay={0.05}>
             <button
               onClick={() => setShowCultureMemo(true)}
-              className="w-full bg-gray-50 border-l-4 border-aram-purple rounded-r-lg px-4 py-3 flex items-center justify-between hover:bg-aram-purple-50 transition-colors group"
+              className="w-full bg-gradient-to-r from-aram-purple-50 to-gray-50 border-l-4 border-aram-purple rounded-xl px-6 py-6 md:py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:from-aram-purple-100 hover:to-aram-purple-50 transition-all duration-200 group shadow-sm"
             >
-              <div className="flex items-center gap-3">
-                <span className="text-lg">📋</span>
-                <span className="text-sm text-gray-700">
-                  <span className="font-medium">New to Aram?</span>
-                  <span className="hidden sm:inline"> Learn about our culture and what we look for in volunteers</span>
-                </span>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                  <span className="text-2xl">📋</span>
+                </div>
+                <div className="text-left">
+                  <h3 className="font-bold text-gray-900 text-lg mb-1">New to Aram?</h3>
+                  <p className="text-sm text-gray-600">Learn about our culture, values, and what we look for in volunteers</p>
+                </div>
               </div>
-              <span className="flex items-center text-sm font-semibold text-aram-purple group-hover:text-aram-purple-dark transition-colors">
+              <span className="flex items-center text-sm font-semibold text-aram-purple group-hover:text-aram-purple-dark transition-colors whitespace-nowrap">
                 Read our note
-                <svg className="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </span>
