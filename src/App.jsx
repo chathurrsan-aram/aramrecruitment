@@ -61,6 +61,11 @@ const roles = [
     impact: 'Your work directly shapes how the world sees Sri Lanka and brings in the people who make our initiatives possible.',
     skills: ['Content creation (reels, posts, video)', 'Team leadership', 'Brand strategy', 'Storytelling'],
     worksWith: ['Executive Lead', 'All Sector Leads', 'Head of Socials'],
+    relationships: {
+      reportsTo: ['Executive Lead'],
+      adjacent: ['Community Lead', 'Head of Socials'],
+      manages: ['Head of Socials'],
+    },
     whatYoullGain: [
       'Hands-on experience in brand strategy and content creation',
       'Work alongside a passionate, supportive team',
@@ -94,6 +99,11 @@ const roles = [
     impact: 'You enable every initiative by ensuring we have the resources and accountability to deliver.',
     skills: ['Budgeting & accounting', 'Spreadsheets & financial tools', 'Process design', 'Clear communication'],
     worksWith: ['Executive Lead', 'Sector Leads', 'Trip Director'],
+    relationships: {
+      reportsTo: ['Executive Lead'],
+      adjacent: ['Trip Director', 'Chief Initiative Lead'],
+      manages: [],
+    },
     whatYoullGain: [
       'Hands-on experience in financial management and nonprofit accounting',
       'Work alongside a passionate, supportive team',
@@ -127,6 +137,11 @@ const roles = [
     impact: 'You create the experience that transforms volunteers and delivers real value to communities.',
     skills: ['Event/trip planning', 'Logistics coordination', 'Team management', 'Problem-solving under pressure'],
     worksWith: ['Executive Lead', 'Sector Leads', 'Sri Lanka Partners'],
+    relationships: {
+      reportsTo: ['Executive Lead'],
+      adjacent: ['Media Director', 'Finance Director'],
+      manages: ['Trip Organising Team', 'Trip Volunteers'],
+    },
     whatYoullGain: [
       'Hands-on experience in large-scale event and logistics management',
       'Work alongside a passionate, supportive team',
@@ -160,6 +175,11 @@ const roles = [
     impact: 'You directly improve health outcomes for communities across Sri Lanka.',
     skills: ['Healthcare knowledge (professional or personal)', 'Project management', 'Partner coordination'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Healthcare Volunteers'],
+    relationships: {
+      reportsTo: ['Chief Initiative Lead'],
+      adjacent: ['Other Sector Leads'],
+      manages: ['Initiative Drivers', 'Project Volunteers'],
+    },
     whatYoullGain: [
       'Hands-on experience in healthcare programme design and delivery',
       'Work alongside a passionate, supportive team',
@@ -193,6 +213,11 @@ const roles = [
     impact: 'You help ensure children with disabilities and their families get the support they deserve.',
     skills: ['SEN knowledge or passion', 'Empathy and sensitivity', 'Project management'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'SEN Volunteers'],
+    relationships: {
+      reportsTo: ['Chief Initiative Lead'],
+      adjacent: ['Other Sector Leads'],
+      manages: ['Initiative Drivers', 'Project Volunteers'],
+    },
     whatYoullGain: [
       'Hands-on experience in special educational needs support and advocacy',
       'Work alongside a passionate, supportive team',
@@ -226,6 +251,11 @@ const roles = [
     impact: 'You open doors for young people who otherwise might not see a path forward.',
     skills: ['Education sector knowledge', 'Workshop design', 'Mentoring experience'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Education Volunteers'],
+    relationships: {
+      reportsTo: ['Chief Initiative Lead'],
+      adjacent: ['Other Sector Leads'],
+      manages: ['Initiative Drivers', 'Project Volunteers'],
+    },
     whatYoullGain: [
       'Hands-on experience in education programme design and mentoring',
       'Work alongside a passionate, supportive team',
@@ -259,6 +289,11 @@ const roles = [
     impact: 'You connect communities to the digital world and the opportunities it creates.',
     skills: ['Tech industry knowledge', 'Digital skills training', 'Innovation mindset'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Tech Volunteers'],
+    relationships: {
+      reportsTo: ['Chief Initiative Lead'],
+      adjacent: ['Other Sector Leads'],
+      manages: ['Initiative Drivers', 'Project Volunteers'],
+    },
     whatYoullGain: [
       'Hands-on experience in tech-for-good and digital skills training',
       'Work alongside a passionate, supportive team',
@@ -292,6 +327,11 @@ const roles = [
     impact: 'You help people build the inner resources they need to thrive.',
     skills: ['Mental health awareness', 'Workshop facilitation', 'Safeguarding knowledge'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Wellbeing Volunteers'],
+    relationships: {
+      reportsTo: ['Chief Initiative Lead'],
+      adjacent: ['Other Sector Leads'],
+      manages: ['Initiative Drivers', 'Project Volunteers'],
+    },
     whatYoullGain: [
       'Hands-on experience in mental health awareness and wellbeing programmes',
       'Work alongside a passionate, supportive team',
@@ -325,6 +365,11 @@ const roles = [
     impact: 'You help families build sustainable incomes and break cycles of poverty.',
     skills: ['Business/economics knowledge', 'Entrepreneurship experience', 'Community development'],
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Econ Dev Volunteers'],
+    relationships: {
+      reportsTo: ['Chief Initiative Lead'],
+      adjacent: ['Other Sector Leads'],
+      manages: ['Initiative Drivers', 'Project Volunteers'],
+    },
     whatYoullGain: [
       'Hands-on experience in economic development and social enterprise',
       'Work alongside a passionate, supportive team',
@@ -358,6 +403,11 @@ const roles = [
     impact: 'You ensure our work is grounded in reality and our learnings reach others.',
     skills: ['Research & analysis', 'Academic writing', 'Data interpretation'],
     worksWith: ['Media Director', 'Sector Leads'],
+    relationships: {
+      reportsTo: ['Chief Initiative Lead'],
+      adjacent: ['Sector Leads'],
+      manages: [],
+    },
     whatYoullGain: [
       'Hands-on experience in research and data analysis',
       'Work alongside a passionate, supportive team',
@@ -390,6 +440,11 @@ const roles = [
     impact: 'You build the community that powers everything we do.',
     skills: ['Social media management', 'Content creation', 'Community building'],
     worksWith: ['Media Director'],
+    relationships: {
+      reportsTo: ['Media Director', 'Community Lead'],
+      adjacent: ['Events Lead'],
+      manages: [],
+    },
     whatYoullGain: [
       'Hands-on experience in social media management and community building',
       'Work alongside a passionate, supportive team',
@@ -422,6 +477,11 @@ const roles = [
     impact: 'You bring people together and generate resources for our mission.',
     skills: ['Event planning', 'Logistics', 'Vendor management'],
     worksWith: ['Community Lead', 'Finance Director'],
+    relationships: {
+      reportsTo: ['Community Lead'],
+      adjacent: ['Head of Socials'],
+      manages: [],
+    },
     whatYoullGain: [
       'Hands-on experience in event planning and logistics management',
       'Work alongside a passionate, supportive team',
@@ -460,7 +520,13 @@ const faqs = [
 const Header = () => (
   <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-40">
     <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
-      <img src="/images/whitetamil-1.png" alt="Aram" className="h-[73px]" />
+      <div className="flex items-center gap-3">
+        <img src="/images/whitetamil-1.png" alt="Aram" className="h-[73px]" />
+        {/* Sri Lanka Map Icon */}
+        <svg className="h-10 w-auto" viewBox="0 0 100 150" fill="#6D4A9E" aria-label="Sri Lanka">
+          <path d="M55 5 C65 8, 78 15, 82 25 C88 38, 90 52, 88 68 C86 82, 80 98, 72 112 C65 124, 55 135, 45 142 C38 147, 30 148, 25 145 C18 140, 12 130, 10 118 C8 105, 10 90, 15 75 C20 60, 28 45, 38 32 C45 22, 48 10, 55 5 Z" />
+        </svg>
+      </div>
       <a
         href="https://aram.org.uk"
         className="text-sm text-gray-600 hover:text-aram-purple transition-colors"
@@ -671,6 +737,102 @@ const getTierStyles = (tier) => {
     default:
       return 'bg-gray-100 text-gray-700';
   }
+};
+
+// Role Relationship Chart Component
+const RoleRelationshipChart = ({ role }) => {
+  const relationships = role.relationships;
+  if (!relationships) return null;
+
+  const hasReportsTo = relationships.reportsTo && relationships.reportsTo.length > 0;
+  const hasAdjacent = relationships.adjacent && relationships.adjacent.length > 0;
+  const hasManages = relationships.manages && relationships.manages.length > 0;
+
+  // If no relationships at all, don't render
+  if (!hasReportsTo && !hasAdjacent && !hasManages) return null;
+
+  const RolePill = ({ name, isCurrentRole = false }) => (
+    <div
+      className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap ${
+        isCurrentRole
+          ? 'bg-aram-purple text-white'
+          : 'bg-aram-purple-50 text-aram-purple border border-aram-purple/20'
+      }`}
+    >
+      {name}
+    </div>
+  );
+
+  const ConnectorLine = ({ direction = 'vertical' }) => (
+    <div
+      className={`bg-gray-300 ${
+        direction === 'vertical' ? 'w-px h-4' : 'h-px w-4'
+      }`}
+    />
+  );
+
+  return (
+    <div className="mt-6 pt-6 border-t border-gray-200">
+      <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Where you sit</h4>
+
+      <div className="flex flex-col items-center gap-1 max-w-[350px]">
+        {/* Reports To tier */}
+        {hasReportsTo && (
+          <>
+            <div className="text-[10px] text-gray-400 uppercase tracking-wide mb-1">Reports to</div>
+            <div className="flex flex-wrap justify-center gap-2 mb-1">
+              {relationships.reportsTo.map((name, i) => (
+                <RolePill key={i} name={name} />
+              ))}
+            </div>
+            <ConnectorLine direction="vertical" />
+          </>
+        )}
+
+        {/* Current Role + Adjacent */}
+        <div className="flex items-center gap-2 my-1">
+          {hasAdjacent && (
+            <>
+              <div className="flex items-center gap-1">
+                {relationships.adjacent.slice(0, 2).map((name, i) => (
+                  <RolePill key={i} name={name} />
+                ))}
+              </div>
+              <div className="w-3 border-t border-dashed border-gray-300" />
+            </>
+          )}
+          <RolePill name={role.title} isCurrentRole={true} />
+          {hasAdjacent && relationships.adjacent.length > 2 && (
+            <>
+              <div className="w-3 border-t border-dashed border-gray-300" />
+              <div className="text-[10px] text-gray-400">+{relationships.adjacent.length - 2}</div>
+            </>
+          )}
+        </div>
+
+        {/* Manages tier */}
+        {hasManages && (
+          <>
+            <ConnectorLine direction="vertical" />
+            <div className="text-[10px] text-gray-400 uppercase tracking-wide mt-1 mb-1">Manages</div>
+            <div className="flex flex-wrap justify-center gap-2">
+              {relationships.manages.slice(0, 3).map((name, i) => (
+                <RolePill key={i} name={name} />
+              ))}
+              {relationships.manages.length > 3 && (
+                <div className="px-2 py-1 text-[10px] text-gray-400">+{relationships.manages.length - 3}</div>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Adjacent label if no other tiers */}
+        {hasAdjacent && !hasReportsTo && !hasManages && (
+          <div className="text-[10px] text-gray-400 mt-2">Works alongside</div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 const RoleCard = ({ role, isExpanded, onToggle, onApply, onViewDetails }) => {
@@ -1104,6 +1266,9 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
                       ))}
                     </div>
                   </div>
+
+                  {/* Role Relationship Chart */}
+                  <RoleRelationshipChart role={role} />
                 </div>
               </div>
 
