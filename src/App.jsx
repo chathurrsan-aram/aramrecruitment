@@ -174,7 +174,7 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Healthcare Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      manages: ['Initiative Drivers', 'Project Volunteers'],
+      manages: ['Healthcare Initiative Drivers', 'Healthcare Volunteers'],
     },
     whatYoullGain: [
       'Hands-on experience in healthcare programme design and delivery',
@@ -211,7 +211,7 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'SEN Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      manages: ['Initiative Drivers', 'Project Volunteers'],
+      manages: ['SEN Initiative Drivers', 'SEN Volunteers'],
     },
     whatYoullGain: [
       'Hands-on experience in special educational needs support and advocacy',
@@ -248,7 +248,7 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Education Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      manages: ['Initiative Drivers', 'Project Volunteers'],
+      manages: ['Education Initiative Drivers', 'Education Volunteers'],
     },
     whatYoullGain: [
       'Hands-on experience in education programme design and mentoring',
@@ -285,7 +285,7 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Tech Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      manages: ['Initiative Drivers', 'Project Volunteers'],
+      manages: ['Technology Initiative Drivers', 'Technology Volunteers'],
     },
     whatYoullGain: [
       'Hands-on experience in tech-for-good and digital skills training',
@@ -322,7 +322,7 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Wellbeing Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      manages: ['Initiative Drivers', 'Project Volunteers'],
+      manages: ['Wellbeing Initiative Drivers', 'Wellbeing Volunteers'],
     },
     whatYoullGain: [
       'Hands-on experience in mental health awareness and wellbeing programmes',
@@ -359,7 +359,7 @@ const roles = [
     worksWith: ['Chief Initiative Lead', 'Trip Director', 'Econ Dev Volunteers'],
     relationships: {
       reportsTo: ['Chief Initiative Lead'],
-      manages: ['Initiative Drivers', 'Project Volunteers'],
+      manages: ['Econ Dev Initiative Drivers', 'Econ Dev Volunteers'],
     },
     whatYoullGain: [
       'Hands-on experience in economic development and social enterprise',
@@ -510,10 +510,7 @@ const Header = () => (
     <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
       <div className="flex items-center gap-3">
         <img src="/images/whitetamil-1.png" alt="Aram" className="h-[73px]" />
-        {/* Sri Lanka Map Icon */}
-        <svg className="h-10 w-auto" viewBox="0 0 100 150" fill="#6D4A9E" aria-label="Sri Lanka">
-          <path d="M55 5 C65 8, 78 15, 82 25 C88 38, 90 52, 88 68 C86 82, 80 98, 72 112 C65 124, 55 135, 45 142 C38 147, 30 148, 25 145 C18 140, 12 130, 10 118 C8 105, 10 90, 15 75 C20 60, 28 45, 38 32 C45 22, 48 10, 55 5 Z" />
-        </svg>
+        <img src="/images/SL.png" alt="Sri Lanka" className="h-8 w-auto" />
       </div>
       <a
         href="https://aram.org.uk"
