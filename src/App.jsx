@@ -742,7 +742,6 @@ const RoleCard = ({ role, isExpanded, onToggle, onApply, onViewDetails }) => {
           </div>
 
           <div className="pt-4 border-t border-gray-200">
-            <p className="text-sm text-gray-500 mb-4"><span className="font-semibold text-gray-700">Works with:</span> {worksWithText}</p>
             <div className="flex flex-col gap-2">
               <button
                 onClick={(e) => { e.stopPropagation(); onApply(role); }}
