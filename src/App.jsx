@@ -884,6 +884,8 @@ const RoleCard = ({ role, isExpanded, onToggle, onApply, onViewDetails }) => {
 
 const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -917,6 +919,52 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
   const allRoleQuestions = selectedRoles.flatMap(r =>
     (r.questions || []).map(q => ({ ...q, roleTitle: r.title, roleId: r.id }))
   );
+
+  const handleFormSubmit = async () => {
+    // Basic validation
+    if (!formData.name || !formData.email || formData.roles.length === 0 || !formData.about || !formData.experience || !formData.hours || !formData.previousTrip) {
+      setSubmitError('Please fill in all required fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+
+    // Prepare submission data with role titles instead of IDs
+    const submissionData = {
+      ...formData,
+      roles: selectedRoles.map(r => r.title),
+    };
+
+    // If no Google Script URL is configured, fall back to the original behavior
+    if (!GOOGLE_SCRIPT_URL) {
+      console.log('Form submitted (no Google Sheets integration):', submissionData);
+      onSubmit(formData);
+      return;
+    }
+
+    try {
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Google Apps Script requires no-cors mode
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      });
+
+      // With no-cors, we can't read the response, so we assume success
+      // The Google Apps Script will handle the actual storage
+      console.log('Form submitted to Google Sheets:', submissionData);
+      onSubmit(formData);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitError('Failed to submit application. Please try again or email hello@aram.org.uk');
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div
@@ -1013,7 +1061,28 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
               ))}
             </div>
           )}
-          <button onClick={() => onSubmit(formData)} className="w-full bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-3.5 px-6 rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[48px]">Submit Application</button>
+          {submitError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              {submitError}
+            </div>
+          )}
+          <button
+            onClick={handleFormSubmit}
+            disabled={isSubmitting}
+            className="w-full bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-3.5 px-6 rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none flex items-center justify-center gap-2"
+          >
+            {isSubmitting ? (
+              <>
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Submitting...
+              </>
+            ) : (
+              'Submit Application'
+            )}
+          </button>
         </div>
       </div>
     </div>
