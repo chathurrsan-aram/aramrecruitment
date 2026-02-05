@@ -519,7 +519,7 @@ const CultureMemoModal = ({ onClose }) => {
     onClick={handleClose}
   >
     <div
-      className="bg-amber-50 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative"
+      className="bg-amber-50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative"
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(10px)',
