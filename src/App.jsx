@@ -1514,45 +1514,9 @@ export default function App() {
               <span className="text-sm text-gray-500 font-medium">— We're actively recruiting for these roles</span>
             </div>
 
-            {/* Core Leadership - Collapsible */}
-            {coreLeadershipRoles.length > 0 && (
-              <div className="mb-8">
-                <button
-                  onClick={() => toggleSection('coreLeadership')}
-                  className="w-full text-sm font-bold text-leadership-text uppercase tracking-wide mb-4 flex items-center gap-2 hover:text-leadership transition-colors group"
-                >
-                  <span className="w-3 h-0.5 bg-leadership rounded-full"></span>
-                  Core Leadership
-                  <span className="text-xs font-normal normal-case text-gray-400">({coreLeadershipRoles.length} roles)</span>
-                  <svg
-                    className={`w-4 h-4 ml-auto transition-transform duration-200 ${expandedSections.coreLeadership ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                <div
-                  style={{
-                    maxHeight: expandedSections.coreLeadership ? '2000px' : '0',
-                    opacity: expandedSections.coreLeadership ? 1 : 0,
-                    overflow: 'hidden',
-                    transition: 'max-height 0.3s ease, opacity 0.3s ease',
-                  }}
-                >
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {coreLeadershipRoles.map(role => (
-                      <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Sector Leads - Collapsible */}
             {sectorLeadRoles.length > 0 && (
-              <div>
+              <div className="mb-8">
                 <button
                   onClick={() => toggleSection('sectorLeads')}
                   className="w-full text-sm font-bold text-sector-text uppercase tracking-wide mb-4 flex items-center gap-2 hover:text-sector transition-colors group"
@@ -1579,6 +1543,42 @@ export default function App() {
                 >
                   <div className="grid md:grid-cols-2 gap-4">
                     {sectorLeadRoles.map(role => (
+                      <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Core Leadership - Collapsible */}
+            {coreLeadershipRoles.length > 0 && (
+              <div>
+                <button
+                  onClick={() => toggleSection('coreLeadership')}
+                  className="w-full text-sm font-bold text-leadership-text uppercase tracking-wide mb-4 flex items-center gap-2 hover:text-leadership transition-colors group"
+                >
+                  <span className="w-3 h-0.5 bg-leadership rounded-full"></span>
+                  Core Leadership
+                  <span className="text-xs font-normal normal-case text-gray-400">({coreLeadershipRoles.length} roles)</span>
+                  <svg
+                    className={`w-4 h-4 ml-auto transition-transform duration-200 ${expandedSections.coreLeadership ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div
+                  style={{
+                    maxHeight: expandedSections.coreLeadership ? '2000px' : '0',
+                    opacity: expandedSections.coreLeadership ? 1 : 0,
+                    overflow: 'hidden',
+                    transition: 'max-height 0.3s ease, opacity 0.3s ease',
+                  }}
+                >
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {coreLeadershipRoles.map(role => (
                       <RoleCard key={role.id} role={role} isExpanded={expandedRole === role.id} onToggle={() => setExpandedRole(expandedRole === role.id ? null : role.id)} onApply={handleApply} onViewDetails={handleViewDetails} />
                     ))}
                   </div>
