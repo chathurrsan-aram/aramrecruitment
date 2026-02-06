@@ -1777,6 +1777,7 @@ export default function App() {
           <p className="text-aram-purple text-lg mb-6 leading-relaxed">Join 160+ volunteers building a thriving Sri Lanka.</p>
           <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-4 px-10 rounded-full text-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[52px]">Apply Now</button>
           <p className="text-aram-purple/80 mt-4 text-sm">Questions? <a href="mailto:hello@aram.org.uk" className="underline hover:text-aram-purple-dark transition-colors duration-200">hello@aram.org.uk</a></p>
+          <p className="mt-6"><a href="/aram-roles-2026-2027.pdf" download className="text-aram-purple/50 hover:text-aram-purple text-xs underline transition-colors duration-200">Download all roles as PDF</a></p>
         </AnimatedSection>
       </section>
 
