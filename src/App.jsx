@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
+import MentorshipPage from './MentorshipPage.jsx';
 
 // Custom hook for scroll-triggered animations
 const useInView = (options = {}) => {
@@ -509,15 +511,28 @@ const Header = () => (
   <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-40">
     <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
       <div className="flex items-center gap-3">
-        <img src="/images/whitetamil-1.png" alt="Aram" className="h-[73px]" />
+        <Link to="/">
+          <img src="/images/whitetamil-1.png" alt="Aram" className="h-[73px]" />
+        </Link>
         <img src="/images/SL.png" alt="Sri Lanka" className="h-8 w-auto" />
       </div>
-      <a
-        href="https://aram.org.uk"
-        className="text-sm text-gray-600 hover:text-aram-purple transition-colors"
-      >
-        ← aram.org.uk
-      </a>
+      <div className="flex items-center gap-4">
+        <Link
+          to="/mentorship"
+          className="bg-aram-purple hover:bg-aram-purple-dark text-white font-semibold py-2 px-5 rounded-full text-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[40px] flex items-center gap-2"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          Mentorship
+        </Link>
+        <a
+          href="https://aram.org.uk"
+          className="text-sm text-gray-600 hover:text-aram-purple transition-colors"
+        >
+          ← aram.org.uk
+        </a>
+      </div>
     </div>
   </header>
 );
@@ -1428,7 +1443,7 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
   );
 };
 
-export default function App() {
+function RecruitmentPage() {
   const [expandedRole, setExpandedRole] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedRoleForForm, setSelectedRoleForForm] = useState(null);
@@ -1484,7 +1499,6 @@ export default function App() {
         transition: 'opacity 0.5s ease',
       }}
     >
-      <Header />
 
       {/* Hero */}
       <section className="relative min-h-[77vh] flex items-center justify-center overflow-hidden pt-32">
@@ -1785,5 +1799,17 @@ export default function App() {
       {showCultureMemo && <CultureMemoModal onClose={() => setShowCultureMemo(false)} />}
       {selectedRoleForPanel && <JobDetailsPanel role={selectedRoleForPanel} onClose={() => setSelectedRoleForPanel(null)} onApply={handleApply} />}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<RecruitmentPage />} />
+        <Route path="/mentorship" element={<MentorshipPage />} />
+      </Routes>
+    </>
   );
 }
