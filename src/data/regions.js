@@ -1,0 +1,55 @@
+export const regions = [
+  {
+    id: "hill-country",
+    name: "Hill Country",
+    description: "The upcountry tea estate regions — home to plantation communities facing healthcare, education, and economic challenges amidst Sri Lanka's central highlands.",
+    center: [80.68, 6.83],
+    zoom: 8,
+    gradient: "from-emerald-800 to-emerald-950",
+    provinces: ["Central", "Uva"],
+    subRegions: [
+      { id: "maskeliya", name: "Maskeliya", lat: 6.83, lng: 80.52 },
+      { id: "ohiya", name: "Ohiya", lat: 6.82, lng: 80.84 },
+    ],
+  },
+  {
+    id: "eastern",
+    name: "Eastern Province",
+    description: "Coastal and inland communities across the east, including post-conflict areas rebuilding through education, healthcare, and youth development.",
+    center: [81.40, 8.25],
+    zoom: 7,
+    gradient: "from-sky-800 to-sky-950",
+    provinces: ["Eastern"],
+    subRegions: [
+      { id: "batticaloa", name: "Batticaloa", lat: 7.73, lng: 81.70 },
+      { id: "trincomalee", name: "Trincomalee", lat: 8.57, lng: 81.23 },
+      { id: "muthur", name: "Muthur", lat: 8.44, lng: 81.27 },
+    ],
+  },
+  {
+    id: "northern",
+    name: "Northern Province",
+    description: "The northern tip and inland regions — communities with immense potential, working to overcome decades of conflict through education and enterprise.",
+    center: [80.30, 9.20],
+    zoom: 7,
+    gradient: "from-amber-800 to-amber-950",
+    provinces: ["Northern"],
+    subRegions: [
+      { id: "jaffna", name: "Jaffna", lat: 9.66, lng: 80.02 },
+      { id: "vavuniya", name: "Vavuniya", lat: 8.75, lng: 80.50 },
+      { id: "mullaitivu", name: "Mullaitivu", lat: 9.27, lng: 80.57 },
+    ],
+  },
+  {
+    id: "western",
+    name: "Western Province",
+    description: "Sri Lanka's innovation hub — where diaspora connections meet local entrepreneurship and tech-driven social enterprise.",
+    center: [79.90, 6.93],
+    zoom: 9,
+    gradient: "from-purple-800 to-purple-950",
+    provinces: ["Western"],
+    subRegions: [
+      { id: "colombo", name: "Colombo", lat: 6.93, lng: 79.86 },
+    ],
+  },
+];

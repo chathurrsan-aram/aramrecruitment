@@ -1,215 +1,292 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import AnimatedSection from '@/components/AnimatedSection';
-import { videos } from '@/lib/cloudinary';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Reveal, StaggerContainer, StaggerItem, DrawPath } from '@/components/ui/motion';
+import { timelineEvents } from '@/data/timeline';
+import { teamMembers } from '@/data/team';
+import { ChevronDown, ChevronUp, Users } from 'lucide-react';
 
-export default function AboutPage() {
-  const [pageLoaded, setPageLoaded] = useState(false);
+/* ─── Hero ─────────────────────────────────────────── */
+function AboutHero() {
+  return (
+    <section className="pt-32 pb-20 md:pt-40 md:pb-28 bg-aram-warm-50">
+      <div className="max-w-3xl mx-auto px-6 text-center">
+        <Reveal>
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-aram-green-900 mb-6">
+            About <span className="text-aram-gold-500">Aram</span>
+          </h1>
+        </Reveal>
+        <Reveal delay={0.15}>
+          <p className="text-lg text-aram-warm-500 leading-relaxed">
+            A youth-led movement connecting the Sri Lankan Tamil diaspora with communities on the ground — because presence, not just funding, creates lasting change.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    requestAnimationFrame(() => setPageLoaded(true));
-  }, []);
+/* ─── Who We Are ───────────────────────────────────── */
+function WhoWeAre() {
+  return (
+    <section className="py-24 md:py-32 bg-white">
+      <div className="max-w-3xl mx-auto px-6">
+        <Reveal>
+          <p className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-4">
+            Who We Are
+          </p>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <p className="text-lg text-aram-warm-500 leading-relaxed mb-6">
+            The Aram Initiative is a youth-led movement connecting the Sri Lankan Tamil diaspora with communities on the ground. Founded by young UK professionals, we believe that presence — not just funding — creates lasting change.
+          </p>
+        </Reveal>
+        <Reveal delay={0.2}>
+          <p className="text-lg text-aram-warm-500 leading-relaxed">
+            Through annual volunteering trips, grassroots research, and long-term development initiatives, we bridge the gap between diaspora expertise and local needs across healthcare, education, technology, wellbeing, special educational needs, and economic development.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Our Model (Interactive) ──────────────────────── */
+function OurModel() {
+  const [expanded, setExpanded] = useState(null);
+
+  const pillars = [
+    {
+      id: 'discovery',
+      icon: '🔍',
+      title: 'Discovery',
+      color: '#40916C',
+      summary: 'Annual trips to observe, connect, and understand community needs first-hand.',
+      details: [
+        'Annual volunteering trips with 20–40 young professionals and students',
+        'Community engagement across healthcare, education, SEN, technology, wellbeing, and economic development',
+        'Structured observation frameworks to capture field insights',
+        'Building trust-based relationships with local partners',
+        'Identifying systemic challenges that go beyond surface-level problems',
+      ],
+    },
+    {
+      id: 'research',
+      icon: '🔬',
+      title: 'Research & Insights',
+      color: '#D4A843',
+      summary: 'Translating field observations into data-driven, publishable insights.',
+      details: [
+        'Converting trip observations into structured research pieces',
+        'Publishing thought leadership on Substack and independent platforms',
+        'Building a living knowledge base organised by sector, region, and partner',
+        'Collaborating with academics and sector experts for rigorous analysis',
+        'Creating actionable recommendations for partners and stakeholders',
+      ],
+    },
+    {
+      id: 'initiatives',
+      icon: '🚀',
+      title: 'Long-term Initiatives',
+      color: '#C85C5C',
+      summary: 'Sustainable projects tackling systemic issues identified through our research.',
+      details: [
+        'Microcredit revolving fund for women\'s self-help groups in eastern Sri Lanka',
+        'Virtual mentorship programme connecting UK professionals with Sri Lankan students',
+        'Pen pal project bridging UK and Sri Lankan young people',
+        'Partner capacity building — training, resources, and ongoing support',
+        'Year-round engagement beyond the annual trip window',
+      ],
+    },
+  ];
 
   return (
-    <div
-      className="min-h-screen bg-white"
-      style={{ opacity: pageLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}
-    >
-      {/* Hero */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-aram-purple via-aram-purple-dark to-[#3D2266]" />
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-priority rounded-full blur-3xl" />
-        </div>
-        <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-          <h1
-            className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight"
-            style={{
-              opacity: pageLoaded ? 1 : 0,
-              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s',
-            }}
-          >
-            About Aram
-          </h1>
-          <p
-            className="text-lg text-white/80 max-w-xl mx-auto leading-relaxed"
-            style={{
-              opacity: pageLoaded ? 1 : 0,
-              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
-            }}
-          >
-            A movement of young diaspora Tamils giving back to Sri Lanka — through presence, skills, and sustained commitment.
+    <section className="py-24 md:py-32 bg-aram-warm-50">
+      <div className="max-w-5xl mx-auto px-6">
+        <Reveal className="text-center mb-16">
+          <p className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
+            Our Approach
           </p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900">
+            Three Pillars, One Mission
+          </h2>
+        </Reveal>
+
+        {/* SVG connecting arrows */}
+        <div className="hidden md:block mb-12">
+          <svg viewBox="0 0 800 40" className="w-full max-w-3xl mx-auto" style={{ overflow: 'visible' }}>
+            <DrawPath d="M 100 20 L 380 20" color="#E8E4DE" strokeWidth={2} duration={1} />
+            <DrawPath d="M 420 20 L 700 20" color="#E8E4DE" strokeWidth={2} duration={1} />
+            <DrawPath d="M 375 15 L 390 20 L 375 25" color="#E8E4DE" strokeWidth={2} duration={0.5} />
+            <DrawPath d="M 695 15 L 710 20 L 695 25" color="#E8E4DE" strokeWidth={2} duration={0.5} />
+          </svg>
         </div>
-      </section>
 
-      {/* Our Story */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <AnimatedSection>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
-            <div className="space-y-5 text-gray-600 leading-relaxed">
-              <p>
-                The crises scattered Tamils across the world. We grew up in the UK, Canada, Australia, Europe. We built careers, learned skills, and had opportunities that our brothers and sisters back home haven't had. But most of us stayed connected to a place we barely knew.
-              </p>
-              <p>
-                For our parents' generation, giving back meant sending money. And that matters. But we wanted more than that. We wanted to reconnect to our roots through the work itself — not just fund it from a distance.
-              </p>
-              <p>
-                Aram exists to unite the next generation of diaspora to give back. Not someday when we're older and established. Now, with what we have.
-              </p>
-              <p>
-                In our first year, we wanted to break a myth: that you need to be older, well-connected, know the areas inside out, and have money to create impact. We didn't have any of that. We just showed up.
-              </p>
-              <p>
-                Three years in, we've taken over 100 young diaspora back home. We've built trust on the ground by being there, not just talking. No one else is doing this, and it can't be replicated easily, because trust takes time.
-              </p>
-              <p>
-                Now we're building the foundations for something bigger. Long-term projects. Sustainable systems. Showing up consistently until the work speaks for itself.
-              </p>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* Video */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <AnimatedSection>
-            <div className="rounded-2xl overflow-hidden shadow-lg">
-              <video
-                className="w-full aspect-video bg-gray-900"
-                controls
-                preload="metadata"
-                poster="/images/Hope.jpg"
-              >
-                <source src={videos.heroMain} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* What We Believe */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <AnimatedSection className="mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">What We Believe</h2>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                title: 'Presence over cheques',
-                desc: 'Real impact comes from showing up — building relationships, understanding needs, and working alongside communities.',
-              },
-              {
-                title: 'Young people can lead',
-                desc: "You don't need to be older, richer, or more connected. You need to care enough to commit and follow through.",
-              },
-              {
-                title: 'Trust takes time',
-                desc: "We've spent three years building trust on the ground. That's our greatest asset and it compounds with every trip.",
-              },
-              {
-                title: 'Sustainable over spectacular',
-                desc: "We'd rather build systems that last than create one-off moments. The goal is lasting change, not photo ops.",
-              },
-            ].map((belief, i) => (
-              <AnimatedSection key={i} delay={i * 0.1}>
-                <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 h-full">
-                  <h3 className="font-bold text-gray-900 mb-2">{belief.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{belief.desc}</p>
+        <div className="grid md:grid-cols-3 gap-6">
+          {pillars.map((p) => (
+            <motion.div
+              key={p.id}
+              layout
+              className="rounded-xl border border-aram-warm-200 bg-white p-6 cursor-pointer transition-colors hover:border-aram-gold-500"
+              onClick={() => setExpanded(expanded === p.id ? null : p.id)}
+            >
+              <motion.div layout="position">
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-xl"
+                  style={{ backgroundColor: `${p.color}15` }}
+                >
+                  {p.icon}
                 </div>
-              </AnimatedSection>
+                <h3 className="font-display text-lg font-bold text-aram-green-900 mb-2">{p.title}</h3>
+                <p className="text-sm text-aram-warm-500 leading-relaxed">{p.summary}</p>
+              </motion.div>
+
+              <AnimatePresence>
+                {expanded === p.id && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <ul className="mt-4 pt-4 border-t border-aram-warm-200 space-y-2">
+                      {p.details.map((d, i) => (
+                        <li key={i} className="flex gap-2 text-sm text-aram-warm-500">
+                          <span className="text-aram-gold-500 mt-1">•</span>
+                          {d}
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="flex items-center gap-1 mt-4 text-xs text-aram-warm-400">
+                {expanded === p.id ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                {expanded === p.id ? 'Less' : 'More'}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Timeline ─────────────────────────────────────── */
+function Timeline() {
+  return (
+    <section className="py-24 md:py-32 bg-white">
+      <div className="max-w-4xl mx-auto px-6">
+        <Reveal className="text-center mb-16">
+          <p className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
+            Our Journey
+          </p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900">
+            From Idea to Movement
+          </h2>
+        </Reveal>
+
+        <div className="relative">
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-aram-warm-200 hidden md:block" />
+          <div className="absolute left-6 top-0 bottom-0 w-px bg-aram-warm-200 md:hidden" />
+
+          <div className="space-y-12 md:space-y-16">
+            {timelineEvents.map((event, i) => (
+              <Reveal key={event.id} delay={i * 0.1} direction={event.side === 'left' ? 'left' : 'right'}>
+                <div className={`relative flex items-start gap-6 md:gap-0 ${
+                  event.side === 'right' ? 'md:flex-row-reverse' : ''
+                }`}>
+                  <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 z-10">
+                    <motion.div
+                      className={`w-4 h-4 rounded-full border-2 ${
+                        event.isFuture
+                          ? 'border-aram-warm-300 bg-white'
+                          : 'border-aram-gold-500 bg-aram-gold-500'
+                      }`}
+                      whileInView={{ scale: [0.5, 1.2, 1] }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                    />
+                  </div>
+
+                  <div className="md:hidden flex-shrink-0">
+                    <div className={`w-3 h-3 rounded-full mt-2 ${
+                      event.isFuture ? 'bg-aram-warm-300' : 'bg-aram-gold-500'
+                    }`} />
+                  </div>
+
+                  <div className={`md:w-[calc(50%-2rem)] ${
+                    event.side === 'right' ? 'md:text-left md:ml-auto md:pl-12' : 'md:text-right md:mr-auto md:pr-12'
+                  }`}>
+                    <span className={`font-mono text-xs ${
+                      event.isFuture ? 'text-aram-warm-300' : 'text-aram-gold-500'
+                    }`}>
+                      {event.date}
+                    </span>
+                    <h3 className={`font-display text-lg font-bold mt-1 mb-2 ${
+                      event.isFuture ? 'text-aram-warm-400' : 'text-aram-green-900'
+                    }`}>
+                      {event.title}
+                    </h3>
+                    <p className="text-sm text-aram-warm-500 leading-relaxed">
+                      {event.description}
+                    </p>
+                  </div>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* What We Look For */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <AnimatedSection className="mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Who We Are</h2>
-            <p className="text-gray-600 leading-relaxed">
-              Everyone on the team has a full-time job or university alongside this. We're not asking you to drop everything, but we need people who can commit a few hours a week and follow through.
-            </p>
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.1}>
-            <div className="bg-white rounded-2xl p-8 border border-gray-200">
-              <h3 className="font-bold text-gray-900 mb-4">What we look for:</h3>
-              <ul className="space-y-3">
-                {[
-                  'People who lead by default, not by title',
-                  'People who commit consistently — not huge hours, but reliably showing up week after week',
-                  'People who are comfortable with ambiguity and building as they go',
-                  'People who feel the pull to do something for the communities back home that gave us everything',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="text-aram-purple mt-0.5 flex-shrink-0">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    <span className="text-gray-600 leading-relaxed">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.2} className="mt-6">
-            <div className="bg-gradient-to-r from-aram-purple-100/50 to-priority-bg/50 rounded-2xl p-8 border border-aram-purple-100">
-              <h3 className="font-bold text-gray-900 mb-4">What you get:</h3>
-              <ul className="space-y-3">
-                {[
-                  'Ownership of real work from day one',
-                  "A community of driven young Tamils building something together that doesn't exist anywhere else",
-                  'Impact you can see with your own eyes on the ground',
-                  'Skills and experience from people who are strong operators in their own careers',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="text-aram-purple mt-0.5 flex-shrink-0">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </span>
-                    <span className="text-gray-600 leading-relaxed">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 bg-aram-purple-100">
-        <AnimatedSection className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-aram-purple-dark mb-4">Want to Be Part of This?</h2>
-          <p className="text-aram-purple text-lg mb-6 leading-relaxed">
-            If that sounds like you, we'd love to have you.
+/* ─── Team Grid ────────────────────────────────────── */
+function TeamGrid() {
+  return (
+    <section className="py-24 md:py-32 bg-aram-warm-50">
+      <div className="max-w-5xl mx-auto px-6">
+        <Reveal className="text-center mb-12">
+          <p className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
+            The Team
           </p>
-          <Link
-            href="/join"
-            className="inline-flex items-center gap-2 bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-4 px-10 rounded-full text-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[52px]"
-          >
-            Join the Team
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
-        </AnimatedSection>
-      </section>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900">
+            Led by Young Professionals
+          </h2>
+        </Reveal>
+
+        <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 gap-5" staggerDelay={0.08}>
+          {teamMembers.map((member) => (
+            <StaggerItem key={member.id}>
+              <div className="rounded-xl border border-aram-warm-200 bg-white p-5 text-center hover:border-aram-gold-500 hover:-translate-y-0.5 hover:shadow-lg transition-all">
+                <div className="w-14 h-14 rounded-full bg-aram-green-100 flex items-center justify-center mx-auto mb-3">
+                  <Users className="w-6 h-6 text-aram-green-700" />
+                </div>
+                <h3 className="font-display text-base font-bold text-aram-green-900">{member.name}</h3>
+                <p className="font-mono text-xs text-aram-gold-500 mb-1">{member.role}</p>
+                <p className="text-xs text-aram-warm-400">{member.bio}</p>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Page ─────────────────────────────────────────── */
+export default function AboutPage() {
+  return (
+    <div>
+      <AboutHero />
+      <WhoWeAre />
+      <OurModel />
+      <Timeline />
+      <TeamGrid />
     </div>
   );
 }

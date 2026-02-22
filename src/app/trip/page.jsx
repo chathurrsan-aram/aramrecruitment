@@ -1,234 +1,306 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import AnimatedSection from '@/components/AnimatedSection';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Reveal, StaggerContainer, StaggerItem, Counter } from '@/components/ui/motion';
+import { ArrowRight, Download, Calendar, MapPin, Users, FileText, Quote } from 'lucide-react';
 
-const tripHighlights = [
-  {
-    title: 'Healthcare Camps',
-    desc: 'Free health screenings and medical consultations in underserved communities.',
-    icon: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
-  },
-  {
-    title: 'Education Workshops',
-    desc: 'Career guidance, mock interviews, and skills sessions with local students.',
-    icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
-  },
-  {
-    title: 'SEN Support',
-    desc: 'Working with children with disabilities and their families through partner centres.',
-    icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
-  },
-  {
-    title: 'Community Building',
-    desc: 'Engaging with local communities, cultural exchange, and building lasting trust.',
-    icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
-  },
-  {
-    title: 'Technology Training',
-    desc: 'Digital skills workshops and IT infrastructure support with partners like Dreamspace.',
-    icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-  },
-  {
-    title: 'Economic Initiatives',
-    desc: 'Supporting cooperatives and livelihood programs for sustainable income.',
-    icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
-  },
-];
+/* ─── Hero ─────────────────────────────────────────── */
+function TripHero() {
+  return (
+    <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-aram-green-900">
+      <div className="absolute inset-0 bg-gradient-to-br from-aram-green-950 via-aram-green-900 to-aram-green-800">
+        <motion.div
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: 'linear-gradient(135deg, #2D6A4F 0%, #1B4332 50%, #0D2818 100%)',
+          }}
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
+      <div className="relative z-10 max-w-3xl mx-auto px-6 text-center pt-20">
+        <Reveal>
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-5">
+            The Aram <span className="text-aram-gold-500">Trip</span>
+          </h1>
+        </Reveal>
+        <Reveal delay={0.15}>
+          <p className="text-lg text-white/70 leading-relaxed max-w-xl mx-auto">
+            The cornerstone of our mission — a yearly trip to Sri Lanka where our team connects directly with communities.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-const partnerOrgs = [
-  { name: 'Tea Leaf Trust', desc: 'Education and empowerment in the hill country' },
-  { name: 'Dreamspace', desc: 'Digital skills and technology access' },
-  { name: "Children's Homes", desc: 'Residential care and development support' },
-  { name: 'Local Schools', desc: 'Career guidance and curriculum support' },
-  { name: 'SPARKS', desc: 'Supporting children with disabilities' },
-  { name: 'Varany Central College', desc: 'Education partnerships in the north' },
-];
-
-export default function TripPage() {
-  const [pageLoaded, setPageLoaded] = useState(false);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    requestAnimationFrame(() => setPageLoaded(true));
-  }, []);
+/* ─── How It Works ─────────────────────────────────── */
+function HowItWorks() {
+  const steps = [
+    { num: '01', title: 'Apply', desc: 'Submit your application and tell us about your skills and motivation.' },
+    { num: '02', title: 'Prepare', desc: 'Join training sessions, learn about the communities, and plan your contribution.' },
+    { num: '03', title: 'Travel', desc: 'Fly to Sri Lanka as a team and begin two weeks of immersive community work.' },
+    { num: '04', title: 'Deliver', desc: 'Run workshops, health camps, mentoring sessions, and infrastructure projects.' },
+    { num: '05', title: 'Reflect', desc: 'Document observations, build lasting relationships, and feed into our research.' },
+  ];
 
   return (
-    <div
-      className="min-h-screen bg-white"
-      style={{ opacity: pageLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}
-    >
-      {/* Hero */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-24">
-        <div className="absolute inset-0">
-          <img
-            src="/images/Hope.jpg"
-            alt="Aram volunteers in Sri Lanka"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
-        </div>
-        <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-          <h1
-            className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight"
-            style={{
-              opacity: pageLoaded ? 1 : 0,
-              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s',
-            }}
-          >
-            The Aram Trip
-          </h1>
-          <p
-            className="text-lg text-white/85 max-w-xl mx-auto leading-relaxed"
-            style={{
-              opacity: pageLoaded ? 1 : 0,
-              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
-            }}
-          >
-            Every year, 40+ volunteers travel to Sri Lanka to deliver healthcare, education, and community development. This is where everything comes together.
+    <section className="py-24 md:py-32 bg-aram-warm-50">
+      <div className="max-w-5xl mx-auto px-6">
+        <Reveal className="text-center mb-16">
+          <p className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
+            The Process
           </p>
-          <div
-            className="mt-10 grid grid-cols-3 gap-8 max-w-md mx-auto"
-            style={{
-              opacity: pageLoaded ? 1 : 0,
-              transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s',
-            }}
-          >
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white">3</div>
-              <div className="text-white/60 text-xs mt-1">Trips Completed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white">40+</div>
-              <div className="text-white/60 text-xs mt-1">Volunteers Per Trip</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white">6</div>
-              <div className="text-white/60 text-xs mt-1">Sectors of Impact</div>
-            </div>
-          </div>
-        </div>
-      </section>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900">
+            How It Works
+          </h2>
+        </Reveal>
 
-      {/* What Happens on a Trip */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <AnimatedSection className="mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">What Happens on a Trip</h2>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              Each trip spans multiple locations across Sri Lanka. Volunteers are split into teams aligned with our six sectors, working alongside local partners who know the communities best.
-            </p>
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.1}>
-            <div className="bg-gradient-to-r from-aram-purple-50 to-priority-bg/30 rounded-2xl p-8 border border-aram-purple-100 mb-10">
-              <p className="text-gray-700 leading-relaxed">
-                The trip isn't a holiday with a side of volunteering. It's intense, rewarding, and often challenging. You'll be operating in a developing country, adapting to curveballs, and relying on your team. The connections you make — with communities and with each other — are what people remember most.
-              </p>
-            </div>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {tripHighlights.map((highlight, i) => (
-              <AnimatedSection key={i} delay={i * 0.05}>
-                <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 h-full">
-                  <div className="w-10 h-10 bg-aram-purple-100 rounded-lg flex items-center justify-center mb-4">
-                    <svg className="w-5 h-5 text-aram-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={highlight.icon} />
-                    </svg>
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2">{highlight.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{highlight.desc}</p>
+        <div className="flex flex-col md:flex-row gap-4">
+          {steps.map((step, i) => (
+            <Reveal key={step.num} delay={i * 0.1} direction="left" className="flex-1">
+              <div className="flex md:flex-col items-start gap-4 md:text-center">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-aram-green-900 text-aram-gold-500 font-mono text-sm font-bold flex items-center justify-center">
+                  {step.num}
                 </div>
-              </AnimatedSection>
-            ))}
-          </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-aram-green-900 mb-1">{step.title}</h3>
+                  <p className="text-sm text-aram-warm-500 leading-relaxed">{step.desc}</p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* Partner Organisations */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <AnimatedSection className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Our Partners on the Ground</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              We work with trusted local organisations who know their communities. These relationships — built over three years of showing up — are our foundation.
+/* ─── Trip 2026 ────────────────────────────────────── */
+function Trip2026() {
+  return (
+    <section className="py-24 md:py-32 bg-white">
+      <div className="max-w-3xl mx-auto px-6">
+        <Reveal>
+          <div className="rounded-2xl border border-aram-warm-200 bg-aram-warm-50 p-8 md:p-10">
+            <p className="font-mono text-xs uppercase tracking-[0.15em] text-aram-gold-500 mb-2">Upcoming</p>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-aram-green-900 mb-6">
+              Aram Trip 2026
+            </h2>
+
+            <div className="grid sm:grid-cols-3 gap-4 mb-6">
+              <div className="flex items-start gap-3">
+                <Calendar className="w-5 h-5 text-aram-gold-500 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-aram-green-900">Dates</p>
+                  <p className="text-sm text-aram-warm-500">June – July 2026</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-aram-gold-500 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-aram-green-900">Regions</p>
+                  <p className="text-sm text-aram-warm-500">Hill Country, Eastern, Northern</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Users className="w-5 h-5 text-aram-gold-500 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-aram-green-900">Team Size</p>
+                  <p className="text-sm text-aram-warm-500">40+ volunteers</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-aram-gold-100 rounded-xl px-4 py-3 mb-6">
+              <p className="text-sm text-aram-green-900 font-medium">Applications are now closed for Aram Trip 2026.</p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="https://aram.org.uk/wp-content/uploads/2026/01/how-we-organise-our-impact-1.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-aram-green-900 border border-aram-warm-200 rounded-xl px-4 py-2.5 hover:border-aram-gold-500 transition-colors"
+              >
+                <Download className="w-4 h-4" /> How We Organise Our Impact
+              </a>
+              <a
+                href="https://aram.org.uk/wp-content/uploads/2026/01/aram-trip-2026-1.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-aram-green-900 border border-aram-warm-200 rounded-xl px-4 py-2.5 hover:border-aram-gold-500 transition-colors"
+              >
+                <FileText className="w-4 h-4" /> Trip FAQ
+              </a>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Past Trips ───────────────────────────────────── */
+function PastTrips() {
+  const [activeTab, setActiveTab] = useState('2024');
+
+  const trips = {
+    '2024': {
+      summary: 'Our largest trip yet — 30 volunteers deployed across three provinces, delivering healthcare camps, career guidance sessions, mentoring pilots, and technology workshops to 12+ communities.',
+      stats: [
+        { target: 30, suffix: '', label: 'Volunteers' },
+        { target: 4, suffix: '', label: 'Provinces' },
+        { target: 12, suffix: '+', label: 'Communities' },
+      ],
+      reportUrl: 'https://aram.org.uk/wp-content/uploads/2024/12/aram-2024-trip-report-1.pdf',
+    },
+    '2023': {
+      summary: 'The inaugural Aram Trip — 20 volunteers partnered with Tamil Aid for two weeks of workshops, infrastructure projects, and community engagement across Sri Lanka.',
+      stats: [
+        { target: 20, suffix: '', label: 'Volunteers' },
+        { target: 2, suffix: '', label: 'Provinces' },
+        { target: 8, suffix: '+', label: 'Communities' },
+      ],
+      reportUrl: 'https://aram.org.uk/wp-content/uploads/2025/02/aram-trip-report-2023vf.pdf',
+    },
+  };
+
+  const trip = trips[activeTab];
+
+  return (
+    <section className="py-24 md:py-32 bg-aram-warm-50">
+      <div className="max-w-4xl mx-auto px-6">
+        <Reveal className="text-center mb-10">
+          <p className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
+            Track Record
+          </p>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900">
+            Past Trips
+          </h2>
+        </Reveal>
+
+        <div className="flex justify-center gap-1 mb-10 relative">
+          {['2024', '2023'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`relative px-6 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
+                activeTab === tab
+                  ? 'text-aram-green-900'
+                  : 'text-aram-warm-400 hover:text-aram-green-900'
+              }`}
+            >
+              {tab}
+              {activeTab === tab && (
+                <motion.div
+                  layoutId="trip-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-aram-gold-500 rounded-full"
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <p className="text-aram-warm-500 leading-relaxed mb-8 text-center max-w-2xl mx-auto">
+              {trip.summary}
             </p>
-          </AnimatedSection>
-          <AnimatedSection delay={0.1}>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {partnerOrgs.map((org, i) => (
-                <div key={i} className="bg-white rounded-xl p-5 text-center border border-gray-200">
-                  <div className="w-10 h-10 bg-aram-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <svg className="w-5 h-5 text-aram-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
+
+            <div className="grid grid-cols-3 gap-6 mb-10">
+              {trip.stats.map((stat, i) => (
+                <div key={i} className="text-center">
+                  <div className="font-display text-4xl font-bold text-aram-gold-500">
+                    <Counter target={stat.target} suffix={stat.suffix} key={`${activeTab}-${i}`} />
                   </div>
-                  <h4 className="font-bold text-gray-900 text-sm mb-1">{org.name}</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">{org.desc}</p>
+                  <div className="text-sm text-aram-warm-400 mt-1">{stat.label}</div>
                 </div>
               ))}
             </div>
-          </AnimatedSection>
-        </div>
-      </section>
 
-      {/* How to Join */}
-      <section className="py-20 bg-white">
-        <div className="max-w-3xl mx-auto px-6">
-          <AnimatedSection className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Join the Next Trip</h2>
-            <p className="text-gray-600 leading-relaxed">
-              Trip volunteers come from our wider team. To be part of the next trip, the first step is to join our team and contribute year-round.
-            </p>
-          </AnimatedSection>
-
-          <AnimatedSection delay={0.1}>
-            <div className="space-y-0">
-              {[
-                { num: '1', title: 'Join the Team', desc: 'Apply for a role that fits your skills and interests.' },
-                { num: '2', title: 'Contribute Year-Round', desc: 'Drive initiatives and show consistent commitment.' },
-                { num: '3', title: 'Get Selected', desc: 'Trip places are given to active team members first.' },
-                { num: '4', title: 'Make Impact', desc: 'Travel to Sri Lanka and deliver real change on the ground.' },
-              ].map((step, i) => (
-                <div key={i} className="relative flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-10 h-10 bg-aram-purple text-white rounded-full flex items-center justify-center text-lg font-bold min-w-[40px]">{step.num}</div>
-                    {i < 3 && <div className="w-0.5 h-16 bg-aram-purple-100" />}
+            <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8" staggerDelay={0.08}>
+              {[...Array(6)].map((_, i) => (
+                <StaggerItem key={i}>
+                  <div className={`rounded-xl bg-gradient-to-br ${
+                    i % 3 === 0 ? 'from-aram-green-700/20 to-aram-green-900/20' :
+                    i % 3 === 1 ? 'from-aram-gold-300/30 to-aram-gold-500/20' :
+                    'from-aram-warm-200 to-aram-warm-100'
+                  } ${i % 3 === 0 ? 'aspect-square' : 'aspect-[4/3]'} flex items-center justify-center`}>
+                    <span className="text-xs text-aram-warm-400 font-mono">Photo {i + 1}</span>
                   </div>
-                  <div className="pt-1 pb-8">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">{step.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{step.desc}</p>
-                  </div>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
+            </StaggerContainer>
 
-      {/* CTA */}
-      <section className="py-16 bg-aram-purple-100">
-        <AnimatedSection className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-aram-purple-dark mb-4">Be Part of the Next Chapter</h2>
-          <p className="text-aram-purple text-lg mb-6 leading-relaxed">
-            The 2027 trip is in planning. Join the team now to be part of it.
-          </p>
-          <Link
-            href="/join"
-            className="inline-flex items-center gap-2 bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-4 px-10 rounded-full text-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[52px]"
-          >
-            Join the Team
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
-        </AnimatedSection>
-      </section>
+            <div className="text-center">
+              <a
+                href={trip.reportUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-aram-green-900 font-semibold hover:text-aram-gold-500 transition-colors"
+              >
+                Read Full Report <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Testimonials ─────────────────────────────────── */
+function Testimonials() {
+  const quotes = [
+    {
+      text: "Being on the ground changed everything. You can't understand these communities from a distance.",
+      author: 'Volunteer, 2024',
+    },
+    {
+      text: "The connections we made weren't just for two weeks — they're lasting partnerships.",
+      author: 'Volunteer, 2023',
+    },
+  ];
+
+  return (
+    <section className="py-24 md:py-32 bg-white">
+      <div className="max-w-4xl mx-auto px-6">
+        <StaggerContainer className="grid md:grid-cols-2 gap-6" staggerDelay={0.15}>
+          {quotes.map((q, i) => (
+            <StaggerItem key={i}>
+              <div className="rounded-xl border border-aram-warm-200 bg-aram-warm-50 p-8">
+                <Quote className="w-8 h-8 text-aram-gold-300 mb-4" />
+                <p className="font-display text-lg text-aram-green-900 leading-relaxed mb-4 italic">
+                  &ldquo;{q.text}&rdquo;
+                </p>
+                <p className="font-mono text-xs text-aram-warm-400">— {q.author}</p>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Page ─────────────────────────────────────────── */
+export default function TripPage() {
+  return (
+    <div>
+      <TripHero />
+      <HowItWorks />
+      <Trip2026 />
+      <PastTrips />
+      <Testimonials />
     </div>
   );
 }
