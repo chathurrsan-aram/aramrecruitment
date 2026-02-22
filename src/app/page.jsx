@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import AnimatedSection from '@/components/AnimatedSection';
+import { videos } from '@/lib/cloudinary';
 
 const impactStats = [
   { value: '3', label: 'Trips to Sri Lanka' },
@@ -31,26 +32,31 @@ export default function HomePage() {
     <div className="min-h-screen bg-white">
       {/* Hero */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        {/* Video background */}
         <div className="absolute inset-0">
-          <img
-            src="/images/Community.png"
-            alt=""
+          <video
             className="w-full h-full object-cover"
-            style={{ objectPosition: 'center top' }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster="/images/Community.png"
+          >
+            <source src={videos.heroMain} type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
         </div>
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center pt-20">
-          <div
-            className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white/90 text-sm font-medium px-4 py-2 rounded-full mb-6"
+          <p
+            className="text-sm md:text-base uppercase tracking-[0.25em] text-white/70 font-medium mb-6"
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(10px)',
               transition: 'opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s',
             }}
           >
-            Tamil Diaspora-Led Initiative
-          </div>
+            A Movement
+          </p>
           <h1
             className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
             style={{
@@ -59,18 +65,18 @@ export default function HomePage() {
               transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
             }}
           >
-            Building a Thriving
-            <span className="block">Sri Lanka</span>
+            Inspiring Young Leaders
+            <span className="block text-white/80">Across the Globe</span>
           </h1>
           <p
-            className="text-lg md:text-xl text-white/85 mb-8 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed"
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
               transition: 'opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s',
             }}
           >
-            Aram unites the next generation of diaspora to create sustainable impact — through presence, not just funding.
+            To shape a sustainable future in their motherland
           </p>
           <div
             className="flex flex-col sm:flex-row gap-3 justify-center"
