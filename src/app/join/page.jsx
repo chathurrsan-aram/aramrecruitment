@@ -1474,31 +1474,51 @@ function RecruitmentPage() {
 
       {/* Hero */}
       <section className="relative min-h-[77vh] flex items-center justify-center overflow-hidden pt-32">
+        {/* Video background */}
         <div className="absolute inset-0">
-          <img src="/images/Community.png" alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center top' }} />
-          <div className="absolute inset-0 bg-[#6D4A9E]/10" />
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster="/images/Community.png"
+          >
+            <source src={videos.heroMain} type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-black/50" />
         </div>
-        <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+          <p
+            className="text-sm md:text-base uppercase tracking-[0.25em] text-white/70 font-medium mb-6"
+            style={{
+              opacity: pageLoaded ? 1 : 0,
+              transform: pageLoaded ? 'translateY(0)' : 'translateY(10px)',
+              transition: 'opacity 0.5s ease 0.05s, transform 0.5s ease 0.05s',
+            }}
+          >
+            A Movement
+          </p>
           <h1
-            className="text-4xl md:text-5xl font-bold text-white mb-4"
+            className="text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
               transition: 'opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s',
             }}
           >
-            Shape Sri Lanka's Future
-            <span className="block text-white">With Us</span>
+            Inspiring Young Leaders
+            <span className="block text-white/80">Across the Globe</span>
           </h1>
           <p
-            className="text-lg text-white/90 mb-6 max-w-xl mx-auto"
+            className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed"
             style={{
               opacity: pageLoaded ? 1 : 0,
               transform: pageLoaded ? 'translateY(0)' : 'translateY(20px)',
               transition: 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s',
             }}
           >
-            Join our team of high-energy young Tamils building sustainable impact through presence, not just funding.
+            To shape a sustainable future in their motherland
           </p>
           <div
             className="flex flex-col sm:flex-row gap-3 justify-center"
