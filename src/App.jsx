@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import MentorshipPage from './MentorshipPage.jsx';
+import { videos } from '@/lib/cloudinary';
 
 // Custom hook for scroll-triggered animations
 const useInView = (options = {}) => {
@@ -611,7 +612,7 @@ const CultureMemoModal = ({ onClose }) => {
             preload="metadata"
             poster="/images/Hope.jpg"
           >
-            <source src="/images/Git_hero.mp4" type="video/mp4" />
+            <source src={videos.heroMain} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>

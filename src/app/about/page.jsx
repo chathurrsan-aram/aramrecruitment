@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import AnimatedSection from '@/components/AnimatedSection';
+import { videos } from '@/lib/cloudinary';
 
 export default function AboutPage() {
   const [pageLoaded, setPageLoaded] = useState(false);
@@ -88,7 +89,7 @@ export default function AboutPage() {
                 preload="metadata"
                 poster="/images/Hope.jpg"
               >
-                <source src="/images/Git_hero.mp4" type="video/mp4" />
+                <source src={videos.heroMain} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
