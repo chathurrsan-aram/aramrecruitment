@@ -32,9 +32,9 @@ export default function HomePage() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    video.currentTime = 4;
+    video.currentTime = 4.5;
     const handleSeeked = () => {
-      if (video.currentTime < 4) video.currentTime = 4;
+      if (video.currentTime < 4.5) video.currentTime = 4.5;
     };
     video.addEventListener('seeking', handleSeeked);
     return () => video.removeEventListener('seeking', handleSeeked);
