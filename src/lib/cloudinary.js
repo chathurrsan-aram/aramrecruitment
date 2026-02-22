@@ -12,6 +12,5 @@ export function cloudinaryVideo(publicId, transforms = 'q_auto,f_auto') {
 
 // Centralised public IDs — update these to match your Cloudinary dashboard
 export const videos = {
-  heroMain: cloudinaryVideo('aram-final-compressed'),
-  heroSecondary: cloudinaryVideo('1121-11-compressed'),
+  heroMain: cloudinaryVideo('aram-final-compressed_zawdjl'),
 };
