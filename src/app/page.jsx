@@ -261,8 +261,14 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-br from-aram-purple via-aram-purple-dark to-[#3D2266]">
-        <AnimatedSection className="max-w-3xl mx-auto px-6 text-center">
+      <section className="relative py-20 overflow-hidden">
+        <img
+          src="https://res.cloudinary.com/dhzuwjkkz/image/upload/q_auto,f_auto/screenshot-2024-11-21-at-20.32.53_fetvtw"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/40" />
+        <AnimatedSection className="relative max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-5">
             Ready to Build Something That Matters?
           </h2>
