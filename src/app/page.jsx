@@ -45,11 +45,11 @@ function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-aram-green-950/80" />
       </motion.div>
 
-      {/* Gold floating particles */}
+      {/* Purple floating particles */}
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute rounded-full bg-aram-gold-500/20"
+          className="absolute rounded-full bg-aram-purple/20"
           style={{
             width: 6 + i * 4,
             height: 6 + i * 4,
@@ -74,7 +74,7 @@ function Hero() {
         style={{ opacity: contentOpacity, y: contentY }}
       >
         <motion.p
-          className="text-xs font-semibold uppercase tracking-[0.25em] text-aram-gold-500 mb-6"
+          className="text-xs font-semibold uppercase tracking-[0.25em] text-aram-purple-light mb-6"
           initial={{ opacity: 0, y: 10 }}
           animate={loaded ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.5, delay: 0.1 }}
@@ -106,7 +106,7 @@ function Hero() {
         >
           <Link
             href="/join"
-            className="bg-aram-gold-500 text-aram-green-900 font-semibold px-8 py-3.5 rounded-xl hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(212,168,67,0.3)] transition-all min-h-[48px] flex items-center justify-center"
+            className="bg-aram-purple text-white font-semibold px-8 py-3.5 rounded-xl hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(109,74,158,0.3)] transition-all min-h-[48px] flex items-center justify-center"
           >
             Join the Movement
           </Link>
@@ -123,7 +123,7 @@ function Hero() {
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Scroll</span>
         <div className="w-px h-10 bg-white/20 relative overflow-hidden">
-          <div className="w-1.5 h-1.5 rounded-full bg-aram-gold-500 absolute left-1/2 -translate-x-1/2 animate-bounce-dot" />
+          <div className="w-1.5 h-1.5 rounded-full bg-aram-purple absolute left-1/2 -translate-x-1/2 animate-bounce-dot" />
         </div>
       </div>
     </section>
@@ -136,7 +136,7 @@ function Tagline() {
     <section id="tagline" className="py-24 bg-aram-warm-50">
       <div className="max-w-3xl mx-auto px-6 text-center">
         <Reveal delay={0}>
-          <p className="font-mono text-sm uppercase tracking-[0.15em] text-aram-gold-500 mb-3">
+          <p className="font-mono text-sm uppercase tracking-[0.15em] text-aram-purple mb-3">
             ஆரம் செய விரும்பு
           </p>
         </Reveal>
@@ -170,7 +170,7 @@ function ImpactStats() {
         <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6" staggerDelay={0.12}>
           {stats.map((stat, i) => (
             <StaggerItem key={i} className="text-center">
-              <div className="font-display text-5xl md:text-6xl font-bold text-aram-gold-500 mb-2">
+              <div className="font-display text-5xl md:text-6xl font-bold text-aram-purple-light mb-2">
                 <Counter target={stat.target} suffix={stat.suffix} />
               </div>
               <div className="text-white font-medium text-sm">{stat.label}</div>
@@ -187,7 +187,7 @@ function ImpactStats() {
 function ThreePillarModel() {
   const pillars = [
     { icon: '🔍', title: 'Discovery', color: '#40916C', label: 'PILLAR 01', desc: 'Annual volunteering trips to Sri Lanka. On-the-ground observations, community engagement, and needs assessment.' },
-    { icon: '🔬', title: 'Research', color: '#D4A843', label: 'PILLAR 02', desc: 'Translating field observations into actionable insights, thought pieces, and data-driven recommendations.' },
+    { icon: '🔬', title: 'Research', color: '#6D4A9E', label: 'PILLAR 02', desc: 'Translating field observations into actionable insights, thought pieces, and data-driven recommendations.' },
     { icon: '🚀', title: 'Initiatives', color: '#C85C5C', label: 'PILLAR 03', desc: 'Long-term projects addressing systemic challenges — mentoring, microcredit, and sustainable partnerships.' },
   ];
 
@@ -343,7 +343,7 @@ function CTASection() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/join"
-              className="bg-aram-gold-500 text-aram-green-900 font-semibold px-8 py-3.5 rounded-xl hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(212,168,67,0.3)] transition-all min-h-[52px] flex items-center justify-center"
+              className="bg-aram-purple text-white font-semibold px-8 py-3.5 rounded-xl hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(109,74,158,0.3)] transition-all min-h-[52px] flex items-center justify-center"
             >
               Join the Team
             </Link>

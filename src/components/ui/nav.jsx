@@ -30,14 +30,14 @@ export default function Navbar() {
   const solid = scrolled || !hasHero;
   const bg = solid ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent';
   const textColor = solid ? 'text-aram-green-900' : 'text-white';
-  const hoverColor = solid ? 'hover:text-aram-gold-500' : 'hover:text-aram-gold-400';
+  const hoverColor = solid ? 'hover:text-aram-purple' : 'hover:text-aram-purple-light';
   const logoFilter = solid ? '' : 'brightness-0 invert';
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${bg}`}>
       <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-3">
-          <img src="/images/whitetamil-1.png" alt="Aram" className={`h-[50px] transition-all duration-300 ${logoFilter}`} />
+          <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className={`h-[50px] transition-all duration-300 ${logoFilter}`} />
         </Link>
 
         <nav className="hidden md:flex items-center gap-7">
@@ -46,7 +46,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               className={`text-sm font-medium transition-colors ${textColor} ${hoverColor} ${
-                pathname === link.href ? 'text-aram-gold-500' : ''
+                pathname === link.href ? 'text-aram-purple' : ''
               }`}
             >
               {link.label}
@@ -54,7 +54,7 @@ export default function Navbar() {
           ))}
           <Link
             href="/join"
-            className="bg-aram-gold-500 text-aram-green-900 font-semibold py-2.5 px-6 rounded-xl text-sm transition-all duration-200 hover:shadow-[0_8px_24px_rgba(212,168,67,0.3)] hover:-translate-y-0.5 min-h-[40px] flex items-center"
+            className="bg-aram-purple text-white font-semibold py-2.5 px-6 rounded-xl text-sm transition-all duration-200 hover:shadow-[0_8px_24px_rgba(109,74,158,0.3)] hover:-translate-y-0.5 min-h-[40px] flex items-center"
           >
             Join Us
           </Link>
@@ -78,7 +78,7 @@ export default function Navbar() {
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
                 className={`text-sm font-medium py-3 border-b border-aram-warm-100 transition-colors ${
-                  pathname === link.href ? 'text-aram-gold-500' : 'text-aram-green-900 hover:text-aram-gold-500'
+                  pathname === link.href ? 'text-aram-purple' : 'text-aram-green-900 hover:text-aram-purple'
                 }`}
               >
                 {link.label}
@@ -87,7 +87,7 @@ export default function Navbar() {
             <Link
               href="/join"
               onClick={() => setMobileOpen(false)}
-              className="mt-3 bg-aram-gold-500 text-aram-green-900 font-semibold py-3 px-6 rounded-xl text-sm text-center transition-all duration-200"
+              className="mt-3 bg-aram-purple text-white font-semibold py-3 px-6 rounded-xl text-sm text-center transition-all duration-200"
             >
               Join Us
             </Link>

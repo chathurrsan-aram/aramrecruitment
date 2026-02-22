@@ -22,7 +22,7 @@ function TripHero() {
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center pt-20">
         <Reveal>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-5">
-            The Aram <span className="text-aram-gold-500">Trip</span>
+            The Aram <span className="text-aram-purple">Trip</span>
           </h1>
         </Reveal>
         <Reveal delay={0.15}>
@@ -61,7 +61,7 @@ function HowItWorks() {
           {steps.map((step, i) => (
             <Reveal key={step.num} delay={i * 0.1} direction="left" className="flex-1">
               <div className="flex md:flex-col items-start gap-4 md:text-center">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-aram-green-900 text-aram-gold-500 font-mono text-sm font-bold flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-aram-green-900 text-aram-purple font-mono text-sm font-bold flex items-center justify-center">
                   {step.num}
                 </div>
                 <div>
@@ -84,28 +84,28 @@ function Trip2026() {
       <div className="max-w-3xl mx-auto px-6">
         <Reveal>
           <div className="rounded-2xl border border-aram-warm-200 bg-aram-warm-50 p-8 md:p-10">
-            <p className="font-mono text-xs uppercase tracking-[0.15em] text-aram-gold-500 mb-2">Upcoming</p>
+            <p className="font-mono text-xs uppercase tracking-[0.15em] text-aram-purple mb-2">Upcoming</p>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-aram-green-900 mb-6">
               Aram Trip 2026
             </h2>
 
             <div className="grid sm:grid-cols-3 gap-4 mb-6">
               <div className="flex items-start gap-3">
-                <Calendar className="w-5 h-5 text-aram-gold-500 mt-0.5" />
+                <Calendar className="w-5 h-5 text-aram-purple mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-aram-green-900">Dates</p>
                   <p className="text-sm text-aram-warm-500">June – July 2026</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-aram-gold-500 mt-0.5" />
+                <MapPin className="w-5 h-5 text-aram-purple mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-aram-green-900">Regions</p>
                   <p className="text-sm text-aram-warm-500">Hill Country, Eastern, Northern</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Users className="w-5 h-5 text-aram-gold-500 mt-0.5" />
+                <Users className="w-5 h-5 text-aram-purple mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-aram-green-900">Team Size</p>
                   <p className="text-sm text-aram-warm-500">40+ volunteers</p>
@@ -113,7 +113,7 @@ function Trip2026() {
               </div>
             </div>
 
-            <div className="bg-aram-gold-100 rounded-xl px-4 py-3 mb-6">
+            <div className="bg-aram-purple-50 rounded-xl px-4 py-3 mb-6">
               <p className="text-sm text-aram-green-900 font-medium">Applications are now closed for Aram Trip 2026.</p>
             </div>
 
@@ -122,7 +122,7 @@ function Trip2026() {
                 href="https://aram.org.uk/wp-content/uploads/2026/01/how-we-organise-our-impact-1.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-aram-green-900 border border-aram-warm-200 rounded-xl px-4 py-2.5 hover:border-aram-gold-500 transition-colors"
+                className="inline-flex items-center gap-2 text-sm font-medium text-aram-green-900 border border-aram-warm-200 rounded-xl px-4 py-2.5 hover:border-aram-purple transition-colors"
               >
                 <Download className="w-4 h-4" /> How We Organise Our Impact
               </a>
@@ -130,7 +130,7 @@ function Trip2026() {
                 href="https://aram.org.uk/wp-content/uploads/2026/01/aram-trip-2026-1.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-aram-green-900 border border-aram-warm-200 rounded-xl px-4 py-2.5 hover:border-aram-gold-500 transition-colors"
+                className="inline-flex items-center gap-2 text-sm font-medium text-aram-green-900 border border-aram-warm-200 rounded-xl px-4 py-2.5 hover:border-aram-purple transition-colors"
               >
                 <FileText className="w-4 h-4" /> Trip FAQ
               </a>
@@ -219,7 +219,7 @@ function PastTrips() {
             <div className="grid grid-cols-3 gap-6 mb-10">
               {trip.stats.map((stat, i) => (
                 <div key={i} className="text-center">
-                  <div className="font-display text-4xl font-bold text-aram-gold-500">
+                  <div className="font-display text-4xl font-bold text-aram-purple">
                     <Counter target={stat.target} suffix={stat.suffix} key={`${activeTab}-${i}`} />
                   </div>
                   <div className="text-sm text-aram-warm-400 mt-1">{stat.label}</div>
@@ -232,7 +232,7 @@ function PastTrips() {
                 <StaggerItem key={i}>
                   <div className={`rounded-xl bg-gradient-to-br ${
                     i % 3 === 0 ? 'from-aram-green-700/20 to-aram-green-900/20' :
-                    i % 3 === 1 ? 'from-aram-gold-300/30 to-aram-gold-500/20' :
+                    i % 3 === 1 ? 'from-aram-purple-100/30 to-aram-purple/20' :
                     'from-aram-warm-200 to-aram-warm-100'
                   } ${i % 3 === 0 ? 'aspect-square' : 'aspect-[4/3]'} flex items-center justify-center`}>
                     <span className="text-xs text-aram-warm-400 font-mono">Photo {i + 1}</span>
@@ -246,7 +246,7 @@ function PastTrips() {
                 href={trip.reportUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-aram-green-900 font-semibold hover:text-aram-gold-500 transition-colors"
+                className="inline-flex items-center gap-2 text-aram-green-900 font-semibold hover:text-aram-purple transition-colors"
               >
                 Read Full Report <ArrowRight className="w-4 h-4" />
               </a>
@@ -278,7 +278,7 @@ function Testimonials() {
           {quotes.map((q, i) => (
             <StaggerItem key={i}>
               <div className="rounded-xl border border-aram-warm-200 bg-aram-warm-50 p-8">
-                <Quote className="w-8 h-8 text-aram-gold-300 mb-4" />
+                <Quote className="w-8 h-8 text-aram-purple-light mb-4" />
                 <p className="font-display text-lg text-aram-green-900 leading-relaxed mb-4 italic">
                   &ldquo;{q.text}&rdquo;
                 </p>

@@ -38,7 +38,7 @@ function ViewSwitcher({ active, onChange }) {
               {active === v.id && (
                 <motion.div
                   layoutId="research-tab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-aram-gold-500 rounded-full"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-aram-purple rounded-full"
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
               )}
@@ -60,7 +60,7 @@ function SearchBar({ query, onChange }) {
         placeholder="Search insights, partners, regions..."
         value={query}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full pl-11 pr-10 py-3 rounded-xl border border-aram-warm-200 bg-white text-sm text-aram-green-900 placeholder:text-aram-warm-300 focus:outline-none focus:ring-2 focus:ring-aram-gold-500/30 focus:border-aram-gold-500 transition-all"
+        className="w-full pl-11 pr-10 py-3 rounded-xl border border-aram-warm-200 bg-white text-sm text-aram-green-900 placeholder:text-aram-warm-300 focus:outline-none focus:ring-2 focus:ring-aram-purple/30 focus:border-aram-purple transition-all"
       />
       {query && (
         <button onClick={() => onChange('')} className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -134,12 +134,12 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
               <g key={r.id}>
                 <motion.ellipse
                   cx={pos.cx} cy={pos.cy} rx={pos.rx} ry={pos.ry}
-                  fill={isSelected ? 'rgba(212,168,67,0.35)' : 'rgba(45,106,79,0.25)'}
-                  stroke={isSelected ? '#D4A843' : 'rgba(45,106,79,0.4)'}
+                  fill={isSelected ? 'rgba(109,74,158,0.35)' : 'rgba(45,106,79,0.25)'}
+                  stroke={isSelected ? '#6D4A9E' : 'rgba(45,106,79,0.4)'}
                   strokeWidth={isSelected ? 2 : 1}
                   className="cursor-pointer"
                   onClick={() => { onSelectRegion(r.id); setSelectedSubRegion(null); }}
-                  whileHover={{ fill: 'rgba(212,168,67,0.25)' }}
+                  whileHover={{ fill: 'rgba(109,74,158,0.25)' }}
                   animate={isSelected ? { scale: [1, 1.05, 1] } : {}}
                   transition={isSelected ? { duration: 2, repeat: Infinity } : { duration: 0.2 }}
                 />
@@ -176,7 +176,7 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
               <g key={sr.id} className="cursor-pointer" onClick={() => setSelectedSubRegion(isActive ? null : sr.id)}>
                 <motion.circle
                   cx={pos.x} cy={pos.y} r={isActive ? 6 : 4}
-                  fill="#D4A843"
+                  fill="#6D4A9E"
                   stroke="white"
                   strokeWidth={1.5}
                   initial={{ scale: 0 }}
@@ -385,7 +385,7 @@ function MacroView({ searchQuery }) {
               <article className="pb-6 border-b border-aram-warm-200 last:border-0">
                 <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <span className={`font-mono text-[11px] font-medium px-2 py-0.5 rounded-full ${
-                    insight.type === 'article' ? 'bg-aram-gold-100 text-aram-gold-500' :
+                    insight.type === 'article' ? 'bg-aram-purple-50 text-aram-purple' :
                     insight.type === 'research' ? 'bg-aram-green-100 text-aram-green-700' :
                     'bg-aram-warm-100 text-aram-warm-400'
                   }`}>
@@ -446,7 +446,7 @@ function ResearchContent() {
         <div className="max-w-3xl mx-auto px-6 text-center">
           <Reveal>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-aram-green-900 mb-4">
-              Research & <span className="text-aram-gold-500">Insights</span>
+              Research & <span className="text-aram-purple">Insights</span>
             </h1>
           </Reveal>
           <Reveal delay={0.1}>

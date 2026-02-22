@@ -31,7 +31,7 @@
   --color-sector-wellbeing: #C8A85C;
   --color-sector-economic-dev: #5CC86A;
 
-  /* Legacy colours for initiatives/join pages */
+  /* Aram purples (primary accent) */
   --color-aram-purple: #6D4A9E;
   --color-aram-purple-light: #8B6BB5;
   --color-aram-purple-dark: #5A3D82;
@@ -53,8 +53,8 @@
   --color-card-border: #E5E7EB;
 
   /* Fonts */
-  --font-display: 'Fraunces', Georgia, serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Poppins', system-ui, sans-serif;
+  --font-body: 'Poppins', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 

@@ -9,7 +9,7 @@ export default function InsightCard({ insight, compact = false }) {
   const region = regions.find((r) => r.id === insight.region);
 
   return (
-    <div className="rounded-xl border border-aram-warm-200 bg-white p-5 transition-all hover:border-aram-gold-500 hover:-translate-y-0.5 hover:shadow-lg">
+    <div className="rounded-xl border border-aram-warm-200 bg-white p-5 transition-all hover:border-aram-purple hover:-translate-y-0.5 hover:shadow-lg">
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <TypeBadge type={insight.type} />
         {region && (

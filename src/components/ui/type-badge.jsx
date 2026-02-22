@@ -2,7 +2,7 @@
 
 const typeStyles = {
   observation: { bg: 'bg-aram-warm-100', text: 'text-aram-warm-400', label: 'Observation' },
-  article: { bg: 'bg-aram-gold-100', text: 'text-aram-gold-500', label: 'Article' },
+  article: { bg: 'bg-aram-purple-50', text: 'text-aram-purple', label: 'Article' },
   research: { bg: 'bg-aram-green-100', text: 'text-aram-green-700', label: 'Research' },
 };
 

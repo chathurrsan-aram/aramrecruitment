@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Reveal, StaggerContainer, StaggerItem, DrawPath } from '@/components/ui/motion';
+import { Reveal, DrawPath } from '@/components/ui/motion';
 import { timelineEvents } from '@/data/timeline';
-import { teamMembers } from '@/data/team';
-import { ChevronDown, ChevronUp, Users } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 /* ─── Hero ─────────────────────────────────────────── */
 function AboutHero() {
@@ -14,7 +13,7 @@ function AboutHero() {
       <div className="max-w-3xl mx-auto px-6 text-center">
         <Reveal>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-aram-green-900 mb-6">
-            About <span className="text-aram-gold-500">Aram</span>
+            About <span className="text-aram-purple">Aram</span>
           </h1>
         </Reveal>
         <Reveal delay={0.15}>
@@ -75,7 +74,7 @@ function OurModel() {
       id: 'research',
       icon: '🔬',
       title: 'Research & Insights',
-      color: '#D4A843',
+      color: '#6D4A9E',
       summary: 'Translating field observations into data-driven, publishable insights.',
       details: [
         'Converting trip observations into structured research pieces',
@@ -128,7 +127,7 @@ function OurModel() {
             <motion.div
               key={p.id}
               layout
-              className="rounded-xl border border-aram-warm-200 bg-white p-6 cursor-pointer transition-colors hover:border-aram-gold-500"
+              className="rounded-xl border border-aram-warm-200 bg-white p-6 cursor-pointer transition-colors hover:border-aram-purple"
               onClick={() => setExpanded(expanded === p.id ? null : p.id)}
             >
               <motion.div layout="position">
@@ -154,7 +153,7 @@ function OurModel() {
                     <ul className="mt-4 pt-4 border-t border-aram-warm-200 space-y-2">
                       {p.details.map((d, i) => (
                         <li key={i} className="flex gap-2 text-sm text-aram-warm-500">
-                          <span className="text-aram-gold-500 mt-1">•</span>
+                          <span className="text-aram-purple mt-1">•</span>
                           {d}
                         </li>
                       ))}
@@ -204,7 +203,7 @@ function Timeline() {
                       className={`w-4 h-4 rounded-full border-2 ${
                         event.isFuture
                           ? 'border-aram-warm-300 bg-white'
-                          : 'border-aram-gold-500 bg-aram-gold-500'
+                          : 'border-aram-purple bg-aram-purple'
                       }`}
                       whileInView={{ scale: [0.5, 1.2, 1] }}
                       viewport={{ once: true }}
@@ -214,7 +213,7 @@ function Timeline() {
 
                   <div className="md:hidden flex-shrink-0">
                     <div className={`w-3 h-3 rounded-full mt-2 ${
-                      event.isFuture ? 'bg-aram-warm-300' : 'bg-aram-gold-500'
+                      event.isFuture ? 'bg-aram-warm-300' : 'bg-aram-purple'
                     }`} />
                   </div>
 
@@ -222,7 +221,7 @@ function Timeline() {
                     event.side === 'right' ? 'md:text-left md:ml-auto md:pl-12' : 'md:text-right md:mr-auto md:pr-12'
                   }`}>
                     <span className={`font-mono text-xs ${
-                      event.isFuture ? 'text-aram-warm-300' : 'text-aram-gold-500'
+                      event.isFuture ? 'text-aram-warm-300' : 'text-aram-purple'
                     }`}>
                       {event.date}
                     </span>
@@ -245,39 +244,6 @@ function Timeline() {
   );
 }
 
-/* ─── Team Grid ────────────────────────────────────── */
-function TeamGrid() {
-  return (
-    <section className="py-24 md:py-32 bg-aram-warm-50">
-      <div className="max-w-5xl mx-auto px-6">
-        <Reveal className="text-center mb-12">
-          <p className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
-            The Team
-          </p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900">
-            Led by Young Professionals
-          </h2>
-        </Reveal>
-
-        <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 gap-5" staggerDelay={0.08}>
-          {teamMembers.map((member) => (
-            <StaggerItem key={member.id}>
-              <div className="rounded-xl border border-aram-warm-200 bg-white p-5 text-center hover:border-aram-gold-500 hover:-translate-y-0.5 hover:shadow-lg transition-all">
-                <div className="w-14 h-14 rounded-full bg-aram-green-100 flex items-center justify-center mx-auto mb-3">
-                  <Users className="w-6 h-6 text-aram-green-700" />
-                </div>
-                <h3 className="font-display text-base font-bold text-aram-green-900">{member.name}</h3>
-                <p className="font-mono text-xs text-aram-gold-500 mb-1">{member.role}</p>
-                <p className="text-xs text-aram-warm-400">{member.bio}</p>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </div>
-    </section>
-  );
-}
-
 /* ─── Page ─────────────────────────────────────────── */
 export default function AboutPage() {
   return (
@@ -286,7 +252,6 @@ export default function AboutPage() {
       <WhoWeAre />
       <OurModel />
       <Timeline />
-      <TeamGrid />
     </div>
   );
 }

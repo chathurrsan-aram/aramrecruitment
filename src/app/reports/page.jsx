@@ -41,7 +41,7 @@ export default function ReportsPage() {
         <div className="max-w-3xl mx-auto px-6 text-center">
           <Reveal>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-aram-green-900 mb-4">
-              Reports & <span className="text-aram-gold-500">Resources</span>
+              Reports & <span className="text-aram-purple">Resources</span>
             </h1>
           </Reveal>
           <Reveal delay={0.1}>
@@ -61,22 +61,22 @@ export default function ReportsPage() {
                   href={report.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-start gap-5 rounded-xl border border-aram-warm-200 bg-white p-6 transition-all hover:border-aram-gold-500 hover:-translate-y-0.5 hover:shadow-lg"
+                  className="group flex items-start gap-5 rounded-xl border border-aram-warm-200 bg-white p-6 transition-all hover:border-aram-purple hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-aram-green-100 flex items-center justify-center">
                     <FileText className="w-5 h-5 text-aram-green-700" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-[11px] text-aram-gold-500">{report.year}</span>
+                      <span className="font-mono text-[11px] text-aram-purple">{report.year}</span>
                       <span className="font-mono text-[11px] text-aram-warm-300">{report.type}</span>
                     </div>
-                    <h2 className="font-display text-lg font-semibold text-aram-green-900 mb-1 group-hover:text-aram-gold-500 transition-colors">
+                    <h2 className="font-display text-lg font-semibold text-aram-green-900 mb-1 group-hover:text-aram-purple transition-colors">
                       {report.title}
                     </h2>
                     <p className="text-sm text-aram-warm-500 leading-relaxed">{report.description}</p>
                   </div>
-                  <Download className="w-5 h-5 text-aram-warm-300 group-hover:text-aram-gold-500 transition-colors flex-shrink-0 mt-1" />
+                  <Download className="w-5 h-5 text-aram-warm-300 group-hover:text-aram-purple transition-colors flex-shrink-0 mt-1" />
                 </a>
               </StaggerItem>
             ))}
@@ -84,7 +84,7 @@ export default function ReportsPage() {
 
           <Reveal delay={0.4} className="mt-12 text-center">
             <p className="text-sm text-aram-warm-400 mb-3">Want to read our research insights?</p>
-            <a href="/research?view=macro" className="inline-flex items-center gap-2 text-aram-green-900 font-semibold hover:text-aram-gold-500 transition-colors">
+            <a href="/research?view=macro" className="inline-flex items-center gap-2 text-aram-green-900 font-semibold hover:text-aram-purple transition-colors">
               Browse Research & Insights <ArrowRight className="w-4 h-4" />
             </a>
           </Reveal>

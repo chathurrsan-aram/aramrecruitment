@@ -98,7 +98,7 @@ export function Counter({ target, suffix = '', duration = 2000, className = '' }
   );
 }
 
-export function DrawPath({ d, color = '#D4A843', strokeWidth = 2, duration = 1.5, className = '' }) {
+export function DrawPath({ d, color = '#6D4A9E', strokeWidth = 2, duration = 1.5, className = '' }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
