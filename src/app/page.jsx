@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import AnimatedSection from '@/components/AnimatedSection';
 import { videos } from '@/lib/cloudinary';
@@ -23,9 +23,21 @@ const sectors = [
 
 export default function HomePage() {
   const [pageLoaded, setPageLoaded] = useState(false);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     requestAnimationFrame(() => setPageLoaded(true));
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.currentTime = 4;
+    const handleSeeked = () => {
+      if (video.currentTime < 4) video.currentTime = 4;
+    };
+    video.addEventListener('seeking', handleSeeked);
+    return () => video.removeEventListener('seeking', handleSeeked);
   }, []);
 
   return (
@@ -35,6 +47,7 @@ export default function HomePage() {
         {/* Video background */}
         <div className="absolute inset-0">
           <video
+            ref={videoRef}
             className="w-full h-full object-cover"
             autoPlay
             loop
