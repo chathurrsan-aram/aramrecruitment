@@ -698,12 +698,15 @@ function ResearchContent() {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [detailItem, setDetailItem] = useState(null);
   const [loaded, setLoaded] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(true);
+  const tutorialInteractionsRef = useRef(0);
 
   /* Refs for section-based scroll (Fix #4, #5) */
   const heroRef = useRef(null);
   const controlsRef = useRef(null);
   const contentRef = useRef(null);
   const videoRef = useRef(null);
+  const sidebarRef = useRef(null);
 
   /* Parallax for video hero */
   const { scrollY } = useScroll();
@@ -713,6 +716,13 @@ function ResearchContent() {
   const contentY = useTransform(scrollY, [0, 500], [0, -60]);
 
   useEffect(() => { requestAnimationFrame(() => setLoaded(true)); }, []);
+
+  /* Auto-dismiss tutorial after 8 s */
+  useEffect(() => {
+    if (!showTutorial) return;
+    const t = setTimeout(() => setShowTutorial(false), 8000);
+    return () => clearTimeout(t);
+  }, [showTutorial]);
 
   /* Hide global navbar when the immersive content area (map/cards) is in view.
      Sets a data attribute on <html> that the navbar listens for via useEffect. */
@@ -732,19 +742,30 @@ function ResearchContent() {
     };
   }, []);
 
+  /* Reset sidebar scroll to top whenever selection changes */
+  useEffect(() => {
+    if (sidebarRef.current) sidebarRef.current.scrollTop = 0;
+  }, [selectedDistrict, selectedRegion]);
+
   const contentMode = isPartners ? 'partners' : 'insights';
   const backLabel = isCardView ? 'Back to Cards' : 'Back to Map';
   const hasSidebar = !!(selectedDistrict || selectedRegion);
 
+  const dismissTutorialOnInteraction = useCallback(() => {
+    tutorialInteractionsRef.current += 1;
+    if (tutorialInteractionsRef.current >= 2) setShowTutorial(false);
+  }, []);
+
   const handleViewToggle = useCallback((val) => {
     setIsCardView(val);
     setDetailItem(null);
+    dismissTutorialOnInteraction();
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
       url.searchParams.set('view', val ? 'cards' : 'map');
       window.history.replaceState({}, '', url.toString());
     }
-  }, []);
+  }, [dismissTutorialOnInteraction]);
 
   const handleDistrictClick = useCallback((code) => {
     if (code) {
@@ -752,6 +773,10 @@ function ResearchContent() {
       if (aramRegion) setSelectedRegion(aramRegion);
     }
     setSelectedDistrict(prev => prev === code ? null : code);
+    /* Scroll the page so the toggle bar (and map below it) fills the viewport */
+    setTimeout(() => {
+      controlsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   }, []);
 
   const handleClearAll = useCallback(() => {
@@ -874,7 +899,7 @@ function ResearchContent() {
           </motion.div>
         </motion.div>
 
-        {/* Prominent scroll CTA — clearly says "Explore the Map" */}
+        {/* Hero CTA — solid purple, prominent */}
         <motion.button
           onClick={scrollToContent}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 group"
@@ -884,18 +909,18 @@ function ResearchContent() {
         >
           <div className="flex flex-col items-center gap-3">
             <motion.div
-              className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-3 flex items-center gap-3 group-hover:bg-aram-purple/80 group-hover:border-aram-purple transition-all duration-300"
-              animate={{ y: [0, 6, 0] }}
+              className="bg-aram-purple border-2 border-aram-purple-light/40 rounded-2xl px-8 py-4 flex items-center gap-3 shadow-xl shadow-aram-purple/50 group-hover:bg-aram-purple-dark group-hover:shadow-aram-purple/70 transition-all duration-300"
+              animate={{ y: [0, 7, 0] }}
               transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
             >
-              <Map className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" />
-              <span className="text-sm font-semibold text-white/90 group-hover:text-white transition-colors tracking-wide">
+              <Map className="w-6 h-6 text-white transition-colors" />
+              <span className="text-base font-bold text-white tracking-wide">
                 Explore the Map
               </span>
-              <ArrowDown className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
+              <ArrowDown className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" />
             </motion.div>
-            <div className="w-px h-6 bg-white/20 relative overflow-hidden">
-              <div className="w-1.5 h-1.5 rounded-full bg-aram-purple absolute left-1/2 -translate-x-1/2 animate-bounce-dot" />
+            <div className="w-px h-6 bg-white/30 relative overflow-hidden">
+              <div className="w-1.5 h-1.5 rounded-full bg-white absolute left-1/2 -translate-x-1/2 animate-bounce-dot" />
             </div>
           </div>
         </motion.button>
@@ -918,7 +943,7 @@ function ResearchContent() {
             leftIcon={Lightbulb}
             rightIcon={Users}
             isRight={isPartners}
-            onChange={setIsPartners}
+            onChange={(val) => { setIsPartners(val); dismissTutorialOnInteraction(); }}
           />
           <Link href="/partners" className="text-aram-warm-300 hover:text-aram-purple transition-colors flex items-center gap-1 text-xs font-medium" title="Partners Directory">
             <ExternalLink className="w-3.5 h-3.5" />
@@ -926,6 +951,46 @@ function ResearchContent() {
           </Link>
         </div>
       </div>
+
+      {/* ── Tutorial hint bar — sticky below toggle, auto-dismisses ── */}
+      <AnimatePresence>
+        {showTutorial && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="sticky top-[49px] z-20 overflow-hidden"
+          >
+            <div className="bg-[#F6F2FC] border-b border-aram-purple/15 px-4 py-2">
+              <div className="max-w-6xl mx-auto flex items-center gap-4">
+                {/* Callout 1 — Map/Cards toggle (left side of bar) */}
+                <div className="flex items-center gap-1.5 text-xs text-aram-purple-dark">
+                  <span className="text-aram-purple font-bold text-sm leading-none">↑</span>
+                  <span>Switch between <strong>Map</strong> &amp; <strong>Cards</strong></span>
+                </div>
+
+                <div className="w-px h-3.5 bg-aram-purple/20 flex-shrink-0" />
+
+                {/* Callout 2 — Insights/Partners toggle (centre of bar) */}
+                <div className="flex items-center gap-1.5 text-xs text-aram-purple-dark flex-1">
+                  <span className="text-aram-purple font-bold text-sm leading-none">↑</span>
+                  <span>Toggle between <strong>Insights</strong> &amp; <strong>Partners</strong></span>
+                </div>
+
+                {/* Dismiss */}
+                <button
+                  onClick={() => setShowTutorial(false)}
+                  className="flex-shrink-0 text-aram-purple/40 hover:text-aram-purple transition-colors"
+                  aria-label="Dismiss hint"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Detail overlay (Fix #2: z-[9999], fully opaque) ── */}
       <AnimatePresence>
@@ -973,25 +1038,19 @@ function ResearchContent() {
                     />
                   </div>
 
-                  {/* Prominent CTA banner — top-center of map, adapts to Insights/Partners toggle */}
+                  {/* Map hint — only when no district selected */}
                   {!hasSidebar && (
                     <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
                       <motion.div
-                        initial={{ opacity: 0, y: -12 }}
+                        initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.4 }}
-                        className="pointer-events-auto"
                       >
-                        <div className="bg-aram-purple text-white rounded-xl px-5 py-3 shadow-xl flex items-center gap-3 whitespace-nowrap">
-                          <MousePointerClick className="w-5 h-5 flex-shrink-0 opacity-80" />
-                          <div>
-                            <p className="text-sm font-semibold leading-tight">
-                              {isPartners ? 'Click to Explore Partners' : 'Click to Explore Insights'}
-                            </p>
-                            <p className="text-[11px] text-white/70 leading-tight mt-0.5">
-                              Select a district on the map
-                            </p>
-                          </div>
+                        <div className="bg-white/90 backdrop-blur-sm text-aram-purple-dark border border-aram-purple/20 rounded-xl px-4 py-2.5 shadow-lg flex items-center gap-2.5 whitespace-nowrap">
+                          <MousePointerClick className="w-4 h-4 flex-shrink-0 text-aram-purple" />
+                          <p className="text-xs font-semibold leading-tight">
+                            {isPartners ? 'Click a district to see Partners' : 'Click a district to see Insights'}
+                          </p>
                         </div>
                       </motion.div>
                     </div>
@@ -1003,6 +1062,7 @@ function ResearchContent() {
                   {hasSidebar && (
                     <motion.div
                       key="sidebar"
+                      ref={sidebarRef}
                       initial={{ flex: '0 0 0%', opacity: 0 }}
                       animate={{ flex: '0 0 45%', opacity: 1 }}
                       exit={{ flex: '0 0 0%', opacity: 0 }}
