@@ -1028,13 +1028,13 @@ function ResearchContent() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.3 }}
-                        className="absolute top-2 left-0 right-0 z-20 pointer-events-none"
+                        className="absolute top-2 left-0 right-0 z-40 pointer-events-none"
                       >
-                        <div className="max-w-6xl mx-auto px-4 relative h-24">
+                        <div className="max-w-6xl mx-auto px-4 relative h-28">
                           <motion.div
                             animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
                             transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-                            className="pointer-events-auto absolute left-0"
+                            className="pointer-events-auto absolute left-0 top-2"
                           >
                             <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/45 px-4 py-3 border border-white/25 max-w-[260px]">
                               <div className="absolute -top-2 left-6 w-4 h-4 bg-aram-purple rotate-45" />
@@ -1046,7 +1046,7 @@ function ResearchContent() {
                           <motion.div
                             animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
                             transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut', delay: 0.25 }}
-                            className="pointer-events-auto absolute left-1/2 -translate-x-1/2"
+                            className="pointer-events-auto absolute left-1/2 -translate-x-1/2 top-2"
                           >
                             <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/45 px-4 py-3 pr-10 border border-white/25 max-w-[300px]">
                               <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
