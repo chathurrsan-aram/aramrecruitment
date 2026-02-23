@@ -15,8 +15,8 @@ import { regions } from '@/data/regions';
 import { sectors } from '@/data/sectors';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
 import {
-  Search, Map, LayoutGrid, ArrowLeft, X, ChevronRight, ChevronUp, ChevronDown,
-  Users, Lightbulb, MapPin, ExternalLink, Filter,
+  Search, Map, LayoutGrid, ArrowLeft, X, ChevronRight,
+  Users, Lightbulb, MapPin, ExternalLink, Filter, ArrowDown, MousePointerClick,
 } from 'lucide-react';
 
 const DISTRICT_NAMES = {
@@ -577,7 +577,6 @@ function ResearchContent() {
   const heroRef = useRef(null);
   const controlsRef = useRef(null);
   const contentRef = useRef(null);
-  const [currentSection, setCurrentSection] = useState('hero'); // 'hero' | 'content' | 'footer'
   const [headerVisible, setHeaderVisible] = useState(true);
 
   const contentMode = isPartners ? 'partners' : 'insights';
@@ -611,27 +610,13 @@ function ResearchContent() {
     setSelectedDistrict(null);
   }, []);
 
-  /* Fix #4: Header visibility — hide when scrolled past hero into immersive content */
+  /* Header visibility — hide when scrolled past hero into immersive content */
   useEffect(() => {
     const handleScroll = () => {
       const heroEl = heroRef.current;
       if (!heroEl) return;
       const heroBottom = heroEl.getBoundingClientRect().bottom;
-      // When the hero section scrolls out of view, hide the header
       setHeaderVisible(heroBottom > 0);
-
-      // Determine current section for arrow visibility
-      const scrollY = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight;
-      const viewHeight = window.innerHeight;
-
-      if (scrollY < (heroEl.offsetHeight - 50)) {
-        setCurrentSection('hero');
-      } else if (scrollY + viewHeight >= docHeight - 50) {
-        setCurrentSection('footer');
-      } else {
-        setCurrentSection('content');
-      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
@@ -663,11 +648,6 @@ function ResearchContent() {
     };
   }, [headerVisible]);
 
-  /* Fix #5: Scroll navigation helpers */
-  const scrollToHero = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
   const scrollToContent = useCallback(() => {
     const controlsEl = controlsRef.current;
     if (controlsEl) {
@@ -675,39 +655,44 @@ function ResearchContent() {
     }
   }, []);
 
-  const scrollToFooter = useCallback(() => {
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
-  }, []);
-
   return (
     <div className="flex flex-col">
-      {/* ── Hero section (scrolls naturally) ────── */}
-      <div ref={heroRef} className="bg-aram-warm-50">
-        <div className="pt-10 pb-8 md:pt-14 md:pb-10">
-          <div className="max-w-3xl mx-auto px-6 text-center">
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900 mb-3">
-              Research & <span className="text-aram-purple">Insights</span>
-            </h1>
-            <p className="text-base text-aram-warm-500 leading-relaxed mb-6">
-              Explore our field observations, research, and analysis — organised by region, sector, and theme.
-            </p>
-            <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-aram-warm-300" />
-              <input
-                type="text"
-                placeholder="Search insights, partners..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-10 py-2.5 rounded-xl border border-aram-warm-200 bg-white text-sm text-aram-green-900 placeholder:text-aram-warm-300 focus:outline-none focus:ring-2 focus:ring-aram-purple/30 focus:border-aram-purple transition-all"
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <X className="w-4 h-4 text-aram-warm-300 hover:text-aram-warm-500" />
-                </button>
-              )}
-            </div>
+      {/* ── Hero section — full viewport height with scroll CTA ────── */}
+      <div ref={heroRef} className="relative bg-aram-warm-50 flex flex-col items-center justify-center min-h-screen">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-aram-green-900 mb-4 leading-tight">
+            Research & <span className="text-aram-purple">Insights</span>
+          </h1>
+          <p className="text-lg md:text-xl text-aram-warm-500 leading-relaxed mb-8 max-w-2xl mx-auto">
+            View our interactive maps to search our insights and organisations across Sri Lanka.
+          </p>
+          <div className="relative max-w-md mx-auto mb-10">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-aram-warm-300" />
+            <input
+              type="text"
+              placeholder="Search insights, partners..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-11 pr-10 py-3 rounded-xl border border-aram-warm-200 bg-white text-sm text-aram-green-900 placeholder:text-aram-warm-300 focus:outline-none focus:ring-2 focus:ring-aram-purple/30 focus:border-aram-purple transition-all shadow-sm"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+                <X className="w-4 h-4 text-aram-warm-300 hover:text-aram-warm-500" />
+              </button>
+            )}
           </div>
         </div>
+
+        {/* Scroll-down arrow */}
+        <motion.button
+          onClick={scrollToContent}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-aram-warm-400 hover:text-aram-purple transition-colors group"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+        >
+          <span className="text-xs font-medium tracking-wide uppercase">Explore</span>
+          <ArrowDown className="w-5 h-5" />
+        </motion.button>
       </div>
 
       {/* ── Toggle bar (Fix #1: sits above map with z-30, clear boundary) ── */}
@@ -749,55 +734,8 @@ function ResearchContent() {
         )}
       </AnimatePresence>
 
-      {/* ── Content area ──────────────────────────── */}
-      <div className="flex-1 relative" ref={contentRef}>
-        {/* Fix #5: Navigation arrows — context-aware */}
-        <AnimatePresence>
-          {currentSection === 'content' && (
-            <motion.button
-              key="arrow-up"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={scrollToHero}
-              className="fixed top-14 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/60 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-300 hover:text-aram-purple hover:bg-white/90 transition-all"
-              aria-label="Scroll to top"
-            >
-              <ChevronUp className="w-4 h-4" />
-            </motion.button>
-          )}
-        </AnimatePresence>
-        <AnimatePresence>
-          {(currentSection === 'content' || currentSection === 'hero') && (
-            <motion.button
-              key="arrow-down"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={currentSection === 'hero' ? scrollToContent : scrollToFooter}
-              className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/60 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-300 hover:text-aram-purple hover:bg-white/90 transition-all"
-              aria-label="Scroll down"
-            >
-              <ChevronDown className="w-4 h-4" />
-            </motion.button>
-          )}
-        </AnimatePresence>
-        <AnimatePresence>
-          {currentSection === 'footer' && (
-            <motion.button
-              key="arrow-up-footer"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={scrollToContent}
-              className="fixed top-4 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/60 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-300 hover:text-aram-purple hover:bg-white/90 transition-all"
-              aria-label="Scroll to research view"
-            >
-              <ChevronUp className="w-4 h-4" />
-            </motion.button>
-          )}
-        </AnimatePresence>
-
+      {/* ── Content area (isolate creates stacking context so map z-indexes stay below toggle bar) ── */}
+      <div className="flex-1 relative isolate z-0" ref={contentRef}>
         <AnimatePresence mode="wait">
           {!isCardView ? (
             /* ── MAP VIEW (Fix #1 + #6) ── */
@@ -825,28 +763,29 @@ function ResearchContent() {
                       onSelectRegion={setSelectedRegion}
                       selectedDistrict={selectedDistrict}
                       onSelectDistrict={handleDistrictClick}
+                      hasSidebar={hasSidebar}
                     />
                   </div>
 
-                  {/* Prominent CTA overlay — adapts to Insights/Partners toggle */}
+                  {/* Prominent CTA banner — top-center of map, adapts to Insights/Partners toggle */}
                   {!hasSidebar && (
-                    <div className="absolute inset-0 flex items-end justify-center pb-10 pointer-events-none z-10">
+                    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
                       <motion.div
-                        initial={{ opacity: 0, y: 16 }}
+                        initial={{ opacity: 0, y: -12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4, duration: 0.5 }}
+                        transition={{ delay: 0.3, duration: 0.4 }}
                         className="pointer-events-auto"
                       >
-                        <div className="bg-white/95 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-aram-warm-200 text-center max-w-xs">
-                          <div className="flex items-center justify-center gap-2 mb-1.5">
-                            <MapPin className="w-4 h-4 text-aram-purple" />
-                            <p className="text-sm font-semibold text-aram-green-900">
-                              {isPartners ? 'Explore Partners' : 'Explore Insights'}
+                        <div className="bg-aram-purple text-white rounded-xl px-5 py-3 shadow-xl flex items-center gap-3 whitespace-nowrap">
+                          <MousePointerClick className="w-5 h-5 flex-shrink-0 opacity-80" />
+                          <div>
+                            <p className="text-sm font-semibold leading-tight">
+                              {isPartners ? 'Click to Explore Partners' : 'Click to Explore Insights'}
+                            </p>
+                            <p className="text-[11px] text-white/70 leading-tight mt-0.5">
+                              Select a district on the map
                             </p>
                           </div>
-                          <p className="text-xs text-aram-warm-400 leading-relaxed">
-                            Click a district on the map to discover {isPartners ? 'partner organisations' : 'field observations and research'} in that region.
-                          </p>
                         </div>
                       </motion.div>
                     </div>

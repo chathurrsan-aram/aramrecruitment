@@ -88,58 +88,55 @@ function getStyle(feature, hoveredCode, selectedCode) {
   };
 }
 
-/* ─── Map controller (auto-fit bounds + invalidateSize + scroll normalisation) ── */
-function MapController({ geoData, selectedCode }) {
+/* ─── Map controller (auto-fit bounds + invalidateSize) ── */
+function MapController({ geoData, selectedCode, hasSidebar }) {
   const map = useMap();
 
-  /* Normalise scroll/trackpad zoom — one zoom level per scroll event */
+  /* Scroll wheel passes through to the page — no map zoom on scroll */
   useEffect(() => {
     map.scrollWheelZoom.disable();
-
-    let cooldown = false;
-    const handleWheel = (e) => {
-      e.preventDefault();
-      if (cooldown) return;
-      cooldown = true;
-      setTimeout(() => { cooldown = false; }, 250);
-
-      if (e.deltaY < 0) {
-        map.zoomIn(1, { animate: true });
-      } else if (e.deltaY > 0) {
-        map.zoomOut(1, { animate: true });
-      }
-    };
-
-    const container = map.getContainer();
-    container.addEventListener('wheel', handleWheel, { passive: false });
-    return () => container.removeEventListener('wheel', handleWheel);
   }, [map]);
 
+  /* Invalidate size on mount */
   useEffect(() => {
     map.invalidateSize();
     const t = setTimeout(() => map.invalidateSize(), 300);
     return () => clearTimeout(t);
   }, [map]);
 
-  /* Fix #3: fitBounds on district selection */
+  /* Re-invalidate when sidebar opens/closes so Leaflet knows the new container size */
+  useEffect(() => {
+    // The sidebar animates over ~500ms (spring). Invalidate at intervals to catch the resize.
+    const t1 = setTimeout(() => map.invalidateSize(), 100);
+    const t2 = setTimeout(() => map.invalidateSize(), 350);
+    const t3 = setTimeout(() => map.invalidateSize(), 600);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, [hasSidebar, map]);
+
+  /* fitBounds on district selection or sidebar change */
   useEffect(() => {
     if (!geoData) return;
 
-    if (selectedCode) {
-      const feature = geoData.features.find(f => f.properties.code === selectedCode);
-      if (feature) {
-        const L = require('leaflet');
-        const layer = L.geoJSON(feature);
-        map.fitBounds(layer.getBounds(), { padding: [80, 80], maxZoom: 10, animate: true, duration: 0.6 });
-        return;
+    const doFit = () => {
+      if (selectedCode) {
+        const feature = geoData.features.find(f => f.properties.code === selectedCode);
+        if (feature) {
+          const L = require('leaflet');
+          const layer = L.geoJSON(feature);
+          map.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 10, animate: true, duration: 0.6 });
+          return;
+        }
       }
-    }
+      // Fit to full Sri Lanka
+      const L = require('leaflet');
+      const full = L.geoJSON(geoData);
+      map.fitBounds(full.getBounds(), { padding: [10, 10], animate: true });
+    };
 
-    // Fit to full Sri Lanka
-    const L = require('leaflet');
-    const full = L.geoJSON(geoData);
-    map.fitBounds(full.getBounds(), { padding: [10, 10], animate: true });
-  }, [selectedCode, geoData, map]);
+    // Delay fit to let the container resize animation settle
+    const t = setTimeout(doFit, hasSidebar ? 400 : 50);
+    return () => clearTimeout(t);
+  }, [selectedCode, geoData, map, hasSidebar]);
 
   return null;
 }
@@ -173,6 +170,7 @@ export default function SriLankaMap({
   onSelectRegion,
   selectedDistrict,
   onSelectDistrict,
+  hasSidebar = false,
 }) {
   const [geoData, setGeoData] = useState(null);
   const [hoveredCode, setHoveredCode] = useState(null);
@@ -272,7 +270,7 @@ export default function SriLankaMap({
           onEachFeature={onEachFeature}
         />
 
-        <MapController geoData={geoData} selectedCode={selectedDistrict} />
+        <MapController geoData={geoData} selectedCode={selectedDistrict} hasSidebar={hasSidebar} />
         <ZoomControl />
       </MapContainer>
 
