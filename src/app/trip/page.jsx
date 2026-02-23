@@ -13,7 +13,7 @@ function TripHero() {
         <motion.div
           className="absolute inset-0 opacity-30"
           style={{
-            backgroundImage: 'linear-gradient(135deg, #2D6A4F 0%, #1B4332 50%, #0D2818 100%)',
+            backgroundImage: 'linear-gradient(135deg, #7B5EAE 0%, #5A3D82 50%, #1E0A3C 100%)',
           }}
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}

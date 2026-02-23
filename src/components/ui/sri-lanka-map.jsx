@@ -38,8 +38,8 @@ const DISPLAY_NAMES = { NuwaraEliya: 'Nuwara Eliya' };
 
 /* ─── Colour palette ──────────────────────────────── */
 const STATUS_COLORS = {
-  active: '#0F7B5F',
-  planned: '#E8973F',
+  active: '#6D4A9E',
+  planned: '#C4B1DD',
 };
 
 const INACTIVE_COLOR = '#D1D5DB';
@@ -92,9 +92,7 @@ function getStyle(feature, hoveredCode, selectedCode) {
 function MapController({ geoData, selectedCode }) {
   const map = useMap();
 
-  // Fix Leaflet sizing on mobile / dynamic containers
   useEffect(() => {
-    // Immediate + delayed invalidateSize to handle layout shifts
     map.invalidateSize();
     const t = setTimeout(() => map.invalidateSize(), 300);
     return () => clearTimeout(t);
@@ -113,13 +111,36 @@ function MapController({ geoData, selectedCode }) {
       }
     }
 
-    // Fit to full Sri Lanka
+    // Fit to full Sri Lanka — tighter padding to zoom in more
     const L = require('leaflet');
     const full = L.geoJSON(geoData);
-    map.fitBounds(full.getBounds(), { padding: [20, 20], animate: true });
+    map.fitBounds(full.getBounds(), { padding: [10, 10], animate: true });
   }, [selectedCode, geoData, map]);
 
   return null;
+}
+
+/* ─── Zoom Control ───────────────────────────────── */
+function ZoomControl() {
+  const map = useMap();
+  return (
+    <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-1">
+      <button
+        onClick={() => map.zoomIn()}
+        className="w-8 h-8 bg-white/95 backdrop-blur-sm border border-aram-warm-200 rounded-lg shadow-lg flex items-center justify-center text-aram-warm-500 hover:text-aram-green-900 transition-colors text-lg font-medium"
+        aria-label="Zoom in"
+      >
+        +
+      </button>
+      <button
+        onClick={() => map.zoomOut()}
+        className="w-8 h-8 bg-white/95 backdrop-blur-sm border border-aram-warm-200 rounded-lg shadow-lg flex items-center justify-center text-aram-warm-500 hover:text-aram-green-900 transition-colors text-lg font-medium"
+        aria-label="Zoom out"
+      >
+        -
+      </button>
+    </div>
+  );
 }
 
 /* ─── Main map component ──────────────────────────── */
@@ -137,7 +158,6 @@ export default function SriLankaMap({
     fetch('/geo/gadm41_LKA_1.json')
       .then(r => r.json())
       .then(geo => {
-        // Map GADM properties to the codes used by districtProjects
         for (const f of geo.features) {
           const meta = DISTRICT_META[f.properties.NAME_1];
           if (meta) {
@@ -151,7 +171,6 @@ export default function SriLankaMap({
   }, []);
 
   const handleDistrictClick = useCallback((code) => {
-    // If district has a mapped Aram region, select that region + district
     const aramRegion = DISTRICT_TO_ARAM_REGION[code];
     if (aramRegion) {
       onSelectRegion(aramRegion);
@@ -177,12 +196,11 @@ export default function SriLankaMap({
     [hoveredCode, selectedDistrict]
   );
 
-  // Force GeoJSON re-render when style deps change
   const geoKey = `districts-${hoveredCode}-${selectedDistrict}`;
 
   if (!geoData) {
     return (
-      <div className="w-full h-[450px] lg:h-full flex items-center justify-center bg-aram-warm-50">
+      <div className="w-full h-[500px] lg:h-full flex items-center justify-center bg-aram-warm-50">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-aram-warm-300 border-t-aram-purple rounded-full animate-spin mx-auto mb-3" />
           <p className="text-aram-warm-400 text-sm">Loading map...</p>
@@ -192,10 +210,10 @@ export default function SriLankaMap({
   }
 
   return (
-    <div className="relative w-full h-[450px] lg:h-full">
+    <div className="relative w-full h-[500px] lg:h-full">
       <MapContainer
         center={[7.8731, 80.7718]}
-        zoom={7.5}
+        zoom={8}
         className="w-full h-full"
         zoomControl={false}
         attributionControl={false}
@@ -207,13 +225,11 @@ export default function SriLankaMap({
           [10.5, 83.0],
         ]}
       >
-        {/* Very subtle base tiles for geographic context */}
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
           opacity={0.35}
         />
 
-        {/* Choropleth district layer */}
         <GeoJSON
           key={geoKey}
           ref={geoRef}
@@ -223,9 +239,9 @@ export default function SriLankaMap({
         />
 
         <MapController geoData={geoData} selectedCode={selectedDistrict} />
+        <ZoomControl />
       </MapContainer>
 
-      {/* Custom HTML tooltip (follows mouse, outside Leaflet) */}
       {hoveredCode && <DistrictTooltip code={hoveredCode} geoData={geoData} />}
 
       {/* Legend */}
@@ -287,12 +303,12 @@ function DistrictTooltip({ code, geoData }) {
         <p className="font-semibold text-sm">{feature.properties.name}</p>
         <p className="text-white/50 text-xs">{feature.properties.province} Province</p>
         {project?.status === 'active' && (
-          <p className="text-emerald-400 text-xs mt-1 font-medium">
+          <p className="text-aram-purple-light text-xs mt-1 font-medium">
             Active — {project.projects.length} {project.projects.length === 1 ? 'project' : 'projects'}
           </p>
         )}
         {project?.status === 'planned' && (
-          <p className="text-amber-400 text-xs mt-1 font-medium">Planned expansion</p>
+          <p className="text-purple-300 text-xs mt-1 font-medium">Planned expansion</p>
         )}
         {!project && (
           <p className="text-white/40 text-xs mt-1">No current operations</p>

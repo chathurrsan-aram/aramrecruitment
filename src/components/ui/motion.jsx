@@ -73,7 +73,7 @@ export function StaggerItem({ children, className = '', direction = 'up', distan
   );
 }
 
-export function Counter({ target, suffix = '', duration = 2000, className = '' }) {
+export function Counter({ target, prefix = '', suffix = '', duration = 2000, className = '' }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const [count, setCount] = useState(0);
@@ -93,7 +93,7 @@ export function Counter({ target, suffix = '', duration = 2000, className = '' }
 
   return (
     <span ref={ref} className={className}>
-      {count}{suffix}
+      {prefix}{count}{suffix}
     </span>
   );
 }

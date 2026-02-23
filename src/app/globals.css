@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  /* Aram greens */
-  --color-aram-green-950: #0D2818;
-  --color-aram-green-900: #1B4332;
-  --color-aram-green-800: #2D5A3D;
-  --color-aram-green-700: #2D6A4F;
-  --color-aram-green-600: #40916C;
-  --color-aram-green-100: #D8F3DC;
+  /* Aram greens → now purple tones */
+  --color-aram-green-950: #1E0A3C;
+  --color-aram-green-900: #5A3D82;
+  --color-aram-green-800: #6D4A9E;
+  --color-aram-green-700: #7B5EAE;
+  --color-aram-green-600: #8B6BB5;
+  --color-aram-green-100: #F0EBF5;
 
   /* Aram warms */
   --color-aram-warm-50: #FDFCFA;
