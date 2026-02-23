@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useMemo, useCallback, Suspense, lazy } from 'react';
+import { useState, useMemo, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { Reveal, StaggerContainer, StaggerItem } from '@/components/ui/motion';
 import InsightCard from '@/components/ui/insight-card';
 import PartnerCard from '@/components/ui/partner-card';
@@ -12,7 +13,10 @@ import { partners } from '@/data/partners';
 import { regions } from '@/data/regions';
 import { sectors } from '@/data/sectors';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
-import { Search, Map, LayoutGrid, Globe, ArrowLeft, X, ChevronRight, Users, Eye, Lightbulb, MapPin } from 'lucide-react';
+import {
+  Search, Map, LayoutGrid, Globe, ArrowLeft, X, ChevronRight,
+  Users, Lightbulb, MapPin, ExternalLink,
+} from 'lucide-react';
 
 const DISTRICT_NAMES = {
   CO: 'Colombo', GQ: 'Gampaha', KT: 'Kalutara', KY: 'Kandy', MT: 'Matale',
@@ -37,39 +41,42 @@ const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
   ),
 });
 
-/* ─── View Switcher ────────────────────────────────── */
-function ViewSwitcher({ active, onChange }) {
-  const views = [
-    { id: 'map', label: 'Map View', icon: Map },
-    { id: 'sectors', label: 'Sector View', icon: LayoutGrid },
-    { id: 'macro', label: 'Macro View', icon: Globe },
-  ];
-
+/* ─── Apple-style iOS Toggle ──────────────────────── */
+function Toggle({ leftLabel, rightLabel, isRight, onChange, leftIcon: LeftIcon, rightIcon: RightIcon }) {
   return (
-    <div className="sticky top-[64px] z-30 bg-white/95 backdrop-blur-md border-b border-aram-warm-200">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex gap-1 py-2 relative">
-          {views.map((v) => (
-            <button
-              key={v.id}
-              onClick={() => onChange(v.id)}
-              className={`relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                active === v.id ? 'text-aram-green-900' : 'text-aram-warm-400 hover:text-aram-green-900'
-              }`}
-            >
-              <v.icon className="w-4 h-4" />
-              {v.label}
-              {active === v.id && (
-                <motion.div
-                  layoutId="research-tab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-aram-purple rounded-full"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="flex items-center gap-2">
+      <button
+        onClick={() => onChange(false)}
+        className={`flex items-center gap-1 text-xs font-medium transition-colors ${
+          !isRight ? 'text-aram-green-900' : 'text-aram-warm-300 hover:text-aram-warm-400'
+        }`}
+      >
+        {LeftIcon && <LeftIcon className="w-3.5 h-3.5" />}
+        <span className="hidden sm:inline">{leftLabel}</span>
+      </button>
+      <button
+        onClick={() => onChange(!isRight)}
+        className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${
+          isRight ? 'bg-aram-purple' : 'bg-aram-green-700'
+        }`}
+        role="switch"
+        aria-checked={isRight}
+      >
+        <span
+          className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-300 ${
+            isRight ? 'translate-x-[22px]' : 'translate-x-1'
+          }`}
+        />
+      </button>
+      <button
+        onClick={() => onChange(true)}
+        className={`flex items-center gap-1 text-xs font-medium transition-colors ${
+          isRight ? 'text-aram-green-900' : 'text-aram-warm-300 hover:text-aram-warm-400'
+        }`}
+      >
+        {RightIcon && <RightIcon className="w-3.5 h-3.5" />}
+        <span className="hidden sm:inline">{rightLabel}</span>
+      </button>
     </div>
   );
 }
@@ -95,40 +102,12 @@ function SearchBar({ query, onChange }) {
   );
 }
 
-/* ─── Map Mode Toggle ─────────────────────────────── */
-function MapModeToggle({ mode, onChange }) {
-  return (
-    <div className="flex gap-1 bg-aram-warm-100 rounded-lg p-0.5">
-      <button
-        onClick={() => onChange('partners')}
-        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-          mode === 'partners' ? 'bg-white text-aram-green-900 shadow-sm' : 'text-aram-warm-400 hover:text-aram-green-900'
-        }`}
-      >
-        <Users className="w-3 h-3" /> Partners
-      </button>
-      <button
-        onClick={() => onChange('insights')}
-        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-          mode === 'insights' ? 'bg-white text-aram-green-900 shadow-sm' : 'text-aram-warm-400 hover:text-aram-green-900'
-        }`}
-      >
-        <Lightbulb className="w-3 h-3" /> Insights
-      </button>
-    </div>
-  );
-}
-
 /* ─── MAP VIEW ─────────────────────────────────────── */
-function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
+function MapView({ selectedRegion, onSelectRegion, searchQuery, contentMode }) {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [mapMode, setMapMode] = useState('partners');
 
   const region = regions.find((r) => r.id === selectedRegion);
-
-  // Find the district feature info from the selected code
   const districtProject = selectedDistrict ? districtProjects[selectedDistrict] : null;
-  // We need the district name — look it up from the GeoJSON properties stored in DISTRICT_NAMES
   const districtName = selectedDistrict ? DISTRICT_NAMES[selectedDistrict] : null;
 
   const filteredInsights = useMemo(() => {
@@ -241,13 +220,8 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
                 </div>
               )}
 
-              {/* Region insights/partners if available */}
-              {region && (
-                <div className="mb-5">
-                  <MapModeToggle mode={mapMode} onChange={setMapMode} />
-                </div>
-              )}
-              {region && mapMode === 'partners' && filteredPartners.length > 0 && (
+              {/* Region content based on contentMode */}
+              {region && contentMode === 'partners' && filteredPartners.length > 0 && (
                 <div>
                   <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
                     Regional Partners ({filteredPartners.length})
@@ -259,7 +233,7 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
                   </div>
                 </div>
               )}
-              {region && mapMode === 'insights' && filteredInsights.length > 0 && (
+              {region && contentMode === 'insights' && filteredInsights.length > 0 && (
                 <div>
                   <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
                     Regional Insights ({filteredInsights.length})
@@ -297,11 +271,11 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
                   <MapPin className="w-6 h-6 text-aram-warm-300" />
                 </div>
                 <p className="text-aram-warm-400 text-sm mb-1">No current operations</p>
-                <p className="text-aram-warm-300 text-xs">We don't currently have active programmes in this district.</p>
+                <p className="text-aram-warm-300 text-xs">We don&apos;t currently have active programmes in this district.</p>
               </div>
             </motion.div>
           ) : selectedRegion ? (
-            /* Region selected (from legend or district click) → show region details */
+            /* Region selected → show region details */
             <motion.div
               key={selectedRegion}
               initial={{ opacity: 0, x: 20 }}
@@ -321,11 +295,7 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
               <h2 className="font-display text-2xl font-bold text-aram-green-900 mb-2">{region?.name}</h2>
               <p className="text-sm text-aram-warm-500 leading-relaxed mb-5">{region?.description}</p>
 
-              <div className="mb-5">
-                <MapModeToggle mode={mapMode} onChange={setMapMode} />
-              </div>
-
-              {mapMode === 'partners' ? (
+              {contentMode === 'partners' ? (
                 <div>
                   <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
                     Partners ({filteredPartners.length})
@@ -370,29 +340,48 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
                 <p className="text-aram-warm-300 text-xs">Green = active, amber = planned expansion.</p>
               </div>
 
-              {/* Partners directory callout */}
-              <div className="rounded-xl border border-aram-warm-200 bg-aram-warm-50 p-5 mb-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Users className="w-4 h-4 text-aram-purple" />
-                  <h3 className="font-body text-sm font-semibold text-aram-green-900">Partner Directory</h3>
+              {contentMode === 'partners' ? (
+                <div className="rounded-xl border border-aram-warm-200 bg-aram-warm-50 p-5 mb-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Users className="w-4 h-4 text-aram-purple" />
+                    <h3 className="font-body text-sm font-semibold text-aram-green-900">Partners Overview</h3>
+                  </div>
+                  <div className="space-y-2">
+                    {partners.slice(0, 5).map((p) => (
+                      <div key={p.id} className="flex items-center gap-2 text-xs">
+                        <span className="w-5 h-5 rounded bg-aram-green-100 flex items-center justify-center font-display font-bold text-aram-green-900 text-[9px]">
+                          {p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+                        </span>
+                        <span className="text-aram-warm-500 truncate">{p.name}</span>
+                        <span className="text-aram-warm-300 ml-auto text-[10px] flex-shrink-0">
+                          {regions.find(r => r.id === p.region)?.name || ''}
+                        </span>
+                      </div>
+                    ))}
+                    {partners.length > 5 && (
+                      <p className="text-[10px] text-aram-warm-300 pt-1">+ {partners.length - 5} more partners</p>
+                    )}
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  {partners.slice(0, 5).map((p) => (
-                    <div key={p.id} className="flex items-center gap-2 text-xs">
-                      <span className="w-5 h-5 rounded bg-aram-green-100 flex items-center justify-center font-display font-bold text-aram-green-900 text-[9px]">
-                        {p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
-                      </span>
-                      <span className="text-aram-warm-500 truncate">{p.name}</span>
-                      <span className="text-aram-warm-300 ml-auto text-[10px] flex-shrink-0">
-                        {regions.find(r => r.id === p.region)?.name || ''}
-                      </span>
-                    </div>
-                  ))}
-                  {partners.length > 5 && (
-                    <p className="text-[10px] text-aram-warm-300 pt-1">+ {partners.length - 5} more partners</p>
-                  )}
+              ) : (
+                <div className="rounded-xl border border-aram-warm-200 bg-aram-warm-50 p-5 mb-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Lightbulb className="w-4 h-4 text-aram-purple" />
+                    <h3 className="font-body text-sm font-semibold text-aram-green-900">Latest Insights</h3>
+                  </div>
+                  <div className="space-y-2">
+                    {insights.slice(0, 5).map((i) => (
+                      <div key={i.id} className="flex items-center gap-2 text-xs">
+                        <span className="w-1.5 h-1.5 rounded-full bg-aram-purple flex-shrink-0" />
+                        <span className="text-aram-warm-500 truncate">{i.title}</span>
+                      </div>
+                    ))}
+                    {insights.length > 5 && (
+                      <p className="text-[10px] text-aram-warm-300 pt-1">+ {insights.length - 5} more insights</p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Quick stats */}
               <div className="grid grid-cols-3 gap-3">
@@ -417,22 +406,102 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
   );
 }
 
-/* ─── SECTOR VIEW ──────────────────────────────────── */
-function SectorView({ searchQuery }) {
-  const [expandedSector, setExpandedSector] = useState(null);
+/* ─── CARD VIEW (Macro card + Sector cards) ────────── */
+function CardView({ searchQuery, contentMode }) {
+  const [expandedItem, setExpandedItem] = useState(null);
 
-  const sectorData = sectors.map((s) => ({
+  const macroInsights = useMemo(() => {
+    let filtered = insights.filter(
+      (i) => i.type === 'article' || i.type === 'research' || i.sectors.length > 1
+    );
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter((i) => i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q));
+    }
+    return filtered;
+  }, [searchQuery]);
+
+  const sectorData = useMemo(() => sectors.map((s) => ({
     ...s,
     insights: insights.filter((i) => i.sectors.includes(s.id)),
     partners: partners.filter((p) => p.sectors.includes(s.id)),
-  }));
+  })), []);
 
-  const expanded = sectorData.find((s) => s.id === expandedSector);
+  const expanded = expandedItem !== 'macro' ? sectorData.find((s) => s.id === expandedItem) : null;
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
       <AnimatePresence mode="wait">
-        {expandedSector && expanded ? (
+        {expandedItem === 'macro' ? (
+          /* ── Macro expanded ─────────────────────── */
+          <motion.div
+            key="macro-expanded"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <button
+              onClick={() => setExpandedItem(null)}
+              className="flex items-center gap-1.5 text-sm text-aram-warm-400 hover:text-aram-green-900 mb-6 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" /> All Cards
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <Globe className="w-8 h-8 text-aram-purple" />
+              <h2 className="font-display text-2xl font-bold text-aram-green-900">Cross-Sector Research & Analysis</h2>
+            </div>
+            <p className="text-aram-warm-500 leading-relaxed mb-8 max-w-2xl">
+              Macro-level insights spanning multiple sectors — articles, research findings, and cross-cutting themes from our field work.
+            </p>
+
+            {contentMode === 'insights' ? (
+              <StaggerContainer className="space-y-6" staggerDelay={0.08}>
+                {macroInsights.map((insight) => {
+                  const region = regions.find((r) => r.id === insight.region);
+                  return (
+                    <StaggerItem key={insight.id}>
+                      <article className="pb-6 border-b border-aram-warm-200 last:border-0">
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          <span className={`font-mono text-[11px] font-medium px-2 py-0.5 rounded-full ${
+                            insight.type === 'article' ? 'bg-aram-purple-50 text-aram-purple' :
+                            insight.type === 'research' ? 'bg-aram-green-100 text-aram-green-700' :
+                            'bg-aram-warm-100 text-aram-warm-400'
+                          }`}>
+                            {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
+                          </span>
+                          {region && (
+                            <span className="font-mono text-[11px] text-aram-warm-400">{region.name}</span>
+                          )}
+                        </div>
+                        <h2 className="font-display text-xl font-semibold text-aram-green-900 mb-2">{insight.title}</h2>
+                        <p className="text-sm text-aram-warm-500 leading-relaxed mb-3">{insight.summary}</p>
+                        <div className="flex gap-1.5 flex-wrap">
+                          {insight.sectors.map((s) => (
+                            <SectorTag key={s} sector={s} />
+                          ))}
+                        </div>
+                      </article>
+                    </StaggerItem>
+                  );
+                })}
+              </StaggerContainer>
+            ) : (
+              <div>
+                <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-4">
+                  All Partners ({partners.length})
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {partners.map((p) => (
+                    <PartnerCard key={p.id} partner={p} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        ) : expandedItem && expanded ? (
+          /* ── Sector expanded ────────────────────── */
           <motion.div
             key={expanded.id}
             initial={{ opacity: 0, y: 20 }}
@@ -441,10 +510,10 @@ function SectorView({ searchQuery }) {
             transition={{ duration: 0.3 }}
           >
             <button
-              onClick={() => setExpandedSector(null)}
+              onClick={() => setExpandedItem(null)}
               className="flex items-center gap-1.5 text-sm text-aram-warm-400 hover:text-aram-green-900 mb-6 transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" /> All Sectors
+              <ArrowLeft className="w-4 h-4" /> All Cards
             </button>
 
             <div className="flex items-center gap-3 mb-4">
@@ -453,27 +522,60 @@ function SectorView({ searchQuery }) {
             </div>
             <p className="text-aram-warm-500 leading-relaxed mb-8 max-w-2xl">{expanded.description}</p>
 
-            {expanded.partners.length > 0 && (
-              <div className="mb-8">
-                <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">Partners</h3>
-                <div className="flex gap-3 overflow-x-auto pb-2">
-                  {expanded.partners.map((p) => (
-                    <PartnerCard key={p.id} partner={p} />
+            {contentMode === 'insights' ? (
+              <>
+                {expanded.partners.length > 0 && (
+                  <div className="mb-8">
+                    <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">Partners</h3>
+                    <div className="flex gap-3 overflow-x-auto pb-2">
+                      {expanded.partners.map((p) => (
+                        <PartnerCard key={p.id} partner={p} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
+                  Insights ({expanded.insights.length})
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {expanded.insights.map((i) => (
+                    <InsightCard key={i.id} insight={i} />
                   ))}
                 </div>
-              </div>
-            )}
+              </>
+            ) : (
+              <>
+                <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
+                  Partners ({expanded.partners.length})
+                </h3>
+                {expanded.partners.length > 0 ? (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {expanded.partners.map((p) => (
+                      <PartnerCard key={p.id} partner={p} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-aram-warm-400 py-4">No partners in this sector yet.</p>
+                )}
 
-            <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
-              Insights ({expanded.insights.length})
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {expanded.insights.map((i) => (
-                <InsightCard key={i.id} insight={i} />
-              ))}
-            </div>
+                {expanded.insights.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
+                      Related Insights ({expanded.insights.length})
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {expanded.insights.map((i) => (
+                        <InsightCard key={i.id} insight={i} compact />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
           </motion.div>
         ) : (
+          /* ── Card grid ──────────────────────────── */
           <motion.div
             key="grid"
             initial={{ opacity: 0 }}
@@ -481,18 +583,39 @@ function SectorView({ searchQuery }) {
             exit={{ opacity: 0 }}
           >
             <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 gap-4" staggerDelay={0.08}>
+              {/* Macro overview card (first) */}
+              <StaggerItem>
+                <div
+                  className="rounded-xl border-2 border-aram-purple/20 bg-gradient-to-br from-aram-purple-50 to-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-aram-purple/40"
+                  onClick={() => setExpandedItem('macro')}
+                >
+                  <Globe className="w-7 h-7 text-aram-purple mb-2" />
+                  <h3 className="font-body text-lg font-semibold text-aram-green-900 mt-2 mb-1">Macro Overview</h3>
+                  <p className="text-xs text-aram-warm-400 font-mono">
+                    {contentMode === 'insights'
+                      ? `${macroInsights.length} cross-sector insights`
+                      : `${partners.length} partners across all sectors`
+                    }
+                  </p>
+                </div>
+              </StaggerItem>
+
+              {/* Sector cards */}
               {sectorData.map((s) => (
                 <StaggerItem key={s.id}>
                   <div
                     className="rounded-xl border border-aram-warm-200 bg-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg"
-                    onClick={() => setExpandedSector(s.id)}
+                    onClick={() => setExpandedItem(s.id)}
                     onMouseEnter={(e) => e.currentTarget.style.borderColor = `var(--color-sector-${s.color})`}
                     onMouseLeave={(e) => e.currentTarget.style.borderColor = ''}
                   >
                     <span className="text-2xl">{s.icon}</span>
                     <h3 className="font-body text-lg font-semibold text-aram-green-900 mt-2 mb-1">{s.name}</h3>
                     <p className="text-xs text-aram-warm-400 font-mono">
-                      {s.insights.length} insights · {s.partners.length} partners
+                      {contentMode === 'insights'
+                        ? `${s.insights.length} insights · ${s.partners.length} partners`
+                        : `${s.partners.length} partners · ${s.insights.length} insights`
+                      }
                     </p>
                   </div>
                 </StaggerItem>
@@ -505,69 +628,22 @@ function SectorView({ searchQuery }) {
   );
 }
 
-/* ─── MACRO VIEW ───────────────────────────────────── */
-function MacroView({ searchQuery }) {
-  const macroInsights = insights.filter(
-    (i) => i.type === 'article' || i.type === 'research' || i.sectors.length > 1
-  );
-
-  const filtered = searchQuery
-    ? macroInsights.filter(
-        (i) => i.title.toLowerCase().includes(searchQuery.toLowerCase()) || i.summary.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : macroInsights;
-
-  return (
-    <div className="max-w-[720px] mx-auto px-6 py-10">
-      <StaggerContainer className="space-y-6" staggerDelay={0.08}>
-        {filtered.map((insight) => {
-          const region = regions.find((r) => r.id === insight.region);
-          return (
-            <StaggerItem key={insight.id}>
-              <article className="pb-6 border-b border-aram-warm-200 last:border-0">
-                <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  <span className={`font-mono text-[11px] font-medium px-2 py-0.5 rounded-full ${
-                    insight.type === 'article' ? 'bg-aram-purple-50 text-aram-purple' :
-                    insight.type === 'research' ? 'bg-aram-green-100 text-aram-green-700' :
-                    'bg-aram-warm-100 text-aram-warm-400'
-                  }`}>
-                    {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
-                  </span>
-                  {region && (
-                    <span className="font-mono text-[11px] text-aram-warm-400">{region.name}</span>
-                  )}
-                </div>
-                <h2 className="font-display text-xl font-semibold text-aram-green-900 mb-2">{insight.title}</h2>
-                <p className="text-sm text-aram-warm-500 leading-relaxed mb-3">{insight.summary}</p>
-                <div className="flex gap-1.5 flex-wrap">
-                  {insight.sectors.map((s) => (
-                    <SectorTag key={s} sector={s} />
-                  ))}
-                </div>
-              </article>
-            </StaggerItem>
-          );
-        })}
-      </StaggerContainer>
-    </div>
-  );
-}
-
 /* ─── Page (wrapped with Suspense for useSearchParams) */
 function ResearchContent() {
   const searchParams = useSearchParams();
   const initialView = searchParams?.get('view') || 'map';
   const initialRegion = searchParams?.get('region') || null;
 
-  const [view, setView] = useState(initialView);
+  const [isCardView, setIsCardView] = useState(initialView === 'cards');
+  const [isPartners, setIsPartners] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRegion, setSelectedRegion] = useState(initialRegion);
 
-  const handleViewChange = useCallback((v) => {
-    setView(v);
+  const handleViewToggle = useCallback((val) => {
+    setIsCardView(val);
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
-      url.searchParams.set('view', v);
+      url.searchParams.set('view', val ? 'cards' : 'map');
       window.history.replaceState({}, '', url.toString());
     }
   }, []);
@@ -581,6 +657,8 @@ function ResearchContent() {
       window.history.replaceState({}, '', url.toString());
     }
   }, []);
+
+  const contentMode = isPartners ? 'partners' : 'insights';
 
   return (
     <div className="min-h-screen">
@@ -600,22 +678,53 @@ function ResearchContent() {
         </div>
       </section>
 
-      <ViewSwitcher active={view} onChange={handleViewChange} />
+      {/* ── Sticky toggle bar ─────────────────────── */}
+      <div className="sticky top-[64px] z-30 bg-white/95 backdrop-blur-md border-b border-aram-warm-200">
+        <div className="max-w-6xl mx-auto px-6 py-2.5 flex items-center justify-between">
+          <Link
+            href="/partners"
+            className="flex items-center gap-1.5 text-xs font-medium text-aram-warm-400 hover:text-aram-purple transition-colors"
+          >
+            <Users className="w-3.5 h-3.5" />
+            Partners Directory
+            <ExternalLink className="w-3 h-3" />
+          </Link>
+
+          <div className="flex items-center gap-6">
+            <Toggle
+              leftLabel="Insights"
+              rightLabel="Partners"
+              leftIcon={Lightbulb}
+              rightIcon={Users}
+              isRight={isPartners}
+              onChange={setIsPartners}
+            />
+            <div className="w-px h-5 bg-aram-warm-200" />
+            <Toggle
+              leftLabel="Map"
+              rightLabel="Cards"
+              leftIcon={Map}
+              rightIcon={LayoutGrid}
+              isRight={isCardView}
+              onChange={handleViewToggle}
+            />
+          </div>
+        </div>
+      </div>
 
       <AnimatePresence mode="wait">
-        {view === 'map' && (
+        {!isCardView ? (
           <motion.div key="map" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <MapView selectedRegion={selectedRegion} onSelectRegion={handleSelectRegion} searchQuery={searchQuery} />
+            <MapView
+              selectedRegion={selectedRegion}
+              onSelectRegion={handleSelectRegion}
+              searchQuery={searchQuery}
+              contentMode={contentMode}
+            />
           </motion.div>
-        )}
-        {view === 'sectors' && (
-          <motion.div key="sectors" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <SectorView searchQuery={searchQuery} />
-          </motion.div>
-        )}
-        {view === 'macro' && (
-          <motion.div key="macro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <MacroView searchQuery={searchQuery} />
+        ) : (
+          <motion.div key="cards" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <CardView searchQuery={searchQuery} contentMode={contentMode} />
           </motion.div>
         )}
       </AnimatePresence>
