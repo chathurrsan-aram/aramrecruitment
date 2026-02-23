@@ -60,34 +60,24 @@ function getStyle(feature, hoveredCode, selectedCode) {
 /* ─── Map controller (auto-fit bounds + invalidateSize) ── */
 function MapController({ geoData, selectedCode }) {
   const map = useMap();
-  const lastFittedCode = useRef(null);
 
   // Fix Leaflet sizing on mobile / dynamic containers
   useEffect(() => {
+    // Immediate + delayed invalidateSize to handle layout shifts
     map.invalidateSize();
     const t = setTimeout(() => map.invalidateSize(), 300);
     return () => clearTimeout(t);
   }, [map]);
 
-  // Fly to selected district or reset to full view
   useEffect(() => {
     if (!geoData) return;
-
-    // Only fly when the selection actually changes (not on every re-render)
-    if (selectedCode === lastFittedCode.current) return;
-    lastFittedCode.current = selectedCode;
 
     if (selectedCode) {
       const feature = geoData.features.find(f => f.properties.code === selectedCode);
       if (feature) {
         const L = require('leaflet');
         const layer = L.geoJSON(feature);
-        // Use flyToBounds for smooth centering animation
-        map.flyToBounds(layer.getBounds(), {
-          padding: [50, 50],
-          maxZoom: 9,
-          duration: 0.6,
-        });
+        map.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 10, animate: true });
         return;
       }
     }
@@ -95,7 +85,7 @@ function MapController({ geoData, selectedCode }) {
     // Fit to full Sri Lanka
     const L = require('leaflet');
     const full = L.geoJSON(geoData);
-    map.flyToBounds(full.getBounds(), { padding: [20, 20], duration: 0.6 });
+    map.fitBounds(full.getBounds(), { padding: [20, 20], animate: true });
   }, [selectedCode, geoData, map]);
 
   return null;
@@ -119,6 +109,7 @@ export default function SriLankaMap({
   }, []);
 
   const handleDistrictClick = useCallback((code) => {
+    // If district has a mapped Aram region, select that region + district
     const aramRegion = DISTRICT_TO_ARAM_REGION[code];
     if (aramRegion) {
       onSelectRegion(aramRegion);
@@ -128,6 +119,7 @@ export default function SriLankaMap({
 
   const onEachFeature = useCallback((feature, layer) => {
     const code = feature.properties.code;
+    const project = districtProjects[code];
 
     layer.on({
       mouseover: (e) => {
@@ -159,7 +151,7 @@ export default function SriLankaMap({
   }
 
   return (
-    <div className="relative w-full h-[450px] lg:h-full" style={{ minHeight: '400px' }}>
+    <div className="relative w-full h-[450px] lg:h-full">
       <MapContainer
         center={[7.8731, 80.7718]}
         zoom={7.5}
@@ -169,17 +161,9 @@ export default function SriLankaMap({
         style={{ background: '#F8FAFC' }}
         minZoom={7}
         maxZoom={11}
-        /* Increase pixels-per-zoom-level to tame trackpad zoom (default=60) */
-        wheelPxPerZoomLevel={150}
-        /* Keep map interactive — explicit enablement */
-        dragging={true}
-        touchZoom={true}
-        doubleClickZoom={true}
-        scrollWheelZoom={true}
-        maxBoundsViscosity={0.8}
         maxBounds={[
-          [4.5, 78.0],
-          [11.0, 83.5],
+          [5.0, 78.5],
+          [10.5, 83.0],
         ]}
       >
         {/* Very subtle base tiles for geographic context */}
