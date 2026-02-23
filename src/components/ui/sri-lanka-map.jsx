@@ -121,6 +121,7 @@ function MapController({ geoData, selectedCode }) {
     return () => clearTimeout(t);
   }, [map]);
 
+  /* Fix #3: fitBounds on district selection */
   useEffect(() => {
     if (!geoData) return;
 
@@ -129,12 +130,12 @@ function MapController({ geoData, selectedCode }) {
       if (feature) {
         const L = require('leaflet');
         const layer = L.geoJSON(feature);
-        map.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 10, animate: true, duration: 0.5 });
+        map.fitBounds(layer.getBounds(), { padding: [80, 80], maxZoom: 10, animate: true, duration: 0.6 });
         return;
       }
     }
 
-    // Fit to full Sri Lanka — tighter padding to zoom in more
+    // Fit to full Sri Lanka
     const L = require('leaflet');
     const full = L.geoJSON(geoData);
     map.fitBounds(full.getBounds(), { padding: [10, 10], animate: true });
@@ -143,11 +144,11 @@ function MapController({ geoData, selectedCode }) {
   return null;
 }
 
-/* ─── Zoom Control ───────────────────────────────── */
+/* ─── Zoom Control — positioned bottom-right, inside map area ── */
 function ZoomControl() {
   const map = useMap();
   return (
-    <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-1">
+    <div className="absolute bottom-16 right-4 z-[400] flex flex-col gap-1">
       <button
         onClick={() => map.zoomIn()}
         className="w-8 h-8 bg-white/95 backdrop-blur-sm border border-aram-warm-200 rounded-lg shadow-lg flex items-center justify-center text-aram-warm-500 hover:text-aram-green-900 transition-colors text-lg font-medium"
@@ -225,13 +226,11 @@ export default function SriLankaMap({
     [selectedDistrict]
   );
 
-  /* Use a stable key so the GeoJSON layer isn't destroyed/recreated on hover.
-     Re-key only on selectedDistrict change to update styles. */
   const geoKey = `districts-${selectedDistrict || 'none'}`;
 
   if (!geoData) {
     return (
-      <div className="w-full h-[500px] lg:h-full flex items-center justify-center bg-aram-warm-50">
+      <div className="w-full h-full flex items-center justify-center bg-aram-warm-50">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-aram-warm-300 border-t-aram-purple rounded-full animate-spin mx-auto mb-3" />
           <p className="text-aram-warm-400 text-sm">Loading map...</p>
@@ -241,7 +240,7 @@ export default function SriLankaMap({
   }
 
   return (
-    <div className="relative w-full h-[500px] lg:h-full">
+    <div className="relative w-full h-full overflow-hidden">
       <MapContainer
         center={[7.8731, 80.7718]}
         zoom={8}
@@ -280,7 +279,7 @@ export default function SriLankaMap({
       {hoveredCode && <DistrictTooltip code={hoveredCode} geoData={geoData} />}
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl border border-aram-warm-200 shadow-lg px-4 py-3">
+      <div className="absolute bottom-4 left-4 z-[400] bg-white/95 backdrop-blur-sm rounded-xl border border-aram-warm-200 shadow-lg px-4 py-3">
         <p className="text-[10px] font-mono uppercase tracking-wider text-aram-warm-400 mb-2">
           District Status
         </p>
@@ -303,7 +302,7 @@ export default function SriLankaMap({
       {selectedDistrict && (
         <button
           onClick={() => { onSelectDistrict(null); onSelectRegion(null); }}
-          className="absolute top-4 left-4 z-[1000] flex items-center gap-1.5 text-sm bg-white/95 backdrop-blur-sm border border-aram-warm-200 rounded-lg px-3 py-2 shadow-lg text-aram-warm-500 hover:text-aram-green-900 transition-colors"
+          className="absolute top-4 left-4 z-[400] flex items-center gap-1.5 text-sm bg-white/95 backdrop-blur-sm border border-aram-warm-200 rounded-lg px-3 py-2 shadow-lg text-aram-warm-500 hover:text-aram-green-900 transition-colors"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

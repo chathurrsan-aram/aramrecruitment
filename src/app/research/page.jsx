@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, useRef, Suspense } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -16,7 +16,7 @@ import { sectors } from '@/data/sectors';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
 import {
   Search, Map, LayoutGrid, ArrowLeft, X, ChevronRight, ChevronUp, ChevronDown,
-  Users, Lightbulb, MapPin, ExternalLink,
+  Users, Lightbulb, MapPin, ExternalLink, Filter,
 } from 'lucide-react';
 
 const DISTRICT_NAMES = {
@@ -45,7 +45,6 @@ const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
 function SegmentedControl({ leftLabel, rightLabel, isRight, onChange, leftIcon: LeftIcon, rightIcon: RightIcon }) {
   return (
     <div className="relative flex bg-aram-warm-100 rounded-xl p-1">
-      {/* Sliding indicator pill */}
       <div
         className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm transition-transform duration-300 ease-in-out ${
           isRight ? 'translate-x-[calc(100%+4px)]' : 'translate-x-0'
@@ -106,7 +105,7 @@ function SmallToggle({ leftLabel, rightLabel, isRight, onChange, leftIcon: LeftI
   );
 }
 
-/* ─── Full-page Detail View (slide-in, opaque) ──── */
+/* ─── Full-page Detail View (slide-in, fully opaque — Fix #2) ── */
 function DetailView({ item, type, onBack, backLabel }) {
   if (type === 'insight') {
     const region = regions.find(r => r.id === item.region);
@@ -116,7 +115,7 @@ function DetailView({ item, type, onBack, backLabel }) {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="fixed inset-0 z-50 bg-white overflow-y-auto"
+        className="fixed inset-0 z-[9999] bg-white overflow-y-auto"
       >
         <div className="max-w-3xl mx-auto px-6 py-10">
           <button onClick={onBack} className="flex items-center gap-2 text-sm font-medium text-aram-purple hover:text-aram-green-900 mb-8 transition-colors bg-aram-purple-50 px-4 py-2 rounded-lg">
@@ -144,7 +143,7 @@ function DetailView({ item, type, onBack, backLabel }) {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="fixed inset-0 z-50 bg-white overflow-y-auto"
+        className="fixed inset-0 z-[9999] bg-white overflow-y-auto"
       >
         <div className="max-w-3xl mx-auto px-6 py-10">
           <button onClick={onBack} className="flex items-center gap-2 text-sm font-medium text-aram-purple hover:text-aram-green-900 mb-8 transition-colors bg-aram-purple-50 px-4 py-2 rounded-lg">
@@ -259,7 +258,6 @@ function MapSidebar({ selectedDistrict, selectedRegion, contentMode, searchQuery
           </div>
         )}
 
-        {/* Content based on mode */}
         {contentMode === 'partners' && filteredPartners.length > 0 && (
           <div>
             <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
@@ -363,10 +361,10 @@ function MapSidebar({ selectedDistrict, selectedRegion, contentMode, searchQuery
   return null;
 }
 
-/* ─── Card Grid with Filters ─────────────────────── */
+/* ─── Card Grid with Filters (Fix #7) ────────────── */
 function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
   const [sectorFilter, setSectorFilter] = useState(null);
-  const [partnerFilter, setPartnerFilter] = useState(null);
+  const [regionFilter, setRegionFilter] = useState(null);
 
   const filteredInsights = useMemo(() => {
     let filtered = insights;
@@ -374,14 +372,16 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(i => i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q));
     }
-    if (sectorFilter) {
+    if (sectorFilter === 'cross-sector') {
+      filtered = filtered.filter(i => i.sectors.length > 1);
+    } else if (sectorFilter) {
       filtered = filtered.filter(i => i.sectors.includes(sectorFilter));
     }
-    if (partnerFilter) {
-      filtered = filtered.filter(i => i.partners && i.partners.includes(partnerFilter));
+    if (regionFilter) {
+      filtered = filtered.filter(i => i.region === regionFilter);
     }
     return filtered;
-  }, [searchQuery, sectorFilter, partnerFilter]);
+  }, [searchQuery, sectorFilter, regionFilter]);
 
   const filteredPartners = useMemo(() => {
     let filtered = partners;
@@ -389,18 +389,34 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.oneLiner.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
     }
-    if (sectorFilter) {
+    if (sectorFilter === 'cross-sector') {
+      filtered = filtered.filter(p => p.sectors.length > 1);
+    } else if (sectorFilter) {
       filtered = filtered.filter(p => p.sectors.includes(sectorFilter));
     }
+    if (regionFilter) {
+      filtered = filtered.filter(p => p.region === regionFilter);
+    }
     return filtered;
-  }, [searchQuery, sectorFilter]);
+  }, [searchQuery, sectorFilter, regionFilter]);
 
-  const activeFilters = (sectorFilter ? 1 : 0) + (partnerFilter ? 1 : 0);
+  const items = contentMode === 'insights' ? filteredInsights : filteredPartners;
+  const itemLabel = contentMode === 'insights' ? 'insights' : 'partners';
 
   const filterBar = (
-    <div className="mb-6">
+    <div className="mb-6 space-y-3">
+      {/* Sector pills */}
       <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-xs font-mono text-aram-warm-400 uppercase tracking-wider mr-1">Sector:</span>
+        <button
+          onClick={() => setSectorFilter(null)}
+          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+            sectorFilter === null
+              ? 'bg-aram-purple text-white shadow-sm'
+              : 'bg-aram-warm-100 text-aram-warm-500 hover:bg-aram-warm-200'
+          }`}
+        >
+          All
+        </button>
         {sectors.map(s => (
           <button
             key={s.id}
@@ -414,33 +430,39 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
             {s.name}
           </button>
         ))}
-      </div>
-      {contentMode === 'insights' && (
-        <div className="flex flex-wrap gap-2 items-center mt-3">
-          <span className="text-xs font-mono text-aram-warm-400 uppercase tracking-wider mr-1">Partner:</span>
-          {partners.map(p => (
-            <button
-              key={p.id}
-              onClick={() => setPartnerFilter(partnerFilter === p.id ? null : p.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                partnerFilter === p.id
-                  ? 'bg-aram-purple text-white shadow-sm'
-                  : 'bg-aram-warm-100 text-aram-warm-500 hover:bg-aram-warm-200'
-              }`}
-            >
-              {p.name}
-            </button>
-          ))}
-        </div>
-      )}
-      {activeFilters > 0 && (
         <button
-          onClick={() => { setSectorFilter(null); setPartnerFilter(null); }}
-          className="mt-3 text-xs text-aram-purple hover:text-aram-green-900 font-medium transition-colors"
+          onClick={() => setSectorFilter(sectorFilter === 'cross-sector' ? null : 'cross-sector')}
+          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+            sectorFilter === 'cross-sector'
+              ? 'bg-aram-purple text-white shadow-sm'
+              : 'bg-aram-warm-100 text-aram-warm-500 hover:bg-aram-warm-200'
+          }`}
         >
-          Clear all filters
+          Cross-sector
         </button>
-      )}
+      </div>
+
+      {/* Region dropdown */}
+      <div className="flex items-center gap-3">
+        <select
+          value={regionFilter || ''}
+          onChange={(e) => setRegionFilter(e.target.value || null)}
+          className="text-sm border border-aram-warm-200 rounded-lg px-3 py-1.5 bg-white text-aram-warm-500 focus:outline-none focus:ring-2 focus:ring-aram-purple/30 focus:border-aram-purple transition-all"
+        >
+          <option value="">All Regions</option>
+          {regions.map(r => (
+            <option key={r.id} value={r.id}>{r.name}</option>
+          ))}
+        </select>
+        {(sectorFilter || regionFilter) && (
+          <button
+            onClick={() => { setSectorFilter(null); setRegionFilter(null); }}
+            className="text-xs text-aram-purple hover:text-aram-green-900 font-medium transition-colors"
+          >
+            Clear filters
+          </button>
+        )}
+      </div>
     </div>
   );
 
@@ -448,34 +470,41 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
     return (
       <div className="max-w-6xl mx-auto px-6 py-8">
         {filterBar}
-        <p className="text-sm text-aram-warm-400 font-mono mb-6">{filteredInsights.length} insights</p>
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" staggerDelay={0.06}>
-          {filteredInsights.map(insight => {
-            const region = regions.find(r => r.id === insight.region);
-            return (
-              <StaggerItem key={insight.id}>
-                <div
-                  className="rounded-xl border border-aram-warm-200 bg-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-aram-purple group h-full"
-                  onClick={() => onSelectDetail({ type: 'insight', data: insight })}
-                >
-                  <div className="flex items-center gap-2 mb-3">
-                    <TypeBadge type={insight.type} />
-                    {region && <span className="font-mono text-[10px] text-aram-warm-300">{region.name}</span>}
+        <p className="text-sm text-aram-warm-400 font-mono mb-6">{filteredInsights.length} {itemLabel}</p>
+        {filteredInsights.length > 0 ? (
+          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" staggerDelay={0.06}>
+            {filteredInsights.map(insight => {
+              const region = regions.find(r => r.id === insight.region);
+              return (
+                <StaggerItem key={insight.id}>
+                  <div
+                    className="rounded-xl border border-aram-warm-200 bg-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-aram-purple group h-full"
+                    onClick={() => onSelectDetail({ type: 'insight', data: insight })}
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <TypeBadge type={insight.type} />
+                      {region && <span className="font-mono text-[10px] text-aram-warm-300">{region.name}</span>}
+                    </div>
+                    <h3 className="font-display text-base font-semibold text-aram-green-900 mb-2 group-hover:text-aram-purple transition-colors line-clamp-2">
+                      {insight.title}
+                    </h3>
+                    <p className="text-sm text-aram-warm-400 leading-relaxed line-clamp-3 mb-3">{insight.summary}</p>
+                    <div className="flex gap-1.5 flex-wrap mt-auto">
+                      {insight.sectors.slice(0, 3).map(s => <SectorTag key={s} sector={s} />)}
+                    </div>
                   </div>
-                  <h3 className="font-display text-base font-semibold text-aram-green-900 mb-2 group-hover:text-aram-purple transition-colors line-clamp-2">
-                    {insight.title}
-                  </h3>
-                  <p className="text-sm text-aram-warm-400 leading-relaxed line-clamp-3 mb-3">{insight.summary}</p>
-                  <div className="flex gap-1.5 flex-wrap mt-auto">
-                    {insight.sectors.slice(0, 3).map(s => <SectorTag key={s} sector={s} />)}
-                  </div>
-                </div>
-              </StaggerItem>
-            );
-          })}
-        </StaggerContainer>
-        {filteredInsights.length === 0 && (
-          <div className="text-center py-20"><p className="text-aram-warm-400">No insights found.</p></div>
+                </StaggerItem>
+              );
+            })}
+          </StaggerContainer>
+        ) : (
+          <div className="text-center py-20">
+            <div className="w-14 h-14 bg-aram-warm-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Filter className="w-6 h-6 text-aram-warm-300" />
+            </div>
+            <p className="text-aram-warm-400 text-sm mb-1">No insights found for this combination</p>
+            <p className="text-aram-warm-300 text-xs">Try adjusting your sector or region filters.</p>
+          </div>
         )}
       </div>
     );
@@ -484,41 +513,48 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
       {filterBar}
-      <p className="text-sm text-aram-warm-400 font-mono mb-6">{filteredPartners.length} partners</p>
-      <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" staggerDelay={0.06}>
-        {filteredPartners.map(partner => {
-          const region = regions.find(r => r.id === partner.region);
-          return (
-            <StaggerItem key={partner.id}>
-              <div
-                className="rounded-xl border border-aram-warm-200 bg-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-aram-purple group h-full"
-                onClick={() => onSelectDetail({ type: 'partner', data: partner })}
-              >
-                <div className="flex items-start gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-aram-green-100 flex items-center justify-center flex-shrink-0">
-                    <span className="font-display text-xs font-bold text-aram-green-900">
-                      {partner.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
-                    </span>
+      <p className="text-sm text-aram-warm-400 font-mono mb-6">{filteredPartners.length} {itemLabel}</p>
+      {filteredPartners.length > 0 ? (
+        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" staggerDelay={0.06}>
+          {filteredPartners.map(partner => {
+            const region = regions.find(r => r.id === partner.region);
+            return (
+              <StaggerItem key={partner.id}>
+                <div
+                  className="rounded-xl border border-aram-warm-200 bg-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-aram-purple group h-full"
+                  onClick={() => onSelectDetail({ type: 'partner', data: partner })}
+                >
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-aram-green-100 flex items-center justify-center flex-shrink-0">
+                      <span className="font-display text-xs font-bold text-aram-green-900">
+                        {partner.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="font-display text-base font-semibold text-aram-green-900 group-hover:text-aram-purple transition-colors">
+                        {partner.name}
+                      </h3>
+                      {region && <p className="font-mono text-[10px] text-aram-warm-300">{region.name}</p>}
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-display text-base font-semibold text-aram-green-900 group-hover:text-aram-purple transition-colors">
-                      {partner.name}
-                    </h3>
-                    {region && <p className="font-mono text-[10px] text-aram-warm-300">{region.name}</p>}
+                  <p className="text-sm text-aram-warm-500 font-medium mb-1">{partner.oneLiner}</p>
+                  <p className="text-sm text-aram-warm-400 leading-relaxed line-clamp-2 mb-3">{partner.description}</p>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {partner.sectors.slice(0, 3).map(s => <SectorTag key={s} sector={s} />)}
                   </div>
                 </div>
-                <p className="text-sm text-aram-warm-500 font-medium mb-1">{partner.oneLiner}</p>
-                <p className="text-sm text-aram-warm-400 leading-relaxed line-clamp-2 mb-3">{partner.description}</p>
-                <div className="flex gap-1.5 flex-wrap">
-                  {partner.sectors.slice(0, 3).map(s => <SectorTag key={s} sector={s} />)}
-                </div>
-              </div>
-            </StaggerItem>
-          );
-        })}
-      </StaggerContainer>
-      {filteredPartners.length === 0 && (
-        <div className="text-center py-20"><p className="text-aram-warm-400">No partners found.</p></div>
+              </StaggerItem>
+            );
+          })}
+        </StaggerContainer>
+      ) : (
+        <div className="text-center py-20">
+          <div className="w-14 h-14 bg-aram-warm-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Filter className="w-6 h-6 text-aram-warm-300" />
+          </div>
+          <p className="text-aram-warm-400 text-sm mb-1">No partners found for this combination</p>
+          <p className="text-aram-warm-300 text-xs">Try adjusting your sector or region filters.</p>
+        </div>
       )}
     </div>
   );
@@ -536,7 +572,13 @@ function ResearchContent() {
   const [selectedRegion, setSelectedRegion] = useState(initialRegion);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [detailItem, setDetailItem] = useState(null);
-  const researchViewRef = useRef(null);
+
+  /* Refs for section-based scroll (Fix #4, #5) */
+  const heroRef = useRef(null);
+  const controlsRef = useRef(null);
+  const contentRef = useRef(null);
+  const [currentSection, setCurrentSection] = useState('hero'); // 'hero' | 'content' | 'footer'
+  const [headerVisible, setHeaderVisible] = useState(true);
 
   const contentMode = isPartners ? 'partners' : 'insights';
   const backLabel = isCardView ? 'Back to Cards' : 'Back to Map';
@@ -569,10 +611,78 @@ function ResearchContent() {
     setSelectedDistrict(null);
   }, []);
 
+  /* Fix #4: Header visibility — hide when scrolled past hero into immersive content */
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroEl = heroRef.current;
+      if (!heroEl) return;
+      const heroBottom = heroEl.getBoundingClientRect().bottom;
+      // When the hero section scrolls out of view, hide the header
+      setHeaderVisible(heroBottom > 0);
+
+      // Determine current section for arrow visibility
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const viewHeight = window.innerHeight;
+
+      if (scrollY < (heroEl.offsetHeight - 50)) {
+        setCurrentSection('hero');
+      } else if (scrollY + viewHeight >= docHeight - 50) {
+        setCurrentSection('footer');
+      } else {
+        setCurrentSection('content');
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  /* Communicate header visibility to the parent layout navbar */
+  useEffect(() => {
+    const navbar = document.querySelector('header');
+    if (!navbar) return;
+    if (headerVisible) {
+      navbar.style.transform = 'translateY(0)';
+      navbar.style.opacity = '1';
+      navbar.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      navbar.style.pointerEvents = 'auto';
+    } else {
+      navbar.style.transform = 'translateY(-100%)';
+      navbar.style.opacity = '0';
+      navbar.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      navbar.style.pointerEvents = 'none';
+    }
+    return () => {
+      if (navbar) {
+        navbar.style.transform = '';
+        navbar.style.opacity = '';
+        navbar.style.transition = '';
+        navbar.style.pointerEvents = '';
+      }
+    };
+  }, [headerVisible]);
+
+  /* Fix #5: Scroll navigation helpers */
+  const scrollToHero = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const scrollToContent = useCallback(() => {
+    const controlsEl = controlsRef.current;
+    if (controlsEl) {
+      controlsEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
+
+  const scrollToFooter = useCallback(() => {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  }, []);
+
   return (
     <div className="flex flex-col">
-      {/* ── Header section (scrolls naturally) ────── */}
-      <div className="bg-aram-warm-50">
+      {/* ── Hero section (scrolls naturally) ────── */}
+      <div ref={heroRef} className="bg-aram-warm-50">
         <div className="pt-10 pb-8 md:pt-14 md:pb-10">
           <div className="max-w-3xl mx-auto px-6 text-center">
             <h1 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900 mb-3">
@@ -600,10 +710,9 @@ function ResearchContent() {
         </div>
       </div>
 
-      {/* ── Toggle bar ─────────────────────────────── */}
-      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-aram-warm-200">
+      {/* ── Toggle bar (Fix #1: sits above map with z-30, clear boundary) ── */}
+      <div ref={controlsRef} className="sticky top-0 z-30 bg-white border-b border-aram-warm-200">
         <div className="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between gap-4">
-          {/* Left: Map/Cards small toggle */}
           <SmallToggle
             leftLabel="Map"
             rightLabel="Cards"
@@ -612,7 +721,6 @@ function ResearchContent() {
             isRight={isCardView}
             onChange={handleViewToggle}
           />
-          {/* Centre: Insights/Partners segmented control */}
           <SegmentedControl
             leftLabel="Insights"
             rightLabel="Partners"
@@ -621,7 +729,6 @@ function ResearchContent() {
             isRight={isPartners}
             onChange={setIsPartners}
           />
-          {/* Right: Partners directory link */}
           <Link href="/partners" className="text-aram-warm-300 hover:text-aram-purple transition-colors flex items-center gap-1 text-xs font-medium" title="Partners Directory">
             <ExternalLink className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Directory</span>
@@ -629,7 +736,7 @@ function ResearchContent() {
         </div>
       </div>
 
-      {/* ── Detail overlay ────────────────────────── */}
+      {/* ── Detail overlay (Fix #2: z-[9999], fully opaque) ── */}
       <AnimatePresence>
         {detailItem && (
           <DetailView
@@ -643,25 +750,57 @@ function ResearchContent() {
       </AnimatePresence>
 
       {/* ── Content area ──────────────────────────── */}
-      <div className="flex-1 relative" ref={researchViewRef}>
-        {/* Scroll navigation arrows */}
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="absolute top-2 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-400 hover:text-aram-purple hover:bg-white transition-all"
-          aria-label="Scroll to top"
-        >
-          <ChevronUp className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-          className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-400 hover:text-aram-purple hover:bg-white transition-all"
-          aria-label="Scroll to bottom"
-        >
-          <ChevronDown className="w-4 h-4" />
-        </button>
+      <div className="flex-1 relative" ref={contentRef}>
+        {/* Fix #5: Navigation arrows — context-aware */}
+        <AnimatePresence>
+          {currentSection === 'content' && (
+            <motion.button
+              key="arrow-up"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={scrollToHero}
+              className="fixed top-14 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/60 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-300 hover:text-aram-purple hover:bg-white/90 transition-all"
+              aria-label="Scroll to top"
+            >
+              <ChevronUp className="w-4 h-4" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {(currentSection === 'content' || currentSection === 'hero') && (
+            <motion.button
+              key="arrow-down"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={currentSection === 'hero' ? scrollToContent : scrollToFooter}
+              className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/60 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-300 hover:text-aram-purple hover:bg-white/90 transition-all"
+              aria-label="Scroll down"
+            >
+              <ChevronDown className="w-4 h-4" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {currentSection === 'footer' && (
+            <motion.button
+              key="arrow-up-footer"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={scrollToContent}
+              className="fixed top-4 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/60 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-300 hover:text-aram-purple hover:bg-white/90 transition-all"
+              aria-label="Scroll to research view"
+            >
+              <ChevronUp className="w-4 h-4" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+
         <AnimatePresence mode="wait">
           {!isCardView ? (
-            /* ── MAP VIEW ── */
+            /* ── MAP VIEW (Fix #1 + #6) ── */
             <motion.div
               key="map-view"
               initial={{ opacity: 0 }}
@@ -669,22 +808,29 @@ function ResearchContent() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="flex flex-col lg:flex-row" style={{ height: '100vh' }}>
-                {/* Map */}
+              {/* Fix #1: overflow-hidden prevents map bleeding into controls.
+                  Fix #6: 55/45 split gives sidebar enough room. */}
+              <div className="flex flex-col lg:flex-row" style={{ height: 'calc(100vh - 49px)' }}>
+                {/* Map container — overflow hidden clips the map strictly */}
                 <div
-                  className="relative h-[500px] lg:h-full transition-all duration-500 ease-in-out"
-                  style={{ flex: hasSidebar ? '1 1 50%' : '1 1 100%' }}
+                  className="relative overflow-hidden transition-all duration-500 ease-in-out"
+                  style={{
+                    flex: hasSidebar ? '1 1 55%' : '1 1 100%',
+                    minHeight: '400px',
+                  }}
                 >
-                  <SriLankaMap
-                    selectedRegion={selectedRegion}
-                    onSelectRegion={setSelectedRegion}
-                    selectedDistrict={selectedDistrict}
-                    onSelectDistrict={handleDistrictClick}
-                  />
+                  <div className="absolute inset-0">
+                    <SriLankaMap
+                      selectedRegion={selectedRegion}
+                      onSelectRegion={setSelectedRegion}
+                      selectedDistrict={selectedDistrict}
+                      onSelectDistrict={handleDistrictClick}
+                    />
+                  </div>
 
                   {/* "Click to explore" overlay */}
                   {!hasSidebar && (
-                    <div className="absolute inset-0 flex items-end justify-center pb-8 pointer-events-none">
+                    <div className="absolute inset-0 flex items-end justify-center pb-8 pointer-events-none z-10">
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -696,16 +842,16 @@ function ResearchContent() {
                   )}
                 </div>
 
-                {/* Sidebar (slides in) */}
+                {/* Sidebar (Fix #6: 45% width, no truncation) */}
                 <AnimatePresence>
                   {hasSidebar && (
                     <motion.div
                       key="sidebar"
                       initial={{ flex: '0 0 0%', opacity: 0 }}
-                      animate={{ flex: '0 0 50%', opacity: 1 }}
+                      animate={{ flex: '0 0 45%', opacity: 1 }}
                       exit={{ flex: '0 0 0%', opacity: 0 }}
                       transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-                      className="bg-white border-l border-aram-warm-200 overflow-y-auto overflow-x-hidden hidden lg:block"
+                      className="bg-white border-l border-aram-warm-200 overflow-y-auto overflow-x-hidden hidden lg:block min-w-0"
                     >
                       <MapSidebar
                         selectedDistrict={selectedDistrict}
