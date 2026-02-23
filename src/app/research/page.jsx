@@ -150,7 +150,7 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
   return (
     <div className="flex flex-col lg:flex-row" style={{ minHeight: 'calc(100vh - 180px)' }}>
       {/* Map area */}
-      <div className="lg:w-3/5 relative min-h-[450px] lg:min-h-0">
+      <div className="lg:w-3/5 relative h-[450px] lg:h-auto lg:min-h-0">
         <SriLankaMap
           selectedRegion={selectedRegion}
           onSelectRegion={onSelectRegion}

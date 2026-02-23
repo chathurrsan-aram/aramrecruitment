@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Tooltip, useMap } from 'react-leaflet';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
 
@@ -9,13 +9,6 @@ import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjec
 const STATUS_COLORS = {
   active: '#0F7B5F',
   planned: '#E8973F',
-};
-
-const ARAM_REGION_COLORS = {
-  'hill-country': '#40916C',
-  eastern: '#5C8DC8',
-  northern: '#8B6BB5',
-  western: '#6D4A9E',
 };
 
 const INACTIVE_COLOR = '#D1D5DB';
@@ -64,9 +57,17 @@ function getStyle(feature, hoveredCode, selectedCode) {
   };
 }
 
-/* ─── Map controller (auto-fit bounds) ────────────── */
+/* ─── Map controller (auto-fit bounds + invalidateSize) ── */
 function MapController({ geoData, selectedCode }) {
   const map = useMap();
+
+  // Fix Leaflet sizing on mobile / dynamic containers
+  useEffect(() => {
+    // Immediate + delayed invalidateSize to handle layout shifts
+    map.invalidateSize();
+    const t = setTimeout(() => map.invalidateSize(), 300);
+    return () => clearTimeout(t);
+  }, [map]);
 
   useEffect(() => {
     if (!geoData) return;
@@ -140,7 +141,7 @@ export default function SriLankaMap({
 
   if (!geoData) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-aram-warm-50">
+      <div className="w-full h-[450px] lg:h-full flex items-center justify-center bg-aram-warm-50">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-aram-warm-300 border-t-aram-purple rounded-full animate-spin mx-auto mb-3" />
           <p className="text-aram-warm-400 text-sm">Loading map...</p>
@@ -150,7 +151,7 @@ export default function SriLankaMap({
   }
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-[450px] lg:h-full">
       <MapContainer
         center={[7.8731, 80.7718]}
         zoom={7.5}
@@ -178,21 +179,9 @@ export default function SriLankaMap({
           data={geoData}
           style={styleFn}
           onEachFeature={onEachFeature}
-        >
-          {/* Tooltips for each feature are handled via onEachFeature */}
-        </GeoJSON>
+        />
 
         <MapController geoData={geoData} selectedCode={selectedDistrict} />
-
-        {/* District tooltips rendered as Leaflet tooltips via GeoJSON onEachFeature */}
-        {geoData.features.map(f => {
-          const code = f.properties.code;
-          const project = districtProjects[code];
-          const isHovered = hoveredCode === code;
-          if (!isHovered) return null;
-
-          return null; // We use CSS tooltips below instead
-        })}
       </MapContainer>
 
       {/* Custom HTML tooltip (follows mouse, outside Leaflet) */}
