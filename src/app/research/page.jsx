@@ -1028,7 +1028,7 @@ function ResearchContent() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -12 }}
                         transition={{ duration: 0.3 }}
-                        className="absolute top-3 left-0 right-0 z-20 pointer-events-none"
+                        className="absolute bottom-3 left-0 right-0 z-20 pointer-events-none"
                       >
                         <div className="relative h-28">
                           <motion.div
@@ -1037,9 +1037,9 @@ function ResearchContent() {
                             className="pointer-events-auto absolute left-[15%] sm:left-[17%] -translate-x-1/2"
                           >
                             <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/40 px-4 py-3 border border-white/20">
-                              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
+                              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
                               <p className="text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap">Toggle MAP ↔ CARDS</p>
-                              <p className="text-[11px] sm:text-xs text-white/85 mt-0.5 whitespace-nowrap">Switch view mode here</p>
+                              <p className="text-[11px] sm:text-xs text-white/85 mt-0.5 whitespace-nowrap">Use the top-left toggle</p>
                             </div>
                           </motion.div>
 
@@ -1049,9 +1049,9 @@ function ResearchContent() {
                             className="pointer-events-auto absolute left-1/2 -translate-x-1/2"
                           >
                             <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/40 px-4 py-3 pr-10 border border-white/20">
-                              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
+                              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
                               <p className="text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap">Toggle INSIGHTS ↔ PARTNERS</p>
-                              <p className="text-[11px] sm:text-xs text-white/85 mt-0.5 whitespace-nowrap">Switch content type here</p>
+                              <p className="text-[11px] sm:text-xs text-white/85 mt-0.5 whitespace-nowrap">Use the top-centre toggle</p>
                               <button
                                 onClick={() => setShowTutorial(false)}
                                 className="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
