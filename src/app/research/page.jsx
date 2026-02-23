@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect, Suspense } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { StaggerContainer, StaggerItem } from '@/components/ui/motion';
@@ -17,7 +17,9 @@ import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjec
 import {
   Search, Map, LayoutGrid, ArrowLeft, X, ChevronRight,
   Users, Lightbulb, MapPin, ExternalLink, Filter, ArrowDown, MousePointerClick,
+  Globe, Building2, BookOpen, Layers,
 } from 'lucide-react';
+import { videos } from '@/lib/cloudinary';
 
 const DISTRICT_NAMES = {
   CO: 'Colombo', GQ: 'Gampaha', KT: 'Kalutara', KY: 'Kandy', MT: 'Matale',
@@ -101,6 +103,129 @@ function SmallToggle({ leftLabel, rightLabel, isRight, onChange, leftIcon: LeftI
         {RightIcon && <RightIcon className="w-3.5 h-3.5" />}
         <span className="hidden sm:inline">{rightLabel}</span>
       </button>
+    </div>
+  );
+}
+
+/* ─── Search Autocomplete ─────────────────────────── */
+function SearchAutocomplete({ searchQuery, onChange, onSelectSuggestion, className }) {
+  const [isFocused, setIsFocused] = useState(false);
+  const wrapperRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setIsFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const suggestions = useMemo(() => {
+    if (!searchQuery || searchQuery.length < 1) return [];
+    const q = searchQuery.toLowerCase();
+    const results = [];
+
+    // Match regions
+    for (const r of regions) {
+      if (r.name.toLowerCase().includes(q)) {
+        results.push({ type: 'region', id: r.id, label: r.name, sub: r.provinces?.join(', ') || '' });
+      }
+    }
+
+    // Match sectors
+    for (const s of sectors) {
+      if (s.name.toLowerCase().includes(q)) {
+        results.push({ type: 'sector', id: s.id, label: s.name, sub: s.description?.slice(0, 60) + '...' });
+      }
+    }
+
+    // Match partners
+    for (const p of partners) {
+      if (p.name.toLowerCase().includes(q) || p.oneLiner.toLowerCase().includes(q)) {
+        results.push({ type: 'partner', id: p.id, label: p.name, sub: p.oneLiner });
+      }
+    }
+
+    // Match insights
+    for (const i of insights) {
+      if (i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q)) {
+        results.push({ type: 'insight', id: i.id, label: i.title, sub: i.summary.slice(0, 60) + '...' });
+      }
+    }
+
+    return results.slice(0, 8);
+  }, [searchQuery]);
+
+  const typeIcons = {
+    region: Globe,
+    sector: Layers,
+    partner: Building2,
+    insight: BookOpen,
+  };
+  const typeLabels = { region: 'Region', sector: 'Sector', partner: 'Partner', insight: 'Insight' };
+  const showDropdown = isFocused && suggestions.length > 0;
+
+  return (
+    <div ref={wrapperRef} className={`relative ${className || ''}`}>
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 z-10" />
+      <input
+        type="text"
+        placeholder="Search regions, partners, insights..."
+        value={searchQuery}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        className="w-full pl-11 pr-10 py-3.5 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-aram-purple/50 focus:border-aram-purple/50 focus:bg-white/15 transition-all shadow-lg"
+      />
+      {searchQuery && (
+        <button onClick={() => { onChange(''); setIsFocused(false); }} className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
+          <X className="w-4 h-4 text-white/40 hover:text-white/70" />
+        </button>
+      )}
+
+      {/* Dropdown */}
+      <AnimatePresence>
+        {showDropdown && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl rounded-xl border border-aram-warm-200 shadow-2xl overflow-hidden z-50 max-h-[320px] overflow-y-auto"
+          >
+            {suggestions.map((s, idx) => {
+              const Icon = typeIcons[s.type];
+              return (
+                <button
+                  key={`${s.type}-${s.id}`}
+                  onClick={() => {
+                    onSelectSuggestion(s);
+                    setIsFocused(false);
+                  }}
+                  className={`w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-aram-purple-50 transition-colors ${
+                    idx > 0 ? 'border-t border-aram-warm-100' : ''
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-lg bg-aram-purple-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Icon className="w-4 h-4 text-aram-purple" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-aram-green-900 truncate">{s.label}</span>
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-aram-warm-300 flex-shrink-0">
+                        {typeLabels[s.type]}
+                      </span>
+                    </div>
+                    <p className="text-xs text-aram-warm-400 truncate mt-0.5">{s.sub}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -572,12 +697,23 @@ function ResearchContent() {
   const [selectedRegion, setSelectedRegion] = useState(initialRegion);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [detailItem, setDetailItem] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   /* Refs for section-based scroll (Fix #4, #5) */
   const heroRef = useRef(null);
   const controlsRef = useRef(null);
   const contentRef = useRef(null);
+  const videoRef = useRef(null);
   const [headerVisible, setHeaderVisible] = useState(true);
+
+  /* Parallax for video hero */
+  const { scrollY } = useScroll();
+  const bgY = useTransform(scrollY, [0, 800], [0, 280]);
+  const bgScale = useTransform(scrollY, [0, 800], [1, 1.15]);
+  const contentOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const contentY = useTransform(scrollY, [0, 500], [0, -60]);
+
+  useEffect(() => { requestAnimationFrame(() => setLoaded(true)); }, []);
 
   const contentMode = isPartners ? 'partners' : 'insights';
   const backLabel = isCardView ? 'Back to Cards' : 'Back to Map';
@@ -655,45 +791,136 @@ function ResearchContent() {
     }
   }, []);
 
+  const handleSuggestionSelect = useCallback((suggestion) => {
+    if (suggestion.type === 'region') {
+      setSelectedRegion(suggestion.id);
+      setSelectedDistrict(null);
+      setSearchQuery('');
+      setIsCardView(false);
+      setTimeout(() => scrollToContent(), 100);
+    } else if (suggestion.type === 'sector') {
+      // Keep the sector name as search query to filter results
+      setSearchQuery(suggestion.label);
+      setTimeout(() => scrollToContent(), 100);
+    } else if (suggestion.type === 'partner') {
+      const partner = partners.find(p => p.id === suggestion.id);
+      if (partner) {
+        setSearchQuery('');
+        setDetailItem({ type: 'partner', data: partner });
+      }
+    } else if (suggestion.type === 'insight') {
+      const insight = insights.find(i => i.id === suggestion.id);
+      if (insight) {
+        setSearchQuery('');
+        setDetailItem({ type: 'insight', data: insight });
+      }
+    }
+  }, [scrollToContent]);
+
   return (
     <div className="flex flex-col">
-      {/* ── Hero section — full viewport height with scroll CTA ────── */}
-      <div ref={heroRef} className="relative bg-aram-warm-50 flex flex-col items-center justify-center min-h-screen">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-aram-green-900 mb-4 leading-tight">
-            Research & <span className="text-aram-purple">Insights</span>
-          </h1>
-          <p className="text-lg md:text-xl text-aram-warm-500 leading-relaxed mb-8 max-w-2xl mx-auto">
-            View our interactive maps to search our insights and organisations across Sri Lanka.
-          </p>
-          <div className="relative max-w-md mx-auto mb-10">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-aram-warm-300" />
-            <input
-              type="text"
-              placeholder="Search insights, partners..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-10 py-3 rounded-xl border border-aram-warm-200 bg-white text-sm text-aram-green-900 placeholder:text-aram-warm-300 focus:outline-none focus:ring-2 focus:ring-aram-purple/30 focus:border-aram-purple transition-all shadow-sm"
-            />
-            {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
-                <X className="w-4 h-4 text-aram-warm-300 hover:text-aram-warm-500" />
-              </button>
-            )}
-          </div>
-        </div>
+      {/* ── Hero section — video background like home page ────── */}
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Video background with parallax */}
+        <motion.div className="absolute inset-0 noise-overlay" style={{ y: bgY, scale: bgScale }}>
+          <video
+            ref={videoRef}
+            className="w-full h-full object-cover"
+            autoPlay loop muted playsInline
+            poster="/images/Community.png"
+          >
+            <source src={videos.researchHero} type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-aram-green-950/80" />
+        </motion.div>
 
-        {/* Scroll-down arrow */}
+        {/* Floating particles */}
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-aram-purple/20"
+            style={{
+              width: 6 + i * 4,
+              height: 6 + i * 4,
+              left: `${15 + i * 14}%`,
+              top: `${20 + (i % 3) * 20}%`,
+            }}
+            animate={{ y: [0, -20, 0], opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 4 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.6 }}
+          />
+        ))}
+
+        {/* Hero content */}
+        <motion.div
+          className="relative z-10 max-w-4xl mx-auto px-6 text-center pt-20"
+          style={{ opacity: contentOpacity, y: contentY }}
+        >
+          <motion.p
+            className="text-xs font-semibold uppercase tracking-[0.25em] text-aram-purple-light mb-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={loaded ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            THE ARAM INITIATIVE
+          </motion.p>
+          <motion.h1
+            className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight"
+            initial={{ opacity: 0, y: 20 }}
+            animate={loaded ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Research & <span className="text-aram-purple-light">Insights</span>
+          </motion.h1>
+          <motion.p
+            className="font-body text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={loaded ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            Explore our interactive map to discover insights and organisations across Sri Lanka.
+          </motion.p>
+
+          {/* Search with autocomplete */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={loaded ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <SearchAutocomplete
+              searchQuery={searchQuery}
+              onChange={setSearchQuery}
+              onSelectSuggestion={handleSuggestionSelect}
+              className="max-w-md mx-auto"
+            />
+          </motion.div>
+        </motion.div>
+
+        {/* Prominent scroll CTA — clearly says "Explore the Map" */}
         <motion.button
           onClick={scrollToContent}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-aram-warm-400 hover:text-aram-purple transition-colors group"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 group"
+          initial={{ opacity: 0, y: 20 }}
+          animate={loaded ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <span className="text-xs font-medium tracking-wide uppercase">Explore</span>
-          <ArrowDown className="w-5 h-5" />
+          <div className="flex flex-col items-center gap-3">
+            <motion.div
+              className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-3 flex items-center gap-3 group-hover:bg-aram-purple/80 group-hover:border-aram-purple transition-all duration-300"
+              animate={{ y: [0, 6, 0] }}
+              transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+            >
+              <Map className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" />
+              <span className="text-sm font-semibold text-white/90 group-hover:text-white transition-colors tracking-wide">
+                Explore the Map
+              </span>
+              <ArrowDown className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
+            </motion.div>
+            <div className="w-px h-6 bg-white/20 relative overflow-hidden">
+              <div className="w-1.5 h-1.5 rounded-full bg-aram-purple absolute left-1/2 -translate-x-1/2 animate-bounce-dot" />
+            </div>
+          </div>
         </motion.button>
-      </div>
+      </section>
 
       {/* ── Toggle bar (Fix #1: sits above map with z-30, clear boundary) ── */}
       <div ref={controlsRef} className="sticky top-0 z-30 bg-white border-b border-aram-warm-200">
