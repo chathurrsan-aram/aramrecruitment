@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, useEffect, Suspense } from 'react';
+import { useState, useMemo, useCallback, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ import { regions } from '@/data/regions';
 import { sectors } from '@/data/sectors';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
 import {
-  Search, Map, LayoutGrid, ArrowLeft, X, ChevronRight,
+  Search, Map, LayoutGrid, ArrowLeft, X, ChevronRight, ChevronUp, ChevronDown,
   Users, Lightbulb, MapPin, ExternalLink,
 } from 'lucide-react';
 
@@ -41,47 +41,72 @@ const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
   ),
 });
 
-/* ─── Apple-style Toggle (compact) ────────────────── */
-function Toggle({ leftLabel, rightLabel, isRight, onChange, leftIcon: LeftIcon, rightIcon: RightIcon }) {
+/* ─── Segmented Control (prominent, for Insights/Partners) ── */
+function SegmentedControl({ leftLabel, rightLabel, isRight, onChange, leftIcon: LeftIcon, rightIcon: RightIcon }) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="relative flex bg-aram-warm-100 rounded-xl p-1">
+      {/* Sliding indicator pill */}
+      <div
+        className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm transition-transform duration-300 ease-in-out ${
+          isRight ? 'translate-x-[calc(100%+4px)]' : 'translate-x-0'
+        }`}
+        style={{ left: '4px' }}
+      />
       <button
         onClick={() => onChange(false)}
-        className={`flex items-center gap-1 text-[11px] font-medium transition-colors duration-200 ${
-          !isRight ? 'text-aram-green-900' : 'text-aram-warm-300'
+        className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 min-w-[100px] ${
+          !isRight ? 'text-aram-purple' : 'text-aram-warm-400'
         }`}
       >
-        {LeftIcon && <LeftIcon className="w-3 h-3" />}
-        <span className="hidden sm:inline">{leftLabel}</span>
-      </button>
-      <button
-        onClick={() => onChange(!isRight)}
-        className={`relative w-9 h-[18px] rounded-full transition-colors duration-300 flex-shrink-0 ${
-          isRight ? 'bg-aram-purple' : 'bg-aram-purple/40'
-        }`}
-        role="switch"
-        aria-checked={isRight}
-      >
-        <span
-          className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white shadow-sm transition-transform duration-300 ${
-            isRight ? 'translate-x-[19px]' : 'translate-x-[2px]'
-          }`}
-        />
+        {LeftIcon && <LeftIcon className="w-4 h-4" />}
+        {leftLabel}
       </button>
       <button
         onClick={() => onChange(true)}
-        className={`flex items-center gap-1 text-[11px] font-medium transition-colors duration-200 ${
-          isRight ? 'text-aram-green-900' : 'text-aram-warm-300'
+        className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 min-w-[100px] ${
+          isRight ? 'text-aram-purple' : 'text-aram-warm-400'
         }`}
       >
-        {RightIcon && <RightIcon className="w-3 h-3" />}
+        {RightIcon && <RightIcon className="w-4 h-4" />}
+        {rightLabel}
+      </button>
+    </div>
+  );
+}
+
+/* ─── Small Toggle (compact, for Map/Cards) ──────── */
+function SmallToggle({ leftLabel, rightLabel, isRight, onChange, leftIcon: LeftIcon, rightIcon: RightIcon }) {
+  return (
+    <div className="relative flex bg-aram-warm-100 rounded-lg p-0.5">
+      <div
+        className={`absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-white rounded-md shadow-sm transition-transform duration-300 ease-in-out ${
+          isRight ? 'translate-x-[calc(100%+2px)]' : 'translate-x-0'
+        }`}
+        style={{ left: '2px' }}
+      />
+      <button
+        onClick={() => onChange(false)}
+        className={`relative z-10 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-200 ${
+          !isRight ? 'text-aram-purple' : 'text-aram-warm-400'
+        }`}
+      >
+        {LeftIcon && <LeftIcon className="w-3.5 h-3.5" />}
+        <span className="hidden sm:inline">{leftLabel}</span>
+      </button>
+      <button
+        onClick={() => onChange(true)}
+        className={`relative z-10 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-200 ${
+          isRight ? 'text-aram-purple' : 'text-aram-warm-400'
+        }`}
+      >
+        {RightIcon && <RightIcon className="w-3.5 h-3.5" />}
         <span className="hidden sm:inline">{rightLabel}</span>
       </button>
     </div>
   );
 }
 
-/* ─── Full-page Detail View (slide-in) ───────────── */
+/* ─── Full-page Detail View (slide-in, opaque) ──── */
 function DetailView({ item, type, onBack, backLabel }) {
   if (type === 'insight') {
     const region = regions.find(r => r.id === item.region);
@@ -91,10 +116,10 @@ function DetailView({ item, type, onBack, backLabel }) {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="fixed inset-0 top-[64px] z-40 bg-white overflow-y-auto"
+        className="fixed inset-0 z-50 bg-white overflow-y-auto"
       >
         <div className="max-w-3xl mx-auto px-6 py-10">
-          <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-aram-warm-400 hover:text-aram-green-900 mb-8 transition-colors">
+          <button onClick={onBack} className="flex items-center gap-2 text-sm font-medium text-aram-purple hover:text-aram-green-900 mb-8 transition-colors bg-aram-purple-50 px-4 py-2 rounded-lg">
             <ArrowLeft className="w-4 h-4" /> {backLabel}
           </button>
           <div className="flex items-center gap-2 mb-4 flex-wrap">
@@ -119,10 +144,10 @@ function DetailView({ item, type, onBack, backLabel }) {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="fixed inset-0 top-[64px] z-40 bg-white overflow-y-auto"
+        className="fixed inset-0 z-50 bg-white overflow-y-auto"
       >
         <div className="max-w-3xl mx-auto px-6 py-10">
-          <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-aram-warm-400 hover:text-aram-green-900 mb-8 transition-colors">
+          <button onClick={onBack} className="flex items-center gap-2 text-sm font-medium text-aram-purple hover:text-aram-green-900 mb-8 transition-colors bg-aram-purple-50 px-4 py-2 rounded-lg">
             <ArrowLeft className="w-4 h-4" /> {backLabel}
           </button>
           <div className="flex items-start gap-5 mb-6">
@@ -338,23 +363,91 @@ function MapSidebar({ selectedDistrict, selectedRegion, contentMode, searchQuery
   return null;
 }
 
-/* ─── Card Grid ───────────────────────────────────── */
+/* ─── Card Grid with Filters ─────────────────────── */
 function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
+  const [sectorFilter, setSectorFilter] = useState(null);
+  const [partnerFilter, setPartnerFilter] = useState(null);
+
   const filteredInsights = useMemo(() => {
-    if (!searchQuery) return insights;
-    const q = searchQuery.toLowerCase();
-    return insights.filter(i => i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q));
-  }, [searchQuery]);
+    let filtered = insights;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(i => i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q));
+    }
+    if (sectorFilter) {
+      filtered = filtered.filter(i => i.sectors.includes(sectorFilter));
+    }
+    if (partnerFilter) {
+      filtered = filtered.filter(i => i.partners && i.partners.includes(partnerFilter));
+    }
+    return filtered;
+  }, [searchQuery, sectorFilter, partnerFilter]);
 
   const filteredPartners = useMemo(() => {
-    if (!searchQuery) return partners;
-    const q = searchQuery.toLowerCase();
-    return partners.filter(p => p.name.toLowerCase().includes(q) || p.oneLiner.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
-  }, [searchQuery]);
+    let filtered = partners;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.oneLiner.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+    }
+    if (sectorFilter) {
+      filtered = filtered.filter(p => p.sectors.includes(sectorFilter));
+    }
+    return filtered;
+  }, [searchQuery, sectorFilter]);
+
+  const activeFilters = (sectorFilter ? 1 : 0) + (partnerFilter ? 1 : 0);
+
+  const filterBar = (
+    <div className="mb-6">
+      <div className="flex flex-wrap gap-2 items-center">
+        <span className="text-xs font-mono text-aram-warm-400 uppercase tracking-wider mr-1">Sector:</span>
+        {sectors.map(s => (
+          <button
+            key={s.id}
+            onClick={() => setSectorFilter(sectorFilter === s.id ? null : s.id)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              sectorFilter === s.id
+                ? 'bg-aram-purple text-white shadow-sm'
+                : 'bg-aram-warm-100 text-aram-warm-500 hover:bg-aram-warm-200'
+            }`}
+          >
+            {s.name}
+          </button>
+        ))}
+      </div>
+      {contentMode === 'insights' && (
+        <div className="flex flex-wrap gap-2 items-center mt-3">
+          <span className="text-xs font-mono text-aram-warm-400 uppercase tracking-wider mr-1">Partner:</span>
+          {partners.map(p => (
+            <button
+              key={p.id}
+              onClick={() => setPartnerFilter(partnerFilter === p.id ? null : p.id)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                partnerFilter === p.id
+                  ? 'bg-aram-purple text-white shadow-sm'
+                  : 'bg-aram-warm-100 text-aram-warm-500 hover:bg-aram-warm-200'
+              }`}
+            >
+              {p.name}
+            </button>
+          ))}
+        </div>
+      )}
+      {activeFilters > 0 && (
+        <button
+          onClick={() => { setSectorFilter(null); setPartnerFilter(null); }}
+          className="mt-3 text-xs text-aram-purple hover:text-aram-green-900 font-medium transition-colors"
+        >
+          Clear all filters
+        </button>
+      )}
+    </div>
+  );
 
   if (contentMode === 'insights') {
     return (
       <div className="max-w-6xl mx-auto px-6 py-8">
+        {filterBar}
         <p className="text-sm text-aram-warm-400 font-mono mb-6">{filteredInsights.length} insights</p>
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" staggerDelay={0.06}>
           {filteredInsights.map(insight => {
@@ -390,6 +483,7 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
+      {filterBar}
       <p className="text-sm text-aram-warm-400 font-mono mb-6">{filteredPartners.length} partners</p>
       <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" staggerDelay={0.06}>
         {filteredPartners.map(partner => {
@@ -442,13 +536,7 @@ function ResearchContent() {
   const [selectedRegion, setSelectedRegion] = useState(initialRegion);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [detailItem, setDetailItem] = useState(null);
-  const [headerCollapsed, setHeaderCollapsed] = useState(false);
-
-  useEffect(() => {
-    const handler = () => setHeaderCollapsed(window.scrollY > 80);
-    window.addEventListener('scroll', handler, { passive: true });
-    return () => window.removeEventListener('scroll', handler);
-  }, []);
+  const researchViewRef = useRef(null);
 
   const contentMode = isPartners ? 'partners' : 'insights';
   const backLabel = isCardView ? 'Back to Cards' : 'Back to Map';
@@ -482,14 +570,10 @@ function ResearchContent() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* ── Collapsing hero header ─────────────────── */}
-      <div
-        className={`bg-aram-warm-50 overflow-hidden transition-all duration-500 ease-in-out ${
-          headerCollapsed ? 'max-h-0 opacity-0' : 'max-h-[400px] opacity-100'
-        }`}
-      >
-        <div className="pt-28 pb-8 md:pt-36 md:pb-10">
+    <div className="flex flex-col">
+      {/* ── Header section (scrolls naturally) ────── */}
+      <div className="bg-aram-warm-50">
+        <div className="pt-10 pb-8 md:pt-14 md:pb-10">
           <div className="max-w-3xl mx-auto px-6 text-center">
             <h1 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900 mb-3">
               Research & <span className="text-aram-purple">Insights</span>
@@ -516,19 +600,11 @@ function ResearchContent() {
         </div>
       </div>
 
-      {/* ── Floating toggles (top-right) ──────────── */}
-      <div className="sticky top-[64px] z-30 h-0">
-        <div className="absolute top-3 right-4 flex items-center gap-3 bg-white/90 backdrop-blur-md rounded-full border border-aram-warm-200 shadow-sm px-3.5 py-1.5">
-          <Toggle
-            leftLabel="Insights"
-            rightLabel="Partners"
-            leftIcon={Lightbulb}
-            rightIcon={Users}
-            isRight={isPartners}
-            onChange={setIsPartners}
-          />
-          <div className="w-px h-4 bg-aram-warm-200" />
-          <Toggle
+      {/* ── Toggle bar ─────────────────────────────── */}
+      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-aram-warm-200">
+        <div className="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between gap-4">
+          {/* Left: Map/Cards small toggle */}
+          <SmallToggle
             leftLabel="Map"
             rightLabel="Cards"
             leftIcon={Map}
@@ -536,9 +612,19 @@ function ResearchContent() {
             isRight={isCardView}
             onChange={handleViewToggle}
           />
-          <div className="w-px h-4 bg-aram-warm-200" />
-          <Link href="/partners" className="text-aram-warm-300 hover:text-aram-purple transition-colors" title="Partners Directory">
+          {/* Centre: Insights/Partners segmented control */}
+          <SegmentedControl
+            leftLabel="Insights"
+            rightLabel="Partners"
+            leftIcon={Lightbulb}
+            rightIcon={Users}
+            isRight={isPartners}
+            onChange={setIsPartners}
+          />
+          {/* Right: Partners directory link */}
+          <Link href="/partners" className="text-aram-warm-300 hover:text-aram-purple transition-colors flex items-center gap-1 text-xs font-medium" title="Partners Directory">
             <ExternalLink className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Directory</span>
           </Link>
         </div>
       </div>
@@ -557,7 +643,22 @@ function ResearchContent() {
       </AnimatePresence>
 
       {/* ── Content area ──────────────────────────── */}
-      <div className="flex-1">
+      <div className="flex-1 relative" ref={researchViewRef}>
+        {/* Scroll navigation arrows */}
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="absolute top-2 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-400 hover:text-aram-purple hover:bg-white transition-all"
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+          className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm border border-aram-warm-200 shadow-sm flex items-center justify-center text-aram-warm-400 hover:text-aram-purple hover:bg-white transition-all"
+          aria-label="Scroll to bottom"
+        >
+          <ChevronDown className="w-4 h-4" />
+        </button>
         <AnimatePresence mode="wait">
           {!isCardView ? (
             /* ── MAP VIEW ── */
@@ -568,7 +669,7 @@ function ResearchContent() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="flex flex-col lg:flex-row" style={{ height: 'calc(100vh - 64px)' }}>
+              <div className="flex flex-col lg:flex-row min-h-screen">
                 {/* Map */}
                 <div
                   className="relative h-[500px] lg:h-full transition-all duration-500 ease-in-out"

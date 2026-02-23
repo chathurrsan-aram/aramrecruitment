@@ -158,26 +158,26 @@ function Tagline() {
 /* ─── Impact Stats ─────────────────────────────────── */
 function ImpactStats() {
   const stats = [
-    { target: 60, prefix: '£', suffix: 'k', label: 'Raised', sub: 'Find out what projects we\u2019re funding', link: '/initiatives' },
+    { target: 60, prefix: '£', suffix: 'k', label: 'Raised', sub: 'See what we\u2019re funding', link: '/initiatives' },
     { target: 100, suffix: '', label: 'Volunteers', sub: 'Find out why we\u2019re reconnecting the diaspora', link: '/about' },
     { target: 3, suffix: '', label: 'Trips to Sri Lanka', sub: 'Read our trip reports and findings', link: '/reports' },
     { target: 6, suffix: '', label: 'Sectors', sub: 'Explore our emerging insights', link: '/research' },
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-aram-green-900 dot-grid relative">
+    <section className="py-24 md:py-32 relative" style={{ backgroundColor: '#F6F2FC' }}>
       <div className="max-w-5xl mx-auto px-6">
         <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6" staggerDelay={0.12}>
           {stats.map((stat, i) => (
             <StaggerItem key={i} className="text-center">
               <Link href={stat.link} className="group block">
-                <div className="font-display text-5xl md:text-6xl font-bold text-aram-purple-light mb-2">
+                <div className="font-display text-5xl md:text-6xl font-bold text-aram-purple mb-2">
                   <Counter target={stat.target} prefix={stat.prefix || ''} suffix={stat.suffix} />
                 </div>
-                <div className="text-white font-medium text-sm">{stat.label}</div>
-                <div className="text-white/40 text-xs mt-2 leading-relaxed">{stat.sub}</div>
-                <span className="inline-flex items-center gap-1 text-aram-purple-light text-xs font-medium mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Learn more <ArrowRight className="w-3 h-3" />
+                <div className="text-aram-green-900 font-semibold text-sm">{stat.label}</div>
+                <div className="text-aram-purple/60 text-xs mt-2 leading-relaxed">{stat.sub}</div>
+                <span className="inline-flex items-center gap-1 text-aram-purple text-xs font-semibold mt-3 group-hover:underline transition-all">
+                  {stat.sub} <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                 </span>
               </Link>
             </StaggerItem>
@@ -191,9 +191,9 @@ function ImpactStats() {
 /* ─── Three-Pillar Model ──────────────────────────── */
 function ThreePillarModel() {
   const pillars = [
-    { icon: '🔍', title: 'Discovery', color: '#40916C', label: 'PILLAR 01', desc: 'Annual volunteering trips to Sri Lanka. On-the-ground observations, community engagement, and needs assessment.', link: '/trip' },
-    { icon: '🔬', title: 'Research', color: '#6D4A9E', label: 'PILLAR 02', desc: 'Translating field observations into actionable insights, thought pieces, and data-driven recommendations.', link: '/research' },
-    { icon: '🚀', title: 'Initiatives', color: '#C85C5C', label: 'PILLAR 03', desc: 'Long-term projects addressing systemic challenges — mentoring, microcredit, and sustainable partnerships.', link: '/initiatives' },
+    { icon: '🔍', title: 'Discovery', color: '#40916C', label: 'PILLAR 01', desc: 'Annual volunteering trips to Sri Lanka. On-the-ground observations, community engagement, and needs assessment.', link: '/trip', cta: 'Read our trip reports' },
+    { icon: '🔬', title: 'Research', color: '#6D4A9E', label: 'PILLAR 02', desc: 'Translating field observations into actionable insights, thought pieces, and data-driven recommendations.', link: '/research', cta: 'Explore our insights' },
+    { icon: '🚀', title: 'Initiatives', color: '#C85C5C', label: 'PILLAR 03', desc: 'Long-term projects addressing systemic challenges — mentoring, microcredit, and sustainable partnerships.', link: '/initiatives', cta: 'See our active projects' },
   ];
 
   return (
@@ -246,7 +246,7 @@ function ThreePillarModel() {
                   className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors hover:-translate-y-0.5 transition-transform"
                   style={{ color: p.color }}
                 >
-                  Read more <ArrowRight className="w-3.5 h-3.5" />
+                  {p.cta} <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </StaggerItem>

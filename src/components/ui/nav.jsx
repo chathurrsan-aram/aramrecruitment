@@ -11,6 +11,7 @@ const navLinks = [
   { href: '/research', label: 'Research' },
   { href: '/trip', label: 'Trip' },
   { href: '/reports', label: 'Reports' },
+  { href: '/join', label: 'Join Us' },
 ];
 
 export default function Navbar() {
@@ -19,6 +20,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const hasHero = ['/', '/trip'].includes(pathname);
+  const isResearch = pathname === '/research';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -33,11 +35,14 @@ export default function Navbar() {
   const hoverColor = solid ? 'hover:text-aram-purple' : 'hover:text-aram-purple-light';
   const logoFilter = solid ? '' : 'brightness-0 invert';
 
+  /* On research page the nav is static (scrolls away), everywhere else it's fixed */
+  const position = isResearch ? 'relative' : 'fixed top-0 left-0 right-0';
+
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${bg}`}>
+    <header className={`${position} z-50 transition-all duration-300 ${isResearch ? 'bg-white shadow-sm' : bg}`}>
       <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
         <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-3">
-          <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className={`h-[72px] transition-all duration-300 ${logoFilter}`} />
+          <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className={`h-[72px] transition-all duration-300 ${isResearch ? '' : logoFilter}`} />
         </Link>
 
         <nav className="hidden md:flex items-center gap-7">
@@ -45,19 +50,13 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-sm font-medium transition-colors ${textColor} ${hoverColor} ${
+              className={`text-sm font-medium transition-colors ${isResearch ? 'text-aram-green-900' : textColor} ${isResearch ? 'hover:text-aram-purple' : hoverColor} ${
                 pathname === link.href ? 'text-aram-purple' : ''
               }`}
             >
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/join"
-            className="bg-aram-purple text-white font-semibold py-2.5 px-6 rounded-xl text-sm transition-all duration-200 hover:shadow-[0_8px_24px_rgba(109,74,158,0.3)] hover:-translate-y-0.5 min-h-[40px] flex items-center"
-          >
-            Join Us
-          </Link>
         </nav>
 
         <button
