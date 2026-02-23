@@ -2,9 +2,39 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
-import * as topojson from 'topojson-client';
 import 'leaflet/dist/leaflet.css';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
+
+/* ─── GADM NAME_1 → existing district code + province ─ */
+const DISTRICT_META = {
+  Ampara:       { code: 'AP', province: 'Eastern' },
+  Anuradhapura: { code: 'AD', province: 'North Central' },
+  Badulla:      { code: 'BD', province: 'Uva' },
+  Batticaloa:   { code: 'BC', province: 'Eastern' },
+  Colombo:      { code: 'CO', province: 'Western' },
+  Galle:        { code: 'GL', province: 'Southern' },
+  Gampaha:      { code: 'GQ', province: 'Western' },
+  Hambantota:   { code: 'HB', province: 'Southern' },
+  Jaffna:       { code: 'JA', province: 'Northern' },
+  Kalutara:     { code: 'KT', province: 'Western' },
+  Kandy:        { code: 'KY', province: 'Central' },
+  Kegalle:      { code: 'KE', province: 'Sabaragamuwa' },
+  Kilinochchi:  { code: 'KL', province: 'Northern' },
+  Kurunegala:   { code: 'KG', province: 'North Western' },
+  Mannar:       { code: 'MB', province: 'Northern' },
+  Matale:       { code: 'MT', province: 'Central' },
+  Matara:       { code: 'MH', province: 'Southern' },
+  Moneragala:   { code: 'MJ', province: 'Uva' },
+  Mullaitivu:   { code: 'MP', province: 'Northern' },
+  NuwaraEliya:  { code: 'NW', province: 'Central' },
+  Polonnaruwa:  { code: 'PR', province: 'North Central' },
+  Puttalam:     { code: 'PX', province: 'North Western' },
+  Ratnapura:    { code: 'RN', province: 'Sabaragamuwa' },
+  Trincomalee:  { code: 'TC', province: 'Eastern' },
+  Vavuniya:     { code: 'VA', province: 'Northern' },
+};
+
+const DISPLAY_NAMES = { NuwaraEliya: 'Nuwara Eliya' };
 
 /* ─── Colour palette ──────────────────────────────── */
 const STATUS_COLORS = {
@@ -104,11 +134,18 @@ export default function SriLankaMap({
   const geoRef = useRef(null);
 
   useEffect(() => {
-    fetch('/geo/sri-lanka-districts.json')
+    fetch('/geo/gadm41_LKA_1.json')
       .then(r => r.json())
-      .then(topo => {
-        // Convert TopoJSON → GeoJSON FeatureCollection
-        const geo = topojson.feature(topo, topo.objects.districts);
+      .then(geo => {
+        // Map GADM properties to the codes used by districtProjects
+        for (const f of geo.features) {
+          const meta = DISTRICT_META[f.properties.NAME_1];
+          if (meta) {
+            f.properties.code = meta.code;
+            f.properties.name = DISPLAY_NAMES[f.properties.NAME_1] || f.properties.NAME_1;
+            f.properties.province = meta.province;
+          }
+        }
         setGeoData(geo);
       });
   }, []);
