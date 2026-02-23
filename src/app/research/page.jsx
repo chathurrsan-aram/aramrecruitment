@@ -714,6 +714,24 @@ function ResearchContent() {
 
   useEffect(() => { requestAnimationFrame(() => setLoaded(true)); }, []);
 
+  /* Hide global navbar when the immersive content area (map/cards) is in view.
+     Sets a data attribute on <html> that the navbar listens for via useEffect. */
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        document.documentElement.setAttribute('data-immersive', entry.isIntersecting ? 'true' : 'false');
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      document.documentElement.removeAttribute('data-immersive');
+    };
+  }, []);
+
   const contentMode = isPartners ? 'partners' : 'insights';
   const backLabel = isCardView ? 'Back to Cards' : 'Back to Map';
   const hasSidebar = !!(selectedDistrict || selectedRegion);

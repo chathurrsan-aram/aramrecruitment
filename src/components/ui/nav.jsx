@@ -17,6 +17,7 @@ const navLinks = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [immersive, setImmersive] = useState(false);
   const pathname = usePathname();
 
   const hasHero = ['/', '/research'].includes(pathname);
@@ -28,14 +29,27 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  /* Listen for data-immersive attribute set by the research page.
+     Uses MutationObserver so the navbar hides when the map is in view. */
+  useEffect(() => {
+    const html = document.documentElement;
+    const check = () => setImmersive(html.getAttribute('data-immersive') === 'true');
+    check();
+    const observer = new MutationObserver(check);
+    observer.observe(html, { attributes: true, attributeFilter: ['data-immersive'] });
+    return () => observer.disconnect();
+  }, []);
+
   const solid = scrolled || !hasHero;
   const bg = solid ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent';
   const textColor = solid ? 'text-aram-green-900' : 'text-white';
   const hoverColor = solid ? 'hover:text-aram-purple' : 'hover:text-aram-purple-light';
   const logoFilter = solid ? '' : 'brightness-0 invert';
 
+  const hidden = immersive && !mobileOpen;
+
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${bg}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${bg} ${hidden ? '-translate-y-full opacity-0 pointer-events-none' : ''}`}>
       <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
         <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-3">
           <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className={`h-[72px] transition-all duration-300 ${logoFilter}`} />
