@@ -63,9 +63,9 @@ function getStyle(feature, hoveredCode, selectedCode) {
     return {
       fillColor: fill,
       fillOpacity: 0.9,
-      color: '#F59E0B',   /* amber — visible against both purple and grey fills */
-      weight: 4,
-      dashArray: '',
+      color: '#2F2450',   /* deep plum outline for selected district */
+      weight: 3,
+      dashArray: '6 4',
     };
   }
 
@@ -106,35 +106,48 @@ function MapController({ geoData, selectedCode, hasSidebar }) {
   }, [hasSidebar, map]);
 
   /* Step scroll-zoom — only active in sidebar (split) mode.
-     One zoom level per scroll event with a 250ms cooldown.
-     At min zoom + scrolling down → don't prevent default so the page scrolls. */
+     One zoom level per wheel gesture; additional wheel events in the same gesture
+     are absorbed until wheel movement settles. At min zoom + scrolling down,
+     wheel input is passed through so the page can continue scrolling. */
   useEffect(() => {
     if (!hasSidebar) return;
 
     const container = map.getContainer();
-    let cooldown = false;
+    let gestureLocked = false;
+    let unlockTimer = null;
+
+    const releaseGesture = () => {
+      if (unlockTimer) clearTimeout(unlockTimer);
+      unlockTimer = setTimeout(() => {
+        gestureLocked = false;
+      }, 320);
+    };
 
     const handleWheel = (e) => {
       const atMin = map.getZoom() <= map.getMinZoom();
       const scrollingDown = e.deltaY > 0;
 
-      /* At bottom of zoom range and scrolling down — let the page scroll */
       if (atMin && scrollingDown) return;
 
       e.preventDefault();
-      if (cooldown) return;
-      cooldown = true;
-      setTimeout(() => { cooldown = false; }, 250);
 
-      if (e.deltaY < 0) {
-        map.zoomIn(1, { animate: true });
-      } else {
-        map.zoomOut(1, { animate: true });
+      if (!gestureLocked) {
+        gestureLocked = true;
+        if (e.deltaY < 0) {
+          map.zoomIn(1, { animate: true });
+        } else {
+          map.zoomOut(1, { animate: true });
+        }
       }
+
+      releaseGesture();
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
-    return () => container.removeEventListener('wheel', handleWheel);
+    return () => {
+      if (unlockTimer) clearTimeout(unlockTimer);
+      container.removeEventListener('wheel', handleWheel);
+    };
   }, [hasSidebar, map]);
 
   /* Invalidate size on mount */
