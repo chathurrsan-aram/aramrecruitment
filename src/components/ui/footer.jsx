@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-6 py-16">
         <div className="grid md:grid-cols-4 gap-10">
           <div className="md:col-span-1">
-            <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className="h-12 mb-4 brightness-0 invert" />
+            <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className="h-[62px] mb-4 brightness-0 invert" />
             <p className="text-sm text-white/50 leading-relaxed font-body">
               Uniting the next generation of diaspora to create sustainable impact in Sri Lanka.
             </p>
