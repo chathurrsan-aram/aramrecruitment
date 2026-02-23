@@ -828,15 +828,26 @@ function ResearchContent() {
                     />
                   </div>
 
-                  {/* "Click to explore" overlay */}
+                  {/* Prominent CTA overlay — adapts to Insights/Partners toggle */}
                   {!hasSidebar && (
-                    <div className="absolute inset-0 flex items-end justify-center pb-8 pointer-events-none z-10">
+                    <div className="absolute inset-0 flex items-end justify-center pb-10 pointer-events-none z-10">
                       <motion.div
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-white/90 backdrop-blur-sm rounded-full px-5 py-2.5 shadow-lg border border-aram-warm-200"
+                        transition={{ delay: 0.4, duration: 0.5 }}
+                        className="pointer-events-auto"
                       >
-                        <p className="text-sm text-aram-warm-500 font-medium">Click a district to explore</p>
+                        <div className="bg-white/95 backdrop-blur-md rounded-2xl px-6 py-4 shadow-xl border border-aram-warm-200 text-center max-w-xs">
+                          <div className="flex items-center justify-center gap-2 mb-1.5">
+                            <MapPin className="w-4 h-4 text-aram-purple" />
+                            <p className="text-sm font-semibold text-aram-green-900">
+                              {isPartners ? 'Explore Partners' : 'Explore Insights'}
+                            </p>
+                          </div>
+                          <p className="text-xs text-aram-warm-400 leading-relaxed">
+                            Click a district on the map to discover {isPartners ? 'partner organisations' : 'field observations and research'} in that region.
+                          </p>
+                        </div>
                       </motion.div>
                     </div>
                   )}
