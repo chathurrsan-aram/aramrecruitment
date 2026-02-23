@@ -1,262 +1,150 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, Tooltip, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
 
-const ARAM_COLORS = {
+/* ─── Colour palette ──────────────────────────────── */
+const STATUS_COLORS = {
+  active: '#0F7B5F',
+  planned: '#E8973F',
+};
+
+const ARAM_REGION_COLORS = {
   'hill-country': '#40916C',
   eastern: '#5C8DC8',
   northern: '#8B6BB5',
   western: '#6D4A9E',
-  default: '#C4C4B4',
 };
 
-const PROVINCE_TO_ARAM = {
-  Central: 'hill-country',
-  Uva: 'hill-country',
-  Sabaragamuwa: 'hill-country',
-  Eastern: 'eastern',
-  Northern: 'northern',
-  Western: 'western',
-};
+const INACTIVE_COLOR = '#D1D5DB';
 
-const SRI_LANKA_CENTER = [7.8731, 80.7718];
-const SRI_LANKA_ZOOM = 7;
-
-function getRegionColor(province, selected, hovered) {
-  const aramRegion = PROVINCE_TO_ARAM[province];
-  const color = aramRegion ? ARAM_COLORS[aramRegion] : ARAM_COLORS.default;
-  if (selected) return color;
-  if (hovered) return color;
-  return aramRegion ? color : ARAM_COLORS.default;
+function getDistrictFill(code) {
+  const project = districtProjects[code];
+  if (project?.status === 'active') return STATUS_COLORS.active;
+  if (project?.status === 'planned') return STATUS_COLORS.planned;
+  return INACTIVE_COLOR;
 }
 
-function getFeatureStyle(feature, selectedRegion, hoveredProvince) {
-  const province = feature.properties.province;
-  const aramRegion = PROVINCE_TO_ARAM[province];
-  const isAramRegion = !!aramRegion;
-  const isSelected = selectedRegion && aramRegion === selectedRegion;
-  const isHovered = hoveredProvince === province;
+/* ─── Styles ──────────────────────────────────────── */
+function getStyle(feature, hoveredCode, selectedCode) {
+  const code = feature.properties.code;
+  const fill = getDistrictFill(code);
+  const isSelected = selectedCode === code;
+  const isHovered = hoveredCode === code;
+  const hasProject = !!districtProjects[code];
 
   if (isSelected) {
     return {
-      fillColor: ARAM_COLORS[aramRegion],
-      fillOpacity: 0.6,
+      fillColor: fill,
+      fillOpacity: 0.85,
       color: '#fff',
       weight: 3,
-    };
-  }
-
-  if (isHovered && isAramRegion) {
-    return {
-      fillColor: ARAM_COLORS[aramRegion],
-      fillOpacity: 0.45,
-      color: '#fff',
-      weight: 2,
-    };
-  }
-
-  if (isAramRegion) {
-    return {
-      fillColor: ARAM_COLORS[aramRegion],
-      fillOpacity: selectedRegion ? 0.15 : 0.3,
-      color: 'rgba(255,255,255,0.5)',
-      weight: 1,
-    };
-  }
-
-  return {
-    fillColor: ARAM_COLORS.default,
-    fillOpacity: selectedRegion ? 0.05 : 0.12,
-    color: 'rgba(255,255,255,0.2)',
-    weight: 0.5,
-  };
-}
-
-function getDistrictStyle(feature, selectedDistrict, hoveredDistrict) {
-  const district = feature.properties.district;
-  const aramRegion = feature.properties.aramRegion;
-  const color = aramRegion ? ARAM_COLORS[aramRegion] : ARAM_COLORS.default;
-  const isSelected = selectedDistrict === district;
-  const isHovered = hoveredDistrict === district;
-
-  if (isSelected) {
-    return {
-      fillColor: color,
-      fillOpacity: 0.6,
-      color: '#fff',
-      weight: 3,
+      dashArray: '',
     };
   }
 
   if (isHovered) {
     return {
-      fillColor: color,
-      fillOpacity: 0.5,
+      fillColor: fill,
+      fillOpacity: hasProject ? 0.75 : 0.4,
       color: '#fff',
       weight: 2,
+      dashArray: '',
     };
   }
 
   return {
-    fillColor: color,
-    fillOpacity: 0.3,
-    color: 'rgba(255,255,255,0.6)',
+    fillColor: fill,
+    fillOpacity: hasProject ? 0.6 : 0.25,
+    color: 'rgba(255,255,255,0.7)',
     weight: 1,
+    dashArray: '',
   };
 }
 
-/* Map controller - handles zoom/pan to region */
-function MapController({ selectedRegion, selectedDistrict, provincesData, districtsData }) {
+/* ─── Map controller (auto-fit bounds) ────────────── */
+function MapController({ geoData, selectedCode }) {
   const map = useMap();
 
   useEffect(() => {
-    if (!map) return;
+    if (!geoData) return;
 
-    if (selectedDistrict && districtsData) {
-      const feature = districtsData.features.find(
-        (f) => f.properties.district === selectedDistrict
-      );
+    if (selectedCode) {
+      const feature = geoData.features.find(f => f.properties.code === selectedCode);
       if (feature) {
         const L = require('leaflet');
         const layer = L.geoJSON(feature);
-        const bounds = layer.getBounds();
-        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 10 });
+        map.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 10, animate: true });
         return;
       }
     }
 
-    if (selectedRegion && provincesData) {
-      const regionProvinces = Object.entries(PROVINCE_TO_ARAM)
-        .filter(([, r]) => r === selectedRegion)
-        .map(([p]) => p);
-
-      const features = provincesData.features.filter((f) =>
-        regionProvinces.includes(f.properties.province)
-      );
-
-      if (features.length > 0) {
-        const L = require('leaflet');
-        const group = L.geoJSON({ type: 'FeatureCollection', features });
-        const bounds = group.getBounds();
-        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 10 });
-      }
-      return;
-    }
-
-    map.setView(SRI_LANKA_CENTER, SRI_LANKA_ZOOM);
-  }, [selectedRegion, selectedDistrict, map, provincesData, districtsData]);
+    // Fit to full Sri Lanka
+    const L = require('leaflet');
+    const full = L.geoJSON(geoData);
+    map.fitBounds(full.getBounds(), { padding: [20, 20], animate: true });
+  }, [selectedCode, geoData, map]);
 
   return null;
 }
 
+/* ─── Main map component ──────────────────────────── */
 export default function SriLankaMap({
   selectedRegion,
   onSelectRegion,
   selectedDistrict,
   onSelectDistrict,
-  mode = 'partners', // 'partners' | 'insights'
-  partners = [],
-  insights = [],
 }) {
-  const [provincesData, setProvincesData] = useState(null);
-  const [districtsData, setDistrictsData] = useState(null);
-  const [hoveredProvince, setHoveredProvince] = useState(null);
-  const [hoveredDistrict, setHoveredDistrict] = useState(null);
-  const geoJsonRef = useRef(null);
-  const districtGeoJsonRef = useRef(null);
+  const [geoData, setGeoData] = useState(null);
+  const [hoveredCode, setHoveredCode] = useState(null);
+  const geoRef = useRef(null);
 
   useEffect(() => {
-    fetch('/geo/provinces.geojson')
-      .then((r) => r.json())
-      .then(setProvincesData);
-    fetch('/geo/districts.geojson')
-      .then((r) => r.json())
-      .then(setDistrictsData);
+    fetch('/geo/districts-25.geojson')
+      .then(r => r.json())
+      .then(setGeoData);
   }, []);
 
-  const onEachProvince = useCallback(
-    (feature, layer) => {
-      const province = feature.properties.province;
-      const aramRegion = PROVINCE_TO_ARAM[province];
+  const handleDistrictClick = useCallback((code) => {
+    // If district has a mapped Aram region, select that region + district
+    const aramRegion = DISTRICT_TO_ARAM_REGION[code];
+    if (aramRegion) {
+      onSelectRegion(aramRegion);
+    }
+    onSelectDistrict(code === selectedDistrict ? null : code);
+  }, [selectedDistrict, onSelectRegion, onSelectDistrict]);
 
-      layer.on({
-        mouseover: () => {
-          if (aramRegion) setHoveredProvince(province);
-        },
-        mouseout: () => setHoveredProvince(null),
-        click: () => {
-          if (aramRegion) {
-            onSelectRegion(aramRegion === selectedRegion ? null : aramRegion);
-            onSelectDistrict(null);
-          }
-        },
-      });
+  const onEachFeature = useCallback((feature, layer) => {
+    const code = feature.properties.code;
+    const project = districtProjects[code];
 
-      if (aramRegion) {
-        layer.bindTooltip(province, {
-          permanent: false,
-          direction: 'center',
-          className: 'map-tooltip',
-        });
-      }
-    },
-    [selectedRegion, onSelectRegion, onSelectDistrict]
+    layer.on({
+      mouseover: (e) => {
+        setHoveredCode(code);
+        e.target.bringToFront();
+      },
+      mouseout: () => setHoveredCode(null),
+      click: () => handleDistrictClick(code),
+    });
+  }, [handleDistrictClick]);
+
+  const styleFn = useCallback(
+    (feature) => getStyle(feature, hoveredCode, selectedDistrict),
+    [hoveredCode, selectedDistrict]
   );
 
-  const onEachDistrict = useCallback(
-    (feature, layer) => {
-      const district = feature.properties.district;
+  // Force GeoJSON re-render when style deps change
+  const geoKey = `districts-${hoveredCode}-${selectedDistrict}`;
 
-      layer.on({
-        mouseover: () => setHoveredDistrict(district),
-        mouseout: () => setHoveredDistrict(null),
-        click: () => {
-          onSelectDistrict(district === selectedDistrict ? null : district);
-        },
-      });
-
-      layer.bindTooltip(district, {
-        permanent: false,
-        direction: 'center',
-        className: 'map-tooltip',
-      });
-    },
-    [selectedDistrict, onSelectDistrict]
-  );
-
-  // Province styles need to update when selection/hover changes
-  const provinceStyleFn = useCallback(
-    (feature) => getFeatureStyle(feature, selectedRegion, hoveredProvince),
-    [selectedRegion, hoveredProvince]
-  );
-
-  // District styles
-  const districtStyleFn = useCallback(
-    (feature) => getDistrictStyle(feature, selectedDistrict, hoveredDistrict),
-    [selectedDistrict, hoveredDistrict]
-  );
-
-  // Filter districts to selected region
-  const filteredDistricts = useMemo(() => {
-    if (!districtsData || !selectedRegion) return null;
-    return {
-      ...districtsData,
-      features: districtsData.features.filter(
-        (f) => f.properties.aramRegion === selectedRegion
-      ),
-    };
-  }, [districtsData, selectedRegion]);
-
-  // Force GeoJSON re-render on style changes
-  const provinceKey = `prov-${selectedRegion}-${hoveredProvince}`;
-  const districtKey = `dist-${selectedRegion}-${selectedDistrict}-${hoveredDistrict}`;
-
-  if (!provincesData) {
+  if (!geoData) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-aram-green-900">
-        <p className="text-white/50 text-sm">Loading map...</p>
+      <div className="w-full h-full flex items-center justify-center bg-aram-warm-50">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-aram-warm-300 border-t-aram-purple rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-aram-warm-400 text-sm">Loading map...</p>
+        </div>
       </div>
     );
   }
@@ -264,82 +152,121 @@ export default function SriLankaMap({
   return (
     <div className="relative w-full h-full">
       <MapContainer
-        center={SRI_LANKA_CENTER}
-        zoom={SRI_LANKA_ZOOM}
+        center={[7.8731, 80.7718]}
+        zoom={7.5}
         className="w-full h-full"
         zoomControl={false}
         attributionControl={false}
-        style={{ background: '#1B4332' }}
-        minZoom={6}
-        maxZoom={12}
+        style={{ background: '#F8FAFC' }}
+        minZoom={7}
+        maxZoom={11}
         maxBounds={[
-          [4.5, 78.5],
-          [11, 83],
+          [5.0, 78.5],
+          [10.5, 83.0],
         ]}
       >
+        {/* Very subtle base tiles for geographic context */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
-          opacity={0.4}
+          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+          opacity={0.35}
         />
 
-        {/* Province layer (always shown) */}
+        {/* Choropleth district layer */}
         <GeoJSON
-          key={provinceKey}
-          ref={geoJsonRef}
-          data={provincesData}
-          style={provinceStyleFn}
-          onEachFeature={onEachProvince}
-        />
+          key={geoKey}
+          ref={geoRef}
+          data={geoData}
+          style={styleFn}
+          onEachFeature={onEachFeature}
+        >
+          {/* Tooltips for each feature are handled via onEachFeature */}
+        </GeoJSON>
 
-        {/* District layer (shown when region selected) */}
-        {filteredDistricts && (
-          <GeoJSON
-            key={districtKey}
-            ref={districtGeoJsonRef}
-            data={filteredDistricts}
-            style={districtStyleFn}
-            onEachFeature={onEachDistrict}
-          />
-        )}
+        <MapController geoData={geoData} selectedCode={selectedDistrict} />
 
-        <MapController
-          selectedRegion={selectedRegion}
-          selectedDistrict={selectedDistrict}
-          provincesData={provincesData}
-          districtsData={districtsData}
-        />
+        {/* District tooltips rendered as Leaflet tooltips via GeoJSON onEachFeature */}
+        {geoData.features.map(f => {
+          const code = f.properties.code;
+          const project = districtProjects[code];
+          const isHovered = hoveredCode === code;
+          if (!isHovered) return null;
+
+          return null; // We use CSS tooltips below instead
+        })}
       </MapContainer>
 
-      {/* Map legend */}
-      <div className="absolute bottom-4 left-4 z-[1000] bg-aram-green-950/90 backdrop-blur-sm rounded-lg px-3 py-2.5 text-xs">
-        <p className="text-white/50 font-mono uppercase tracking-wider text-[10px] mb-1.5">
-          Aram Regions
+      {/* Custom HTML tooltip (follows mouse, outside Leaflet) */}
+      {hoveredCode && <DistrictTooltip code={hoveredCode} geoData={geoData} />}
+
+      {/* Legend */}
+      <div className="absolute bottom-4 left-4 z-[1000] bg-white/95 backdrop-blur-sm rounded-xl border border-aram-warm-200 shadow-lg px-4 py-3">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-aram-warm-400 mb-2">
+          District Status
         </p>
-        {Object.entries({
-          'Hill Country': 'hill-country',
-          Eastern: 'eastern',
-          Northern: 'northern',
-          Western: 'western',
-        }).map(([label, id]) => (
-          <button
-            key={id}
-            onClick={() => {
-              onSelectRegion(id === selectedRegion ? null : id);
-              onSelectDistrict(null);
-            }}
-            className={`flex items-center gap-2 w-full py-0.5 text-left transition-colors ${
-              selectedRegion === id
-                ? 'text-white'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <span
-              className="w-2.5 h-2.5 rounded-sm"
-              style={{ backgroundColor: ARAM_COLORS[id] }}
-            />
-            {label}
-          </button>
+        {[
+          { color: STATUS_COLORS.active, label: 'Active', count: Object.values(districtProjects).filter(d => d.status === 'active').length },
+          { color: STATUS_COLORS.planned, label: 'Planned', count: Object.values(districtProjects).filter(d => d.status === 'planned').length },
+          { color: INACTIVE_COLOR, label: 'No operations', count: 25 - Object.keys(districtProjects).length },
+        ].map(item => (
+          <div key={item.label} className="flex items-center gap-2 py-0.5">
+            <span className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: item.color }} />
+            <span className="text-xs text-aram-warm-500 font-medium">
+              {item.label}
+              <span className="text-aram-warm-300 font-normal ml-1">({item.count})</span>
+            </span>
+          </div>
         ))}
+      </div>
+
+      {/* Selected district indicator */}
+      {selectedDistrict && (
+        <button
+          onClick={() => { onSelectDistrict(null); onSelectRegion(null); }}
+          className="absolute top-4 left-4 z-[1000] flex items-center gap-1.5 text-sm bg-white/95 backdrop-blur-sm border border-aram-warm-200 rounded-lg px-3 py-2 shadow-lg text-aram-warm-500 hover:text-aram-green-900 transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          All Districts
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ─── Tooltip component ───────────────────────────── */
+function DistrictTooltip({ code, geoData }) {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const feature = geoData.features.find(f => f.properties.code === code);
+  const project = districtProjects[code];
+
+  useEffect(() => {
+    const handler = (e) => setPos({ x: e.clientX, y: e.clientY });
+    window.addEventListener('mousemove', handler);
+    return () => window.removeEventListener('mousemove', handler);
+  }, []);
+
+  if (!feature) return null;
+
+  return (
+    <div
+      className="fixed z-[2000] pointer-events-none"
+      style={{ left: pos.x + 16, top: pos.y - 12 }}
+    >
+      <div className="bg-aram-green-950/95 backdrop-blur-sm text-white rounded-lg px-3.5 py-2.5 shadow-xl border border-white/10">
+        <p className="font-semibold text-sm">{feature.properties.name}</p>
+        <p className="text-white/50 text-xs">{feature.properties.province} Province</p>
+        {project?.status === 'active' && (
+          <p className="text-emerald-400 text-xs mt-1 font-medium">
+            Active — {project.projects.length} {project.projects.length === 1 ? 'project' : 'projects'}
+          </p>
+        )}
+        {project?.status === 'planned' && (
+          <p className="text-amber-400 text-xs mt-1 font-medium">Planned expansion</p>
+        )}
+        {!project && (
+          <p className="text-white/40 text-xs mt-1">No current operations</p>
+        )}
       </div>
     </div>
   );

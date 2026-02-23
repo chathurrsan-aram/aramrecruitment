@@ -161,24 +161,7 @@ body {
   pointer-events: none;
 }
 
-/* Leaflet map tooltip */
-.map-tooltip {
-  background: rgba(13, 40, 24, 0.9) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
-  font-family: var(--font-body) !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  padding: 4px 10px !important;
-  border-radius: 6px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-}
-
-.map-tooltip::before {
-  border-top-color: rgba(13, 40, 24, 0.9) !important;
-}
-
-/* Hide Leaflet attribution */
+/* Hide Leaflet default controls */
 .leaflet-control-attribution {
   display: none !important;
 }
