@@ -1024,31 +1024,43 @@ function ResearchContent() {
                   <AnimatePresence>
                     {showTutorial && !hasSidebar && (
                       <motion.div
-                        initial={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0, y: -14 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.25 }}
-                        className="absolute top-3 left-3 right-3 z-20 pointer-events-none"
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute top-3 left-0 right-0 z-20 pointer-events-none"
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="pointer-events-auto rounded-lg bg-white/95 backdrop-blur border border-aram-purple/20 shadow-lg px-3 py-2">
-                            <p className="text-[11px] text-aram-purple-dark whitespace-nowrap">
-                              <span className="font-bold mr-1">↑</span>Use <strong>Map/Cards</strong>
-                            </p>
-                          </div>
+                        <div className="relative h-28">
+                          <motion.div
+                            animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
+                            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+                            className="pointer-events-auto absolute left-[15%] sm:left-[17%] -translate-x-1/2"
+                          >
+                            <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/40 px-4 py-3 border border-white/20">
+                              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
+                              <p className="text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap">Toggle MAP ↔ CARDS</p>
+                              <p className="text-[11px] sm:text-xs text-white/85 mt-0.5 whitespace-nowrap">Switch view mode here</p>
+                            </div>
+                          </motion.div>
 
-                          <div className="pointer-events-auto rounded-lg bg-white/95 backdrop-blur border border-aram-purple/20 shadow-lg px-3 py-2 pr-8 relative">
-                            <p className="text-[11px] text-aram-purple-dark whitespace-nowrap">
-                              <span className="font-bold mr-1">↑</span>Switch <strong>Insights/Partners</strong>
-                            </p>
-                            <button
-                              onClick={() => setShowTutorial(false)}
-                              className="absolute right-2 top-1/2 -translate-y-1/2 text-aram-purple/40 hover:text-aram-purple transition-colors"
-                              aria-label="Dismiss hint"
-                            >
-                              <X className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
+                          <motion.div
+                            animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
+                            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut', delay: 0.25 }}
+                            className="pointer-events-auto absolute left-1/2 -translate-x-1/2"
+                          >
+                            <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/40 px-4 py-3 pr-10 border border-white/20">
+                              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
+                              <p className="text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap">Toggle INSIGHTS ↔ PARTNERS</p>
+                              <p className="text-[11px] sm:text-xs text-white/85 mt-0.5 whitespace-nowrap">Switch content type here</p>
+                              <button
+                                onClick={() => setShowTutorial(false)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
+                                aria-label="Dismiss hint"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </motion.div>
                         </div>
                       </motion.div>
                     )}
