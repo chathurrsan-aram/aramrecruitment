@@ -65,9 +65,9 @@ function getStyle(feature, hoveredCode, selectedCode, selectedRegion) {
     return {
       fillColor: fill,
       fillOpacity: 0.9,
-      color: '#2F2450',   /* deep plum outline for selected district */
+      color: '#FFFFFF',
       weight: 3,
-      dashArray: '6 4',
+      dashArray: ''
     };
   }
 
@@ -118,46 +118,43 @@ function MapController({ geoData, selectedCode, selectedRegion, hasSidebar }) {
   }, [hasSidebar, map]);
 
   /* Step scroll-zoom — only active in sidebar (split) mode.
-     One zoom level per wheel gesture; additional wheel events in the same gesture
-     are absorbed until wheel movement settles. At min zoom + scrolling down,
-     wheel input is passed through so the page can continue scrolling. */
+     Keeps natural wheel flow (small cooldown), but passes through to page scroll
+     at both zoom boundaries so users can continue scrolling the site. */
   useEffect(() => {
     if (!hasSidebar) return;
 
     const container = map.getContainer();
-    let gestureLocked = false;
-    let unlockTimer = null;
-
-    const releaseGesture = () => {
-      if (unlockTimer) clearTimeout(unlockTimer);
-      unlockTimer = setTimeout(() => {
-        gestureLocked = false;
-      }, 520);
-    };
+    let lastStepTs = 0;
 
     const handleWheel = (e) => {
-      const atMin = map.getZoom() <= map.getMinZoom();
-      const scrollingDown = e.deltaY > 0;
+      const delta = e.deltaY;
+      const zoom = map.getZoom();
+      const atMin = zoom <= map.getMinZoom();
+      const atMax = zoom >= map.getMaxZoom();
+      const scrollingDown = delta > 0;
+      const scrollingUp = delta < 0;
 
-      if (atMin && scrollingDown) return;
+      // At bounds, let wheel continue scrolling page naturally
+      if ((atMin && scrollingDown) || (atMax && scrollingUp)) return;
 
-      e.preventDefault();
-
-      if (!gestureLocked) {
-        gestureLocked = true;
-        if (e.deltaY < 0) {
-          map.zoomIn(1, { animate: true });
-        } else {
-          map.zoomOut(1, { animate: true });
-        }
+      const now = performance.now();
+      if (now - lastStepTs < 120) {
+        e.preventDefault();
+        return;
       }
 
-      releaseGesture();
+      e.preventDefault();
+      lastStepTs = now;
+
+      if (scrollingUp) {
+        map.zoomIn(1, { animate: true });
+      } else if (scrollingDown) {
+        map.zoomOut(1, { animate: true });
+      }
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
     return () => {
-      if (unlockTimer) clearTimeout(unlockTimer);
       container.removeEventListener('wheel', handleWheel);
     };
   }, [hasSidebar, map]);

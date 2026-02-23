@@ -707,6 +707,7 @@ function ResearchContent() {
   const contentRef = useRef(null);
   const videoRef = useRef(null);
   const sidebarRef = useRef(null);
+  const prevSelectionRef = useRef({ district: null, region: null });
 
   /* Parallax for video hero */
   const { scrollY } = useScroll();
@@ -773,6 +774,22 @@ function ResearchContent() {
     const top = controlsEl.getBoundingClientRect().top + window.scrollY - 8;
     window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
   }, []);
+
+  useEffect(() => {
+    const prev = prevSelectionRef.current;
+    const changed = prev.district !== selectedDistrict || prev.region !== selectedRegion;
+    prevSelectionRef.current = { district: selectedDistrict, region: selectedRegion };
+    if (!changed) return;
+    if (!(selectedDistrict || selectedRegion)) return;
+
+    const contentEl = contentRef.current;
+    if (!contentEl || typeof window === 'undefined') return;
+
+    const rect = contentEl.getBoundingClientRect();
+    const viewportH = window.innerHeight;
+    const needsRecenter = rect.top > 64 || rect.bottom < viewportH * 0.85;
+    if (needsRecenter) focusImmersiveViewport();
+  }, [selectedDistrict, selectedRegion, focusImmersiveViewport]);
 
   const handleDistrictClick = useCallback((code) => {
     if (code) {
@@ -957,46 +974,6 @@ function ResearchContent() {
         </div>
       </div>
 
-      {/* ── Tutorial callouts — sticky pointers to toggles, auto-dismiss ── */}
-      <AnimatePresence>
-        {showTutorial && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 64 }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="sticky top-[49px] z-20 overflow-visible pointer-events-none"
-          >
-            <div className="max-w-6xl mx-auto px-4 relative h-full">
-              <div className="absolute left-4 top-2 pointer-events-auto">
-                <div className="relative rounded-lg bg-white border border-aram-purple/20 shadow-lg px-3 py-2">
-                  <div className="absolute -top-1.5 left-8 w-3 h-3 bg-white border-l border-t border-aram-purple/20 rotate-45" />
-                  <p className="text-[11px] text-aram-purple-dark whitespace-nowrap">
-                    Switch <strong>Map</strong> / <strong>Cards</strong>
-                  </p>
-                </div>
-              </div>
-
-              <div className="absolute left-1/2 -translate-x-1/2 top-2 pointer-events-auto">
-                <div className="relative rounded-lg bg-white border border-aram-purple/20 shadow-lg px-3 py-2 pr-8">
-                  <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-aram-purple/20 rotate-45" />
-                  <p className="text-[11px] text-aram-purple-dark whitespace-nowrap">
-                    Toggle <strong>Insights</strong> / <strong>Partners</strong>
-                  </p>
-                  <button
-                    onClick={() => setShowTutorial(false)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-aram-purple/40 hover:text-aram-purple transition-colors"
-                    aria-label="Dismiss hint"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* ── Detail overlay (Fix #2: z-[9999], fully opaque) ── */}
       <AnimatePresence>
         {detailItem && (
@@ -1043,9 +1020,44 @@ function ResearchContent() {
                     />
                   </div>
 
+                  {/* Tutorial callouts overlayed on map (not an extra header row) */}
+                  <AnimatePresence>
+                    {showTutorial && !hasSidebar && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25 }}
+                        className="absolute top-3 left-3 right-3 z-20 pointer-events-none"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="pointer-events-auto rounded-lg bg-white/95 backdrop-blur border border-aram-purple/20 shadow-lg px-3 py-2">
+                            <p className="text-[11px] text-aram-purple-dark whitespace-nowrap">
+                              <span className="font-bold mr-1">↑</span>Use <strong>Map/Cards</strong>
+                            </p>
+                          </div>
+
+                          <div className="pointer-events-auto rounded-lg bg-white/95 backdrop-blur border border-aram-purple/20 shadow-lg px-3 py-2 pr-8 relative">
+                            <p className="text-[11px] text-aram-purple-dark whitespace-nowrap">
+                              <span className="font-bold mr-1">↑</span>Switch <strong>Insights/Partners</strong>
+                            </p>
+                            <button
+                              onClick={() => setShowTutorial(false)}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-aram-purple/40 hover:text-aram-purple transition-colors"
+                              aria-label="Dismiss hint"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+
                   {/* Map hint — only when no district selected */}
                   {!hasSidebar && (
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+                    <div className="absolute bottom-4 left-4 z-10 pointer-events-none">
                       <motion.div
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
