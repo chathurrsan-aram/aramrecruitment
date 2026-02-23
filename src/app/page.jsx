@@ -158,23 +158,28 @@ function Tagline() {
 /* ─── Impact Stats ─────────────────────────────────── */
 function ImpactStats() {
   const stats = [
-    { target: 3, suffix: '', label: 'Trips', sub: 'to Sri Lanka' },
-    { target: 80, suffix: '+', label: 'Volunteers', sub: 'mobilised' },
-    { target: 12, suffix: '', label: 'Communities', sub: 'partnered with' },
-    { target: 6, suffix: '', label: 'Sectors', sub: 'of focus' },
+    { target: 3, suffix: '', label: 'Trips', sub: 'to Sri Lanka', link: '/trip', linkText: 'See past & upcoming trips' },
+    { target: 80, suffix: '+', label: 'Volunteers', sub: 'mobilised', link: '/join', linkText: 'Join our volunteer network' },
+    { target: 12, suffix: '', label: 'Communities', sub: 'partnered with', link: '/research?view=map', linkText: 'Explore our partner communities' },
+    { target: 6, suffix: '', label: 'Sectors', sub: 'of focus', link: '/research?view=sectors', linkText: 'Discover our focus areas' },
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-aram-green-900 dot-grid relative">
+    <section className="py-24 md:py-32 bg-aram-purple-bg relative">
       <div className="max-w-5xl mx-auto px-6">
         <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6" staggerDelay={0.12}>
           {stats.map((stat, i) => (
             <StaggerItem key={i} className="text-center">
-              <div className="font-display text-5xl md:text-6xl font-bold text-aram-purple-light mb-2">
-                <Counter target={stat.target} suffix={stat.suffix} />
-              </div>
-              <div className="text-white font-medium text-sm">{stat.label}</div>
-              <div className="text-white/40 text-xs mt-0.5">{stat.sub}</div>
+              <Link href={stat.link} className="group block">
+                <div className="font-display text-5xl md:text-6xl font-bold text-aram-purple-dark mb-2">
+                  <Counter target={stat.target} suffix={stat.suffix} />
+                </div>
+                <div className="text-aram-green-900 font-medium text-sm">{stat.label}</div>
+                <div className="text-aram-warm-400 text-xs mt-0.5">{stat.sub}</div>
+                <div className="mt-2 text-aram-purple text-xs font-medium flex items-center justify-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                  {stat.linkText} <ArrowRight className="w-3 h-3" />
+                </div>
+              </Link>
             </StaggerItem>
           ))}
         </StaggerContainer>
@@ -186,9 +191,9 @@ function ImpactStats() {
 /* ─── Three-Pillar Model ──────────────────────────── */
 function ThreePillarModel() {
   const pillars = [
-    { icon: '🔍', title: 'Discovery', color: '#40916C', label: 'PILLAR 01', desc: 'Annual volunteering trips to Sri Lanka. On-the-ground observations, community engagement, and needs assessment.' },
-    { icon: '🔬', title: 'Research', color: '#6D4A9E', label: 'PILLAR 02', desc: 'Translating field observations into actionable insights, thought pieces, and data-driven recommendations.' },
-    { icon: '🚀', title: 'Initiatives', color: '#C85C5C', label: 'PILLAR 03', desc: 'Long-term projects addressing systemic challenges — mentoring, microcredit, and sustainable partnerships.' },
+    { icon: '🔍', title: 'Discovery', color: '#40916C', label: 'PILLAR 01', desc: 'Annual volunteering trips to Sri Lanka. On-the-ground observations, community engagement, and needs assessment.', link: '/trip', linkText: 'Explore our trips' },
+    { icon: '🔬', title: 'Research', color: '#6D4A9E', label: 'PILLAR 02', desc: 'Translating field observations into actionable insights, thought pieces, and data-driven recommendations.', link: '/research', linkText: 'Read our insights' },
+    { icon: '🚀', title: 'Initiatives', color: '#C85C5C', label: 'PILLAR 03', desc: 'Long-term projects addressing systemic challenges — mentoring, microcredit, and sustainable partnerships.', link: '/initiatives', linkText: 'View our initiatives' },
   ];
 
   return (
@@ -235,7 +240,14 @@ function ThreePillarModel() {
                   {p.label}
                 </p>
                 <h3 className="font-display text-xl font-bold text-aram-green-900 mb-2">{p.title}</h3>
-                <p className="text-sm text-aram-warm-500 leading-relaxed">{p.desc}</p>
+                <p className="text-sm text-aram-warm-500 leading-relaxed mb-3">{p.desc}</p>
+                <Link
+                  href={p.link}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors hover:opacity-80"
+                  style={{ color: p.color }}
+                >
+                  {p.linkText} <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </StaggerItem>
           ))}

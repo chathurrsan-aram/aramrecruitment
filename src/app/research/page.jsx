@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, Suspense, lazy } from 'react';
+import { useState, useMemo, useCallback, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { Reveal, StaggerContainer, StaggerItem } from '@/components/ui/motion';
@@ -12,7 +12,10 @@ import { partners } from '@/data/partners';
 import { regions } from '@/data/regions';
 import { sectors } from '@/data/sectors';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
-import { Search, Map, LayoutGrid, Globe, ArrowLeft, X, ChevronRight, Users, Eye, Lightbulb, MapPin } from 'lucide-react';
+import {
+  Search, Map, LayoutGrid, Globe, ArrowLeft, X, ChevronRight,
+  ChevronUp, ChevronDown, Users, Lightbulb, MapPin, Filter,
+} from 'lucide-react';
 
 const DISTRICT_NAMES = {
   CO: 'Colombo', GQ: 'Gampaha', KT: 'Kalutara', KY: 'Kandy', MT: 'Matale',
@@ -37,38 +40,48 @@ const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
   ),
 });
 
-/* ─── View Switcher ────────────────────────────────── */
+/* ─── View Switcher (pill-style segmented control) ──── */
 function ViewSwitcher({ active, onChange }) {
   const views = [
-    { id: 'map', label: 'Map View', icon: Map },
-    { id: 'sectors', label: 'Sector View', icon: LayoutGrid },
-    { id: 'macro', label: 'Macro View', icon: Globe },
+    { id: 'map', label: 'Map', icon: Map },
+    { id: 'sectors', label: 'Sectors', icon: LayoutGrid },
+    { id: 'macro', label: 'Macro', icon: Globe },
   ];
 
   return (
     <div className="sticky top-[64px] z-30 bg-white/95 backdrop-blur-md border-b border-aram-warm-200">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex gap-1 py-2 relative">
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between py-3">
+        {/* Pill toggle on the left */}
+        <div className="inline-flex bg-aram-warm-100 rounded-xl p-1">
           {views.map((v) => (
             <button
               key={v.id}
               onClick={() => onChange(v.id)}
-              className={`relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
-                active === v.id ? 'text-aram-green-900' : 'text-aram-warm-400 hover:text-aram-green-900'
-              }`}
+              className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors"
             >
-              <v.icon className="w-4 h-4" />
-              {v.label}
               {active === v.id && (
                 <motion.div
-                  layoutId="research-tab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-aram-purple rounded-full"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  layoutId="view-pill"
+                  className="absolute inset-0 bg-white rounded-lg shadow-sm"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                 />
               )}
+              <span className={`relative z-10 flex items-center gap-2 transition-colors ${
+                active === v.id ? 'text-aram-green-900' : 'text-aram-warm-400'
+              }`}>
+                <v.icon className="w-4 h-4" />
+                <span className="hidden sm:inline">{v.label}</span>
+              </span>
             </button>
           ))}
         </div>
+
+        {/* Aram logo on the right */}
+        <img
+          src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png"
+          alt="Aram"
+          className="h-8 hidden md:block"
+        />
       </div>
     </div>
   );
@@ -95,26 +108,91 @@ function SearchBar({ query, onChange }) {
   );
 }
 
-/* ─── Map Mode Toggle ─────────────────────────────── */
-function MapModeToggle({ mode, onChange }) {
+/* ─── Content Mode Selector (prominent Partners / Insights choice) ── */
+function ContentModeSelector({ mode, onChange }) {
+  const modes = [
+    {
+      id: 'partners',
+      icon: Users,
+      label: 'Partners',
+      desc: 'Community organisations',
+    },
+    {
+      id: 'insights',
+      icon: Lightbulb,
+      label: 'Insights',
+      desc: 'Field observations & analysis',
+    },
+  ];
+
   return (
-    <div className="flex gap-1 bg-aram-warm-100 rounded-lg p-0.5">
-      <button
-        onClick={() => onChange('partners')}
-        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-          mode === 'partners' ? 'bg-white text-aram-green-900 shadow-sm' : 'text-aram-warm-400 hover:text-aram-green-900'
-        }`}
-      >
-        <Users className="w-3 h-3" /> Partners
-      </button>
-      <button
-        onClick={() => onChange('insights')}
-        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-          mode === 'insights' ? 'bg-white text-aram-green-900 shadow-sm' : 'text-aram-warm-400 hover:text-aram-green-900'
-        }`}
-      >
-        <Lightbulb className="w-3 h-3" /> Insights
-      </button>
+    <div className="grid grid-cols-2 gap-2 mb-5">
+      {modes.map((m) => {
+        const active = mode === m.id;
+        return (
+          <button
+            key={m.id}
+            onClick={() => onChange(m.id)}
+            className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${
+              active
+                ? 'border-aram-purple bg-aram-purple-50'
+                : 'border-aram-warm-200 bg-white hover:border-aram-warm-300'
+            }`}
+          >
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+              active ? 'bg-aram-purple text-white' : 'bg-aram-warm-100 text-aram-warm-400'
+            }`}>
+              <m.icon className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <p className={`text-sm font-semibold ${active ? 'text-aram-purple' : 'text-aram-green-900'}`}>
+                {m.label}
+              </p>
+              <p className="text-[11px] text-aram-warm-400 truncate">{m.desc}</p>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Sector Filter Chips ─────────────────────────── */
+function SectorFilterChips({ activeSectors, onToggle }) {
+  return (
+    <div className="mb-4">
+      <div className="flex items-center gap-2 mb-2">
+        <Filter className="w-3 h-3 text-aram-warm-400" />
+        <span className="text-[11px] font-mono uppercase tracking-wider text-aram-warm-400">Filter by sector</span>
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {sectors.map((s) => {
+          const isActive = activeSectors.length === 0 || activeSectors.includes(s.id);
+          return (
+            <button
+              key={s.id}
+              onClick={() => onToggle(s.id)}
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
+                isActive
+                  ? 'border-current opacity-100'
+                  : 'border-aram-warm-200 text-aram-warm-300 opacity-60'
+              }`}
+              style={isActive ? { color: `var(--color-sector-${s.color})`, borderColor: `var(--color-sector-${s.color})` } : undefined}
+            >
+              <span className="text-xs">{s.icon}</span>
+              {s.name}
+            </button>
+          );
+        })}
+        {activeSectors.length > 0 && (
+          <button
+            onClick={() => onToggle(null)}
+            className="text-[11px] text-aram-warm-400 hover:text-aram-green-900 px-2 transition-colors"
+          >
+            Clear
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -123,44 +201,70 @@ function MapModeToggle({ mode, onChange }) {
 function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [mapMode, setMapMode] = useState('partners');
+  const [sectorFilter, setSectorFilter] = useState([]);
+  const [showPanel, setShowPanel] = useState(false);
 
   const region = regions.find((r) => r.id === selectedRegion);
-
-  // Find the district feature info from the selected code
   const districtProject = selectedDistrict ? districtProjects[selectedDistrict] : null;
-  // We need the district name — look it up from the GeoJSON properties stored in DISTRICT_NAMES
   const districtName = selectedDistrict ? DISTRICT_NAMES[selectedDistrict] : null;
+
+  const handleToggleSector = useCallback((sectorId) => {
+    if (sectorId === null) {
+      setSectorFilter([]);
+      return;
+    }
+    setSectorFilter((prev) =>
+      prev.includes(sectorId)
+        ? prev.filter((s) => s !== sectorId)
+        : [...prev, sectorId]
+    );
+  }, []);
 
   const filteredInsights = useMemo(() => {
     let filtered = insights;
     if (selectedRegion) filtered = filtered.filter((i) => i.region === selectedRegion);
+    if (sectorFilter.length > 0) filtered = filtered.filter((i) => i.sectors.some((s) => sectorFilter.includes(s)));
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter((i) => i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q));
     }
     return filtered;
-  }, [selectedRegion, searchQuery]);
+  }, [selectedRegion, searchQuery, sectorFilter]);
 
   const filteredPartners = useMemo(() => {
     let filtered = partners;
     if (selectedRegion) filtered = filtered.filter((p) => p.region === selectedRegion);
+    if (sectorFilter.length > 0) filtered = filtered.filter((p) => p.sectors.some((s) => sectorFilter.includes(s)));
     return filtered;
-  }, [selectedRegion]);
+  }, [selectedRegion, sectorFilter]);
+
+  const handleDistrictSelect = useCallback((code) => {
+    setSelectedDistrict(code);
+    if (code) setShowPanel(true);
+  }, []);
+
+  const hasSelection = selectedDistrict || selectedRegion;
 
   return (
-    <div className="flex flex-col lg:flex-row" style={{ minHeight: 'calc(100vh - 180px)' }}>
+    <div className="flex flex-col lg:flex-row relative" style={{ minHeight: 'calc(100vh - 140px)' }}>
       {/* Map area */}
-      <div className="lg:w-3/5 relative h-[450px] lg:h-auto lg:min-h-0">
+      <div className={`relative transition-all duration-300 ${
+        showPanel && hasSelection ? 'hidden lg:block lg:w-3/5' : 'w-full lg:w-3/5'
+      } h-[450px] lg:h-auto`} style={{ minHeight: 'calc(100vh - 140px)' }}>
         <SriLankaMap
           selectedRegion={selectedRegion}
           onSelectRegion={onSelectRegion}
           selectedDistrict={selectedDistrict}
-          onSelectDistrict={setSelectedDistrict}
+          onSelectDistrict={handleDistrictSelect}
         />
       </div>
 
-      {/* Side panel */}
-      <div className="lg:w-2/5 bg-white border-l border-aram-warm-200 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 180px)' }}>
+      {/* Side panel — solid white, full page on mobile when active */}
+      <div className={`bg-white border-l border-aram-warm-200 overflow-y-auto ${
+        showPanel && hasSelection
+          ? 'fixed inset-0 top-[64px] z-40 lg:static lg:w-2/5'
+          : 'lg:w-2/5'
+      }`} style={{ maxHeight: showPanel && hasSelection ? undefined : 'calc(100vh - 140px)' }}>
         <AnimatePresence mode="wait">
           {/* District selected → show district details */}
           {selectedDistrict && districtProject ? (
@@ -172,9 +276,17 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
               transition={{ duration: 0.25 }}
               className="p-6"
             >
+              {/* Back to Map (mobile) */}
+              <button
+                onClick={() => { setShowPanel(false); setSelectedDistrict(null); onSelectRegion(null); }}
+                className="lg:hidden flex items-center gap-1.5 text-sm text-aram-purple font-medium mb-4"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back to Map
+              </button>
+
               {/* Breadcrumb */}
               <div className="flex items-center gap-1.5 text-xs text-aram-warm-400 mb-4 font-mono">
-                <button onClick={() => { onSelectRegion(null); setSelectedDistrict(null); }} className="hover:text-aram-green-900">
+                <button onClick={() => { onSelectRegion(null); setSelectedDistrict(null); setShowPanel(false); }} className="hover:text-aram-green-900">
                   Sri Lanka
                 </button>
                 {region && (
@@ -243,9 +355,10 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
 
               {/* Region insights/partners if available */}
               {region && (
-                <div className="mb-5">
-                  <MapModeToggle mode={mapMode} onChange={setMapMode} />
-                </div>
+                <>
+                  <ContentModeSelector mode={mapMode} onChange={setMapMode} />
+                  <SectorFilterChips activeSectors={sectorFilter} onToggle={handleToggleSector} />
+                </>
               )}
               {region && mapMode === 'partners' && filteredPartners.length > 0 && (
                 <div>
@@ -273,7 +386,7 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
               )}
             </motion.div>
           ) : selectedDistrict && !districtProject ? (
-            /* District selected but no project data (inactive district) */
+            /* District selected but no project data (inactive) */
             <motion.div
               key={`district-inactive-${selectedDistrict}`}
               initial={{ opacity: 0, x: 20 }}
@@ -282,8 +395,16 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
               transition={{ duration: 0.25 }}
               className="p-6"
             >
+              {/* Back to Map (mobile) */}
+              <button
+                onClick={() => { setShowPanel(false); setSelectedDistrict(null); onSelectRegion(null); }}
+                className="lg:hidden flex items-center gap-1.5 text-sm text-aram-purple font-medium mb-4"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back to Map
+              </button>
+
               <div className="flex items-center gap-1.5 text-xs text-aram-warm-400 mb-4 font-mono">
-                <button onClick={() => { onSelectRegion(null); setSelectedDistrict(null); }} className="hover:text-aram-green-900">
+                <button onClick={() => { onSelectRegion(null); setSelectedDistrict(null); setShowPanel(false); }} className="hover:text-aram-green-900">
                   Sri Lanka
                 </button>
                 <ChevronRight className="w-3 h-3" />
@@ -297,11 +418,11 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
                   <MapPin className="w-6 h-6 text-aram-warm-300" />
                 </div>
                 <p className="text-aram-warm-400 text-sm mb-1">No current operations</p>
-                <p className="text-aram-warm-300 text-xs">We don't currently have active programmes in this district.</p>
+                <p className="text-aram-warm-300 text-xs">We don&apos;t currently have active programmes in this district.</p>
               </div>
             </motion.div>
           ) : selectedRegion ? (
-            /* Region selected (from legend or district click) → show region details */
+            /* Region selected */
             <motion.div
               key={selectedRegion}
               initial={{ opacity: 0, x: 20 }}
@@ -310,8 +431,16 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
               transition={{ duration: 0.25 }}
               className="p-6"
             >
+              {/* Back to Map (mobile) */}
+              <button
+                onClick={() => { setShowPanel(false); onSelectRegion(null); setSelectedDistrict(null); }}
+                className="lg:hidden flex items-center gap-1.5 text-sm text-aram-purple font-medium mb-4"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back to Map
+              </button>
+
               <div className="flex items-center gap-1.5 text-xs text-aram-warm-400 mb-4 font-mono">
-                <button onClick={() => { onSelectRegion(null); setSelectedDistrict(null); }} className="hover:text-aram-green-900">
+                <button onClick={() => { onSelectRegion(null); setSelectedDistrict(null); setShowPanel(false); }} className="hover:text-aram-green-900">
                   Sri Lanka
                 </button>
                 <ChevronRight className="w-3 h-3" />
@@ -321,9 +450,8 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
               <h2 className="font-display text-2xl font-bold text-aram-green-900 mb-2">{region?.name}</h2>
               <p className="text-sm text-aram-warm-500 leading-relaxed mb-5">{region?.description}</p>
 
-              <div className="mb-5">
-                <MapModeToggle mode={mapMode} onChange={setMapMode} />
-              </div>
+              <ContentModeSelector mode={mapMode} onChange={setMapMode} />
+              <SectorFilterChips activeSectors={sectorFilter} onToggle={handleToggleSector} />
 
               {mapMode === 'partners' ? (
                 <div>
@@ -337,7 +465,7 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-aram-warm-400 py-4">No partners in this region yet.</p>
+                    <p className="text-sm text-aram-warm-400 py-4">No partners match this filter.</p>
                   )}
                 </div>
               ) : (
@@ -350,7 +478,7 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
                       <InsightCard key={insight.id} insight={insight} />
                     ))}
                     {filteredInsights.length === 0 && (
-                      <p className="text-sm text-aram-warm-400 py-4">No insights for this selection.</p>
+                      <p className="text-sm text-aram-warm-400 py-4">No insights match this filter.</p>
                     )}
                   </div>
                 </div>
@@ -420,6 +548,7 @@ function MapView({ selectedRegion, onSelectRegion, searchQuery }) {
 /* ─── SECTOR VIEW ──────────────────────────────────── */
 function SectorView({ searchQuery }) {
   const [expandedSector, setExpandedSector] = useState(null);
+  const [partnerFilter, setPartnerFilter] = useState(null);
 
   const sectorData = sectors.map((s) => ({
     ...s,
@@ -428,6 +557,12 @@ function SectorView({ searchQuery }) {
   }));
 
   const expanded = sectorData.find((s) => s.id === expandedSector);
+
+  const filteredExpandedPartners = useMemo(() => {
+    if (!expanded) return [];
+    if (!partnerFilter) return expanded.partners;
+    return expanded.partners.filter((p) => p.id === partnerFilter);
+  }, [expanded, partnerFilter]);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
@@ -441,7 +576,7 @@ function SectorView({ searchQuery }) {
             transition={{ duration: 0.3 }}
           >
             <button
-              onClick={() => setExpandedSector(null)}
+              onClick={() => { setExpandedSector(null); setPartnerFilter(null); }}
               className="flex items-center gap-1.5 text-sm text-aram-warm-400 hover:text-aram-green-900 mb-6 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" /> All Sectors
@@ -451,13 +586,44 @@ function SectorView({ searchQuery }) {
               <span className="text-3xl">{expanded.icon}</span>
               <h2 className="font-display text-2xl font-bold text-aram-green-900">{expanded.name}</h2>
             </div>
-            <p className="text-aram-warm-500 leading-relaxed mb-8 max-w-2xl">{expanded.description}</p>
+            <p className="text-aram-warm-500 leading-relaxed mb-6 max-w-2xl">{expanded.description}</p>
 
+            {/* Partner filter chips */}
             {expanded.partners.length > 0 && (
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <Filter className="w-3 h-3 text-aram-warm-400" />
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-aram-warm-400">Filter by partner</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() => setPartnerFilter(null)}
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-all ${
+                      !partnerFilter ? 'border-aram-purple text-aram-purple bg-aram-purple-50' : 'border-aram-warm-200 text-aram-warm-400'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {expanded.partners.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => setPartnerFilter(partnerFilter === p.id ? null : p.id)}
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-all ${
+                        partnerFilter === p.id ? 'border-aram-purple text-aram-purple bg-aram-purple-50' : 'border-aram-warm-200 text-aram-warm-400'
+                      }`}
+                    >
+                      {p.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {filteredExpandedPartners.length > 0 && (
               <div className="mb-8">
                 <h3 className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">Partners</h3>
                 <div className="flex gap-3 overflow-x-auto pb-2">
-                  {expanded.partners.map((p) => (
+                  {filteredExpandedPartners.map((p) => (
                     <PartnerCard key={p.id} partner={p} />
                   ))}
                 </div>
@@ -507,18 +673,38 @@ function SectorView({ searchQuery }) {
 
 /* ─── MACRO VIEW ───────────────────────────────────── */
 function MacroView({ searchQuery }) {
+  const [sectorFilter, setSectorFilter] = useState([]);
+
   const macroInsights = insights.filter(
     (i) => i.type === 'article' || i.type === 'research' || i.sectors.length > 1
   );
 
-  const filtered = searchQuery
-    ? macroInsights.filter(
-        (i) => i.title.toLowerCase().includes(searchQuery.toLowerCase()) || i.summary.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : macroInsights;
+  const handleToggleSector = useCallback((sectorId) => {
+    if (sectorId === null) {
+      setSectorFilter([]);
+      return;
+    }
+    setSectorFilter((prev) =>
+      prev.includes(sectorId)
+        ? prev.filter((s) => s !== sectorId)
+        : [...prev, sectorId]
+    );
+  }, []);
+
+  const filtered = useMemo(() => {
+    let result = macroInsights;
+    if (sectorFilter.length > 0) result = result.filter((i) => i.sectors.some((s) => sectorFilter.includes(s)));
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((i) => i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q));
+    }
+    return result;
+  }, [macroInsights, sectorFilter, searchQuery]);
 
   return (
     <div className="max-w-[720px] mx-auto px-6 py-10">
+      <SectorFilterChips activeSectors={sectorFilter} onToggle={handleToggleSector} />
+
       <StaggerContainer className="space-y-6" staggerDelay={0.08}>
         {filtered.map((insight) => {
           const region = regions.find((r) => r.id === insight.region);
@@ -553,6 +739,26 @@ function MacroView({ searchQuery }) {
   );
 }
 
+/* ─── Scroll Navigation Arrows ─────────────────────── */
+function ScrollArrow({ direction, targetRef, label }) {
+  const handleClick = () => {
+    targetRef?.current?.scrollIntoView({ behavior: 'smooth', block: direction === 'up' ? 'start' : 'end' });
+  };
+
+  const Icon = direction === 'up' ? ChevronUp : ChevronDown;
+
+  return (
+    <button
+      onClick={handleClick}
+      className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-aram-warm-200 shadow-sm text-aram-warm-400 hover:text-aram-green-900 transition-all hover:shadow-md text-xs"
+      aria-label={label}
+    >
+      <Icon className="w-3.5 h-3.5" />
+      <span className="hidden sm:inline">{label}</span>
+    </button>
+  );
+}
+
 /* ─── Page (wrapped with Suspense for useSearchParams) */
 function ResearchContent() {
   const searchParams = useSearchParams();
@@ -562,6 +768,9 @@ function ResearchContent() {
   const [view, setView] = useState(initialView);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRegion, setSelectedRegion] = useState(initialRegion);
+
+  const headerRef = useRef(null);
+  const footerRef = useRef(null);
 
   const handleViewChange = useCallback((v) => {
     setView(v);
@@ -584,7 +793,8 @@ function ResearchContent() {
 
   return (
     <div className="min-h-screen">
-      <section className="pt-32 pb-10 md:pt-40 md:pb-14 bg-aram-warm-50">
+      {/* Header section — scrolls naturally */}
+      <section ref={headerRef} className="pt-32 pb-10 md:pt-40 md:pb-14 bg-aram-warm-50">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <Reveal>
             <h1 className="font-display text-4xl md:text-5xl font-bold text-aram-green-900 mb-4">
@@ -602,23 +812,36 @@ function ResearchContent() {
 
       <ViewSwitcher active={view} onChange={handleViewChange} />
 
-      <AnimatePresence mode="wait">
-        {view === 'map' && (
-          <motion.div key="map" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <MapView selectedRegion={selectedRegion} onSelectRegion={handleSelectRegion} searchQuery={searchQuery} />
-          </motion.div>
-        )}
-        {view === 'sectors' && (
-          <motion.div key="sectors" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <SectorView searchQuery={searchQuery} />
-          </motion.div>
-        )}
-        {view === 'macro' && (
-          <motion.div key="macro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <MacroView searchQuery={searchQuery} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Navigation arrow — scroll to header */}
+      <div className="flex justify-end max-w-6xl mx-auto px-6 py-2">
+        <ScrollArrow direction="up" targetRef={headerRef} label="Header" />
+      </div>
+
+      {/* Content area — stable min-height prevents footer bounce */}
+      <div style={{ minHeight: 'calc(100vh - 200px)' }}>
+        <AnimatePresence mode="wait">
+          {view === 'map' && (
+            <motion.div key="map" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <MapView selectedRegion={selectedRegion} onSelectRegion={handleSelectRegion} searchQuery={searchQuery} />
+            </motion.div>
+          )}
+          {view === 'sectors' && (
+            <motion.div key="sectors" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <SectorView searchQuery={searchQuery} />
+            </motion.div>
+          )}
+          {view === 'macro' && (
+            <motion.div key="macro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <MacroView searchQuery={searchQuery} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Navigation arrow — scroll to footer */}
+      <div ref={footerRef} className="flex justify-end max-w-6xl mx-auto px-6 py-2">
+        <ScrollArrow direction="down" targetRef={footerRef} label="Footer" />
+      </div>
     </div>
   );
 }
