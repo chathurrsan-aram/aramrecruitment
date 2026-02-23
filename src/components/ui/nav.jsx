@@ -36,8 +36,8 @@ export default function Navbar() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${bg}`}>
       <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-3">
-          <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className={`h-[50px] transition-all duration-300 ${logoFilter}`} />
+        <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-3">
+          <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className={`h-[65px] transition-all duration-300 ${logoFilter}`} />
         </Link>
 
         <nav className="hidden md:flex items-center gap-7">
@@ -64,6 +64,7 @@ export default function Navbar() {
           onClick={() => setMobileOpen(!mobileOpen)}
           className={`md:hidden p-2 ${textColor} min-w-[44px] min-h-[44px] flex items-center justify-center`}
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
