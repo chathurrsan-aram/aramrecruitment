@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Reveal, StaggerContainer, StaggerItem } from '@/components/ui/motion';
 import { Download, FileText, ArrowRight } from 'lucide-react';
 
@@ -34,7 +35,15 @@ const reports = [
   },
 ];
 
+const YEARS = ['2026', '2025', '2024', '2023'];
+
 export default function ReportsPage() {
+  const [activeYear, setActiveYear] = useState(null);
+
+  const filtered = activeYear
+    ? reports.filter((r) => r.year === activeYear)
+    : reports;
+
   return (
     <div className="min-h-screen">
       <section className="pt-32 pb-10 md:pt-40 md:pb-14 bg-aram-warm-50">
@@ -54,33 +63,78 @@ export default function ReportsPage() {
 
       <section className="py-16 md:py-24">
         <div className="max-w-3xl mx-auto px-6">
-          <StaggerContainer className="space-y-5" staggerDelay={0.1}>
-            {reports.map((report) => (
-              <StaggerItem key={report.title}>
-                <a
-                  href={report.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-start gap-5 rounded-xl border border-aram-warm-200 bg-white p-6 transition-all hover:border-aram-purple hover:-translate-y-0.5 hover:shadow-lg"
+          {/* Year toggle */}
+          <div className="flex items-center gap-2 mb-8 flex-wrap">
+            <button
+              onClick={() => setActiveYear(null)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                activeYear === null
+                  ? 'bg-aram-purple text-white shadow-md'
+                  : 'bg-aram-warm-100 text-aram-warm-500 hover:bg-aram-warm-200'
+              }`}
+            >
+              All
+            </button>
+            {YEARS.map((year) => {
+              const count = reports.filter((r) => r.year === year).length;
+              return (
+                <button
+                  key={year}
+                  onClick={() => setActiveYear(year)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    activeYear === year
+                      ? 'bg-aram-purple text-white shadow-md'
+                      : 'bg-aram-warm-100 text-aram-warm-500 hover:bg-aram-warm-200'
+                  }`}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-aram-green-100 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-aram-green-700" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-[11px] text-aram-purple">{report.year}</span>
-                      <span className="font-mono text-[11px] text-aram-warm-300">{report.type}</span>
+                  {year}
+                  {count > 0 && (
+                    <span className={`ml-1.5 text-xs ${activeYear === year ? 'text-white/70' : 'text-aram-warm-300'}`}>
+                      ({count})
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {filtered.length > 0 ? (
+            <StaggerContainer key={activeYear || 'all'} className="space-y-5" staggerDelay={0.1}>
+              {filtered.map((report) => (
+                <StaggerItem key={report.title}>
+                  <a
+                    href={report.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-start gap-5 rounded-xl border border-aram-warm-200 bg-white p-6 transition-all hover:border-aram-purple hover:-translate-y-0.5 hover:shadow-lg"
+                  >
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-aram-green-100 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-aram-green-700" />
                     </div>
-                    <h2 className="font-display text-lg font-semibold text-aram-green-900 mb-1 group-hover:text-aram-purple transition-colors">
-                      {report.title}
-                    </h2>
-                    <p className="text-sm text-aram-warm-500 leading-relaxed">{report.description}</p>
-                  </div>
-                  <Download className="w-5 h-5 text-aram-warm-300 group-hover:text-aram-purple transition-colors flex-shrink-0 mt-1" />
-                </a>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-mono text-[11px] text-aram-purple">{report.year}</span>
+                        <span className="font-mono text-[11px] text-aram-warm-300">{report.type}</span>
+                      </div>
+                      <h2 className="font-display text-lg font-semibold text-aram-green-900 mb-1 group-hover:text-aram-purple transition-colors">
+                        {report.title}
+                      </h2>
+                      <p className="text-sm text-aram-warm-500 leading-relaxed">{report.description}</p>
+                    </div>
+                    <Download className="w-5 h-5 text-aram-warm-300 group-hover:text-aram-purple transition-colors flex-shrink-0 mt-1" />
+                  </a>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          ) : (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 rounded-2xl bg-aram-warm-100 flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-7 h-7 text-aram-warm-300" />
+              </div>
+              <p className="text-aram-warm-400 font-medium mb-1">No documents for {activeYear}</p>
+              <p className="text-sm text-aram-warm-300">Check back later or browse another year.</p>
+            </div>
+          )}
 
           <Reveal delay={0.4} className="mt-12 text-center">
             <p className="text-sm text-aram-warm-400 mb-3">Want to read our research insights?</p>

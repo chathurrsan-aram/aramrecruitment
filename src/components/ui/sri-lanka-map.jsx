@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import * as topojson from 'topojson-client';
 import 'leaflet/dist/leaflet.css';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
 
@@ -103,9 +104,13 @@ export default function SriLankaMap({
   const geoRef = useRef(null);
 
   useEffect(() => {
-    fetch('/geo/districts-25.geojson')
+    fetch('/geo/sri-lanka-districts.json')
       .then(r => r.json())
-      .then(setGeoData);
+      .then(topo => {
+        // Convert TopoJSON → GeoJSON FeatureCollection
+        const geo = topojson.feature(topo, topo.objects.districts);
+        setGeoData(geo);
+      });
   }, []);
 
   const handleDistrictClick = useCallback((code) => {
@@ -119,7 +124,6 @@ export default function SriLankaMap({
 
   const onEachFeature = useCallback((feature, layer) => {
     const code = feature.properties.code;
-    const project = districtProjects[code];
 
     layer.on({
       mouseover: (e) => {
