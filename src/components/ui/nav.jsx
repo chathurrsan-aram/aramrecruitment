@@ -19,8 +19,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
-  const hasHero = ['/', '/trip'].includes(pathname);
-  const isResearch = pathname === '/research';
+  const hasHero = ['/', '/trip', '/research'].includes(pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -35,14 +34,11 @@ export default function Navbar() {
   const hoverColor = solid ? 'hover:text-aram-purple' : 'hover:text-aram-purple-light';
   const logoFilter = solid ? '' : 'brightness-0 invert';
 
-  /* On research page the nav is static (scrolls away), everywhere else it's fixed */
-  const position = isResearch ? 'relative' : 'fixed top-0 left-0 right-0';
-
   return (
-    <header className={`${position} z-50 transition-all duration-300 ${isResearch ? 'bg-white shadow-sm' : bg}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${bg}`}>
       <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
         <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-3">
-          <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className={`h-[72px] transition-all duration-300 ${isResearch ? '' : logoFilter}`} />
+          <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className={`h-[72px] transition-all duration-300 ${logoFilter}`} />
         </Link>
 
         <nav className="hidden md:flex items-center gap-7">
@@ -50,7 +46,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-sm font-medium transition-colors ${isResearch ? 'text-aram-green-900' : textColor} ${isResearch ? 'hover:text-aram-purple' : hoverColor} ${
+              className={`text-sm font-medium transition-colors ${textColor} ${hoverColor} ${
                 pathname === link.href ? 'text-aram-purple' : ''
               }`}
             >

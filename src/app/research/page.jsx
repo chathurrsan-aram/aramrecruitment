@@ -704,7 +704,6 @@ function ResearchContent() {
   const controlsRef = useRef(null);
   const contentRef = useRef(null);
   const videoRef = useRef(null);
-  const [headerVisible, setHeaderVisible] = useState(true);
 
   /* Parallax for video hero */
   const { scrollY } = useScroll();
@@ -745,44 +744,6 @@ function ResearchContent() {
   const handleClearDistrict = useCallback(() => {
     setSelectedDistrict(null);
   }, []);
-
-  /* Header visibility — hide when scrolled past hero into immersive content */
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroEl = heroRef.current;
-      if (!heroEl) return;
-      const heroBottom = heroEl.getBoundingClientRect().bottom;
-      setHeaderVisible(heroBottom > 0);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  /* Communicate header visibility to the parent layout navbar */
-  useEffect(() => {
-    const navbar = document.querySelector('header');
-    if (!navbar) return;
-    if (headerVisible) {
-      navbar.style.transform = 'translateY(0)';
-      navbar.style.opacity = '1';
-      navbar.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-      navbar.style.pointerEvents = 'auto';
-    } else {
-      navbar.style.transform = 'translateY(-100%)';
-      navbar.style.opacity = '0';
-      navbar.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-      navbar.style.pointerEvents = 'none';
-    }
-    return () => {
-      if (navbar) {
-        navbar.style.transform = '';
-        navbar.style.opacity = '';
-        navbar.style.transition = '';
-        navbar.style.pointerEvents = '';
-      }
-    };
-  }, [headerVisible]);
 
   const scrollToContent = useCallback(() => {
     const controlsEl = controlsRef.current;
