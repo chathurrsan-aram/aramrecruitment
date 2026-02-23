@@ -19,7 +19,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
-  const hasHero = ['/', '/trip', '/research'].includes(pathname);
+  const hasHero = ['/', '/research'].includes(pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);

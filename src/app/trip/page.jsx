@@ -8,12 +8,12 @@ import { ArrowRight, Download, Calendar, MapPin, Users, FileText, Quote } from '
 /* ─── Hero ─────────────────────────────────────────── */
 function TripHero() {
   return (
-    <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-aram-green-900">
-      <div className="absolute inset-0 bg-gradient-to-br from-aram-green-950 via-aram-green-900 to-aram-green-800">
+    <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#F6F2FC' }}>
+      <div className="absolute inset-0">
         <motion.div
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0 opacity-[0.07]"
           style={{
-            backgroundImage: 'linear-gradient(135deg, #7B5EAE 0%, #5A3D82 50%, #1E0A3C 100%)',
+            backgroundImage: 'radial-gradient(circle at 30% 50%, #6D4A9E 0%, transparent 60%), radial-gradient(circle at 70% 80%, #5A3D82 0%, transparent 50%)',
           }}
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
@@ -21,12 +21,12 @@ function TripHero() {
       </div>
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center pt-20">
         <Reveal>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-5">
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-aram-purple-dark mb-5">
             The Aram <span className="text-aram-purple">Trip</span>
           </h1>
         </Reveal>
         <Reveal delay={0.15}>
-          <p className="text-lg text-white/70 leading-relaxed max-w-xl mx-auto">
+          <p className="text-lg text-aram-warm-500 leading-relaxed max-w-xl mx-auto">
             The cornerstone of our mission — a yearly trip to Sri Lanka where our team connects directly with communities.
           </p>
         </Reveal>
@@ -46,13 +46,13 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-aram-warm-50">
+    <section className="py-24 md:py-32 bg-white">
       <div className="max-w-5xl mx-auto px-6">
         <Reveal className="text-center mb-16">
-          <p className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-warm-400 mb-3">
+          <p className="font-body text-sm font-semibold uppercase tracking-[0.15em] text-aram-purple-light mb-3">
             The Process
           </p>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-aram-purple-dark">
             How It Works
           </h2>
         </Reveal>
@@ -61,11 +61,11 @@ function HowItWorks() {
           {steps.map((step, i) => (
             <Reveal key={step.num} delay={i * 0.1} direction="left" className="flex-1">
               <div className="flex md:flex-col items-start gap-4 md:text-center">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-aram-green-900 text-aram-purple font-mono text-sm font-bold flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-aram-purple text-white font-mono text-sm font-bold flex items-center justify-center">
                   {step.num}
                 </div>
                 <div>
-                  <h3 className="font-display text-base font-bold text-aram-green-900 mb-1">{step.title}</h3>
+                  <h3 className="font-display text-base font-bold text-aram-purple-dark mb-1">{step.title}</h3>
                   <p className="text-sm text-aram-warm-500 leading-relaxed">{step.desc}</p>
                 </div>
               </div>
