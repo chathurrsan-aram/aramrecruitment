@@ -88,9 +88,32 @@ function getStyle(feature, hoveredCode, selectedCode) {
   };
 }
 
-/* ─── Map controller (auto-fit bounds + invalidateSize) ── */
+/* ─── Map controller (auto-fit bounds + invalidateSize + scroll normalisation) ── */
 function MapController({ geoData, selectedCode }) {
   const map = useMap();
+
+  /* Normalise scroll/trackpad zoom — one zoom level per scroll event */
+  useEffect(() => {
+    map.scrollWheelZoom.disable();
+
+    let cooldown = false;
+    const handleWheel = (e) => {
+      e.preventDefault();
+      if (cooldown) return;
+      cooldown = true;
+      setTimeout(() => { cooldown = false; }, 250);
+
+      if (e.deltaY < 0) {
+        map.zoomIn(1, { animate: true });
+      } else if (e.deltaY > 0) {
+        map.zoomOut(1, { animate: true });
+      }
+    };
+
+    const container = map.getContainer();
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => container.removeEventListener('wheel', handleWheel);
+  }, [map]);
 
   useEffect(() => {
     map.invalidateSize();
@@ -106,7 +129,7 @@ function MapController({ geoData, selectedCode }) {
       if (feature) {
         const L = require('leaflet');
         const layer = L.geoJSON(feature);
-        map.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 10, animate: true });
+        map.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 10, animate: true, duration: 0.5 });
         return;
       }
     }
@@ -184,19 +207,27 @@ export default function SriLankaMap({
     layer.on({
       mouseover: (e) => {
         setHoveredCode(code);
+        const hoverStyle = getStyle(feature, code, selectedDistrict);
+        e.target.setStyle(hoverStyle);
         e.target.bringToFront();
       },
-      mouseout: () => setHoveredCode(null),
+      mouseout: (e) => {
+        setHoveredCode(null);
+        const normalStyle = getStyle(feature, null, selectedDistrict);
+        e.target.setStyle(normalStyle);
+      },
       click: () => handleDistrictClick(code),
     });
-  }, [handleDistrictClick]);
+  }, [handleDistrictClick, selectedDistrict]);
 
   const styleFn = useCallback(
-    (feature) => getStyle(feature, hoveredCode, selectedDistrict),
-    [hoveredCode, selectedDistrict]
+    (feature) => getStyle(feature, null, selectedDistrict),
+    [selectedDistrict]
   );
 
-  const geoKey = `districts-${hoveredCode}-${selectedDistrict}`;
+  /* Use a stable key so the GeoJSON layer isn't destroyed/recreated on hover.
+     Re-key only on selectedDistrict change to update styles. */
+  const geoKey = `districts-${selectedDistrict || 'none'}`;
 
   if (!geoData) {
     return (
@@ -216,6 +247,10 @@ export default function SriLankaMap({
         zoom={8}
         className="w-full h-full"
         zoomControl={false}
+        scrollWheelZoom={false}
+        dragging={true}
+        doubleClickZoom={true}
+        touchZoom={true}
         attributionControl={false}
         style={{ background: '#F8FAFC' }}
         minZoom={7}
