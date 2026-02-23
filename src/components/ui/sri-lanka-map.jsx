@@ -52,20 +52,32 @@ function getDistrictFill(code) {
 }
 
 /* ─── Styles ──────────────────────────────────────── */
-function getStyle(feature, hoveredCode, selectedCode) {
+function getStyle(feature, hoveredCode, selectedCode, selectedRegion) {
   const code = feature.properties.code;
   const fill = getDistrictFill(code);
   const isSelected = selectedCode === code;
   const isHovered = hoveredCode === code;
   const hasProject = !!districtProjects[code];
+  const districtRegion = DISTRICT_TO_ARAM_REGION[code];
+  const isRegionHighlighted = !selectedCode && selectedRegion && districtRegion === selectedRegion;
 
   if (isSelected) {
     return {
       fillColor: fill,
       fillOpacity: 0.9,
-      color: '#F59E0B',   /* amber — visible against both purple and grey fills */
-      weight: 4,
-      dashArray: '',
+      color: '#FFFFFF',
+      weight: 3,
+      dashArray: ''
+    };
+  }
+
+  if (isRegionHighlighted) {
+    return {
+      fillColor: fill,
+      fillOpacity: hasProject ? 0.75 : 0.45,
+      color: '#4C3A75',
+      weight: 2,
+      dashArray: '4 3',
     };
   }
 
@@ -89,7 +101,7 @@ function getStyle(feature, hoveredCode, selectedCode) {
 }
 
 /* ─── Map controller (auto-fit bounds + invalidateSize) ── */
-function MapController({ geoData, selectedCode, hasSidebar }) {
+function MapController({ geoData, selectedCode, selectedRegion, hasSidebar }) {
   const map = useMap();
 
   /* Always disable Leaflet's native scroll zoom; we add our own stepped handler
@@ -106,35 +118,45 @@ function MapController({ geoData, selectedCode, hasSidebar }) {
   }, [hasSidebar, map]);
 
   /* Step scroll-zoom — only active in sidebar (split) mode.
-     One zoom level per scroll event with a 250ms cooldown.
-     At min zoom + scrolling down → don't prevent default so the page scrolls. */
+     Keeps natural wheel flow (small cooldown), but passes through to page scroll
+     at both zoom boundaries so users can continue scrolling the site. */
   useEffect(() => {
     if (!hasSidebar) return;
 
     const container = map.getContainer();
-    let cooldown = false;
+    let lastStepTs = 0;
 
     const handleWheel = (e) => {
-      const atMin = map.getZoom() <= map.getMinZoom();
-      const scrollingDown = e.deltaY > 0;
+      const delta = e.deltaY;
+      const zoom = map.getZoom();
+      const atMin = zoom <= map.getMinZoom();
+      const atMax = zoom >= map.getMaxZoom();
+      const scrollingDown = delta > 0;
+      const scrollingUp = delta < 0;
 
-      /* At bottom of zoom range and scrolling down — let the page scroll */
-      if (atMin && scrollingDown) return;
+      // At bounds, let wheel continue scrolling page naturally
+      if ((atMin && scrollingDown) || (atMax && scrollingUp)) return;
+
+      const now = performance.now();
+      if (now - lastStepTs < 120) {
+        e.preventDefault();
+        return;
+      }
 
       e.preventDefault();
-      if (cooldown) return;
-      cooldown = true;
-      setTimeout(() => { cooldown = false; }, 250);
+      lastStepTs = now;
 
-      if (e.deltaY < 0) {
+      if (scrollingUp) {
         map.zoomIn(1, { animate: true });
-      } else {
+      } else if (scrollingDown) {
         map.zoomOut(1, { animate: true });
       }
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
-    return () => container.removeEventListener('wheel', handleWheel);
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
   }, [hasSidebar, map]);
 
   /* Invalidate size on mount */
@@ -158,17 +180,27 @@ function MapController({ geoData, selectedCode, hasSidebar }) {
     if (!geoData) return;
 
     const doFit = () => {
+      const L = require('leaflet');
+
       if (selectedCode) {
         const feature = geoData.features.find(f => f.properties.code === selectedCode);
         if (feature) {
-          const L = require('leaflet');
           const layer = L.geoJSON(feature);
           map.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 10, animate: true, duration: 0.6 });
           return;
         }
       }
+
+      if (selectedRegion) {
+        const regionFeatures = geoData.features.filter((f) => DISTRICT_TO_ARAM_REGION[f.properties.code] === selectedRegion);
+        if (regionFeatures.length > 0) {
+          const regionLayer = L.geoJSON({ type: 'FeatureCollection', features: regionFeatures });
+          map.fitBounds(regionLayer.getBounds(), { padding: [50, 50], maxZoom: 9, animate: true, duration: 0.6 });
+          return;
+        }
+      }
+
       // Fit to full Sri Lanka
-      const L = require('leaflet');
       const full = L.geoJSON(geoData);
       map.fitBounds(full.getBounds(), { padding: [10, 10], animate: true });
     };
@@ -176,7 +208,7 @@ function MapController({ geoData, selectedCode, hasSidebar }) {
     // Delay fit to let the container resize animation settle
     const t = setTimeout(doFit, hasSidebar ? 400 : 50);
     return () => clearTimeout(t);
-  }, [selectedCode, geoData, map, hasSidebar]);
+  }, [selectedCode, selectedRegion, geoData, map, hasSidebar]);
 
   return null;
 }
@@ -246,25 +278,25 @@ export default function SriLankaMap({
     layer.on({
       mouseover: (e) => {
         setHoveredCode(code);
-        const hoverStyle = getStyle(feature, code, selectedDistrict);
+        const hoverStyle = getStyle(feature, code, selectedDistrict, selectedRegion);
         e.target.setStyle(hoverStyle);
         e.target.bringToFront();
       },
       mouseout: (e) => {
         setHoveredCode(null);
-        const normalStyle = getStyle(feature, null, selectedDistrict);
+        const normalStyle = getStyle(feature, null, selectedDistrict, selectedRegion);
         e.target.setStyle(normalStyle);
       },
       click: () => handleDistrictClick(code),
     });
-  }, [handleDistrictClick, selectedDistrict]);
+  }, [handleDistrictClick, selectedDistrict, selectedRegion]);
 
   const styleFn = useCallback(
-    (feature) => getStyle(feature, null, selectedDistrict),
-    [selectedDistrict]
+    (feature) => getStyle(feature, null, selectedDistrict, selectedRegion),
+    [selectedDistrict, selectedRegion]
   );
 
-  const geoKey = `districts-${selectedDistrict || 'none'}`;
+  const geoKey = `districts-${selectedDistrict || 'none'}-${selectedRegion || 'all'}`;
 
   if (!geoData) {
     return (
@@ -310,7 +342,7 @@ export default function SriLankaMap({
           onEachFeature={onEachFeature}
         />
 
-        <MapController geoData={geoData} selectedCode={selectedDistrict} hasSidebar={hasSidebar} />
+        <MapController geoData={geoData} selectedCode={selectedDistrict} selectedRegion={selectedRegion} hasSidebar={hasSidebar} />
         <ZoomControl />
       </MapContainer>
 
