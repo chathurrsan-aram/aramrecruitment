@@ -669,7 +669,7 @@ function ResearchContent() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="flex flex-col lg:flex-row min-h-screen">
+              <div className="flex flex-col lg:flex-row" style={{ height: '100vh' }}>
                 {/* Map */}
                 <div
                   className="relative h-[500px] lg:h-full transition-all duration-500 ease-in-out"
