@@ -76,9 +76,9 @@ function getStyle(feature, hoveredCode, selectedCode, selectedRegion) {
     return {
       fillColor: fill,
       fillOpacity: hasProject ? 0.75 : 0.45,
-      color: '#4C3A75',
-      weight: 2,
-      dashArray: '4 3',
+      color: 'rgba(255,255,255,0.85)',
+      weight: 1.5,
+      dashArray: '',
     };
   }
 

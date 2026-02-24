@@ -756,19 +756,20 @@ function ResearchContent() {
     };
   }, []);
 
-  /* Show a "scroll back to map" button when the user scrolls past the content area */
+  /* Show a "scroll back to map" button when the user scrolls past the content area.
+     We can't use IntersectionObserver on controlsRef because it's sticky (always visible).
+     Instead, use a scroll listener and check if the content area's bottom has left the viewport. */
   useEffect(() => {
-    const el = controlsRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Button shows when the controls bar is NOT visible (user scrolled past it)
-        setShowScrollUp(!entry.isIntersecting);
-      },
-      { threshold: 0 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    const handleScroll = () => {
+      const contentEl = contentRef.current;
+      if (!contentEl) return;
+      const rect = contentEl.getBoundingClientRect();
+      // Content bottom is above the viewport → user has scrolled past the map
+      setShowScrollUp(rect.bottom < 100);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   /* Reset sidebar scroll to top whenever selection changes */
@@ -797,10 +798,14 @@ function ResearchContent() {
   }, [dismissTutorialOnInteraction]);
 
   const focusImmersiveViewport = useCallback(() => {
-    const controlsEl = controlsRef.current;
-    if (!controlsEl || typeof window === 'undefined') return;
-    const top = controlsEl.getBoundingClientRect().top + window.scrollY - 8;
-    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    const heroEl = heroRef.current;
+    if (!heroEl || typeof window === 'undefined') return;
+    /* The controls bar is sticky top-0, so getBoundingClientRect() returns
+       its viewport position (~0) not its document position — useless for scrollTo.
+       Instead, scroll to the hero's bottom edge, which is where the controls bar
+       naturally sits in document flow. */
+    const top = heroEl.offsetTop + heroEl.offsetHeight;
+    window.scrollTo({ top, behavior: 'smooth' });
   }, []);
 
   useEffect(() => {
