@@ -181,8 +181,6 @@ function MapController({ geoData, selectedCode, selectedRegion, hasSidebar }) {
     if (!geoData) return;
 
     const doFit = () => {
-      const L = require('leaflet');
-
       if (selectedCode) {
         const feature = geoData.features.find(f => f.properties.code === selectedCode);
         if (feature) {
@@ -246,12 +244,16 @@ export default function SriLankaMap({
   hasSidebar = false,
 }) {
   const [geoData, setGeoData] = useState(null);
+  const [geoError, setGeoError] = useState(false);
   const [hoveredCode, setHoveredCode] = useState(null);
   const geoRef = useRef(null);
 
   useEffect(() => {
     fetch('/geo/gadm41_LKA_1.json')
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then(geo => {
         for (const f of geo.features) {
           const meta = DISTRICT_META[f.properties.NAME_1];
@@ -262,16 +264,15 @@ export default function SriLankaMap({
           }
         }
         setGeoData(geo);
-      });
+      })
+      .catch(() => setGeoError(true));
   }, []);
 
   const handleDistrictClick = useCallback((code) => {
-    const aramRegion = DISTRICT_TO_ARAM_REGION[code];
-    if (aramRegion) {
-      onSelectRegion(aramRegion);
-    }
+    /* Region-setting is handled by the parent's onSelectDistrict handler
+       to avoid duplicate state updates. */
     onSelectDistrict(code === selectedDistrict ? null : code);
-  }, [selectedDistrict, onSelectRegion, onSelectDistrict]);
+  }, [selectedDistrict, onSelectDistrict]);
 
   const onEachFeature = useCallback((feature, layer) => {
     const code = feature.properties.code;
@@ -298,6 +299,17 @@ export default function SriLankaMap({
   );
 
   const geoKey = `districts-${selectedDistrict || 'none'}-${selectedRegion || 'all'}`;
+
+  if (geoError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-aram-warm-50">
+        <div className="text-center">
+          <p className="text-aram-warm-500 text-sm font-medium mb-1">Unable to load map data</p>
+          <p className="text-aram-warm-400 text-xs">Please refresh the page to try again.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!geoData) {
     return (

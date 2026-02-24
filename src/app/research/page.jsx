@@ -1,9 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect, Suspense } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-
-void motion;
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'; // eslint-disable-line no-unused-vars -- motion used in JSX as motion.div
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { StaggerContainer, StaggerItem } from '@/components/ui/motion';
@@ -18,8 +16,8 @@ import { sectors } from '@/data/sectors';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
 import {
   Search, Map, LayoutGrid, ArrowLeft, X, ChevronRight,
-  Users, Lightbulb, MapPin, ExternalLink, Filter, ArrowDown, MousePointerClick,
-  Globe, Building2, BookOpen, Layers,
+  Users, Lightbulb, MapPin, ExternalLink, Filter, ArrowDown, ArrowUp, MousePointerClick,
+  Globe, Building2, BookOpen, Layers, Maximize2,
 } from 'lucide-react';
 import { videos } from '@/lib/cloudinary';
 
@@ -319,8 +317,12 @@ function MapSidebar({ selectedDistrict, selectedRegion, contentMode, searchQuery
   const filteredPartners = useMemo(() => {
     let filtered = partners;
     if (selectedRegion) filtered = filtered.filter(p => p.region === selectedRegion);
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.oneLiner.toLowerCase().includes(q));
+    }
     return filtered;
-  }, [selectedRegion]);
+  }, [selectedRegion, searchQuery]);
 
   /* District with project data */
   if (selectedDistrict && districtProject) {
@@ -392,7 +394,7 @@ function MapSidebar({ selectedDistrict, selectedRegion, contentMode, searchQuery
             </h3>
             <div className="space-y-3">
               {filteredPartners.map(p => (
-                <div key={p.id} onClick={() => onSelectDetail({ type: 'partner', data: p })} className="cursor-pointer">
+                <div key={p.id} role="button" tabIndex={0} onClick={() => onSelectDetail({ type: 'partner', data: p })} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectDetail({ type: 'partner', data: p }); } }} className="cursor-pointer">
                   <PartnerCard partner={p} />
                 </div>
               ))}
@@ -406,7 +408,7 @@ function MapSidebar({ selectedDistrict, selectedRegion, contentMode, searchQuery
             </h3>
             <div className="space-y-3">
               {filteredInsights.map(insight => (
-                <div key={insight.id} onClick={() => onSelectDetail({ type: 'insight', data: insight })} className="cursor-pointer">
+                <div key={insight.id} role="button" tabIndex={0} onClick={() => onSelectDetail({ type: 'insight', data: insight })} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectDetail({ type: 'insight', data: insight }); } }} className="cursor-pointer">
                   <InsightCard insight={insight} />
                 </div>
               ))}
@@ -456,7 +458,7 @@ function MapSidebar({ selectedDistrict, selectedRegion, contentMode, searchQuery
             {filteredPartners.length > 0 ? (
               <div className="space-y-3">
                 {filteredPartners.map(p => (
-                  <div key={p.id} onClick={() => onSelectDetail({ type: 'partner', data: p })} className="cursor-pointer">
+                  <div key={p.id} role="button" tabIndex={0} onClick={() => onSelectDetail({ type: 'partner', data: p })} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectDetail({ type: 'partner', data: p }); } }} className="cursor-pointer">
                     <PartnerCard partner={p} />
                   </div>
                 ))}
@@ -471,7 +473,7 @@ function MapSidebar({ selectedDistrict, selectedRegion, contentMode, searchQuery
             {filteredInsights.length > 0 ? (
               <div className="space-y-3">
                 {filteredInsights.map(insight => (
-                  <div key={insight.id} onClick={() => onSelectDetail({ type: 'insight', data: insight })} className="cursor-pointer">
+                  <div key={insight.id} role="button" tabIndex={0} onClick={() => onSelectDetail({ type: 'insight', data: insight })} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectDetail({ type: 'insight', data: insight }); } }} className="cursor-pointer">
                     <InsightCard insight={insight} />
                   </div>
                 ))}
@@ -527,7 +529,10 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
     return filtered;
   }, [searchQuery, sectorFilter, regionFilter]);
 
-  const itemLabel = contentMode === 'insights' ? 'insights' : 'partners';
+  const count = contentMode === 'insights' ? filteredInsights.length : filteredPartners.length;
+  const itemLabel = contentMode === 'insights'
+    ? (count === 1 ? 'insight' : 'insights')
+    : (count === 1 ? 'partner' : 'partners');
 
   const filterBar = (
     <div className="mb-6 space-y-3">
@@ -604,8 +609,11 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
               return (
                 <StaggerItem key={insight.id}>
                   <div
+                    role="button"
+                    tabIndex={0}
                     className="rounded-xl border border-aram-warm-200 bg-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-aram-purple group h-full"
                     onClick={() => onSelectDetail({ type: 'insight', data: insight })}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectDetail({ type: 'insight', data: insight }); } }}
                   >
                     <div className="flex items-center gap-2 mb-3">
                       <TypeBadge type={insight.type} />
@@ -647,8 +655,11 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
             return (
               <StaggerItem key={partner.id}>
                 <div
+                  role="button"
+                  tabIndex={0}
                   className="rounded-xl border border-aram-warm-200 bg-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-aram-purple group h-full"
                   onClick={() => onSelectDetail({ type: 'partner', data: partner })}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectDetail({ type: 'partner', data: partner }); } }}
                 >
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-10 h-10 rounded-lg bg-aram-green-100 flex items-center justify-center flex-shrink-0">
@@ -700,6 +711,7 @@ function ResearchContent() {
   const [detailItem, setDetailItem] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [showTutorial, setShowTutorial] = useState(true);
+  const [showScrollUp, setShowScrollUp] = useState(false);
   const tutorialInteractionsRef = useRef(0);
 
   /* Refs for section-based scroll (Fix #4, #5) */
@@ -744,6 +756,21 @@ function ResearchContent() {
     };
   }, []);
 
+  /* Show a "scroll back to map" button when the user scrolls past the content area */
+  useEffect(() => {
+    const el = controlsRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Button shows when the controls bar is NOT visible (user scrolled past it)
+        setShowScrollUp(!entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   /* Reset sidebar scroll to top whenever selection changes */
   useEffect(() => {
     if (sidebarRef.current) sidebarRef.current.scrollTop = 0;
@@ -783,13 +810,9 @@ function ResearchContent() {
     if (!changed) return;
     if (!(selectedDistrict || selectedRegion)) return;
 
-    const contentEl = contentRef.current;
-    if (!contentEl || typeof window === 'undefined') return;
-
-    const rect = contentEl.getBoundingClientRect();
-    const viewportH = window.innerHeight;
-    const needsRecenter = rect.top > 64 || rect.bottom < viewportH * 0.85;
-    if (needsRecenter) focusImmersiveViewport();
+    /* Always scroll so the controls bar + map/sidebar fill the viewport,
+       regardless of how far down the page the user currently is. */
+    focusImmersiveViewport();
   }, [selectedDistrict, selectedRegion, focusImmersiveViewport]);
 
   const handleDistrictClick = useCallback((code) => {
@@ -1146,6 +1169,25 @@ function ResearchContent() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Floating "scroll back to map" button — visible when user has scrolled past the map */}
+      <AnimatePresence>
+        {showScrollUp && !isCardView && (
+          <motion.button
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            transition={{ duration: 0.25 }}
+            onClick={focusImmersiveViewport}
+            className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-aram-purple text-white pl-4 pr-5 py-3 rounded-full shadow-xl shadow-aram-purple/30 hover:bg-aram-purple/90 hover:shadow-2xl hover:shadow-aram-purple/40 transition-all group"
+            aria-label="Scroll back to map view"
+          >
+            <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            <span className="text-sm font-semibold">View Map</span>
+            <ArrowUp className="w-3.5 h-3.5 opacity-70" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
