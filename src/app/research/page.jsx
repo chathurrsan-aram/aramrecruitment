@@ -2,6 +2,8 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+
+void motion;
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { StaggerContainer, StaggerItem } from '@/components/ui/motion';
@@ -525,7 +527,6 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
     return filtered;
   }, [searchQuery, sectorFilter, regionFilter]);
 
-  const items = contentMode === 'insights' ? filteredInsights : filteredPartners;
   const itemLabel = contentMode === 'insights' ? 'insights' : 'partners';
 
   const filterBar = (
@@ -707,6 +708,7 @@ function ResearchContent() {
   const contentRef = useRef(null);
   const videoRef = useRef(null);
   const sidebarRef = useRef(null);
+  const prevSelectionRef = useRef({ district: null, region: null });
 
   /* Parallax for video hero */
   const { scrollY } = useScroll();
@@ -767,17 +769,38 @@ function ResearchContent() {
     }
   }, [dismissTutorialOnInteraction]);
 
+  const focusImmersiveViewport = useCallback(() => {
+    const controlsEl = controlsRef.current;
+    if (!controlsEl || typeof window === 'undefined') return;
+    const top = controlsEl.getBoundingClientRect().top + window.scrollY - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  }, []);
+
+  useEffect(() => {
+    const prev = prevSelectionRef.current;
+    const changed = prev.district !== selectedDistrict || prev.region !== selectedRegion;
+    prevSelectionRef.current = { district: selectedDistrict, region: selectedRegion };
+    if (!changed) return;
+    if (!(selectedDistrict || selectedRegion)) return;
+
+    const contentEl = contentRef.current;
+    if (!contentEl || typeof window === 'undefined') return;
+
+    const rect = contentEl.getBoundingClientRect();
+    const viewportH = window.innerHeight;
+    const needsRecenter = rect.top > 64 || rect.bottom < viewportH * 0.85;
+    if (needsRecenter) focusImmersiveViewport();
+  }, [selectedDistrict, selectedRegion, focusImmersiveViewport]);
+
   const handleDistrictClick = useCallback((code) => {
     if (code) {
       const aramRegion = DISTRICT_TO_ARAM_REGION[code];
       if (aramRegion) setSelectedRegion(aramRegion);
     }
     setSelectedDistrict(prev => prev === code ? null : code);
-    /* Scroll the page so the toggle bar (and map below it) fills the viewport */
-    setTimeout(() => {
-      controlsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
-  }, []);
+    /* Ensure map + sidebar are pulled cleanly into viewport from any scroll position */
+    setTimeout(() => focusImmersiveViewport(), 50);
+  }, [focusImmersiveViewport]);
 
   const handleClearAll = useCallback(() => {
     setSelectedRegion(null);
@@ -791,7 +814,7 @@ function ResearchContent() {
   const scrollToContent = useCallback(() => {
     const controlsEl = controlsRef.current;
     if (controlsEl) {
-      controlsEl.scrollIntoView({ behavior: 'smooth' });
+      controlsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, []);
 
@@ -801,11 +824,11 @@ function ResearchContent() {
       setSelectedDistrict(null);
       setSearchQuery('');
       setIsCardView(false);
-      setTimeout(() => scrollToContent(), 100);
+      setTimeout(() => focusImmersiveViewport(), 100);
     } else if (suggestion.type === 'sector') {
       // Keep the sector name as search query to filter results
       setSearchQuery(suggestion.label);
-      setTimeout(() => scrollToContent(), 100);
+      setTimeout(() => focusImmersiveViewport(), 100);
     } else if (suggestion.type === 'partner') {
       const partner = partners.find(p => p.id === suggestion.id);
       if (partner) {
@@ -819,7 +842,7 @@ function ResearchContent() {
         setDetailItem({ type: 'insight', data: insight });
       }
     }
-  }, [scrollToContent]);
+  }, [focusImmersiveViewport]);
 
   return (
     <div className="flex flex-col">
@@ -899,7 +922,7 @@ function ResearchContent() {
           </motion.div>
         </motion.div>
 
-        {/* Hero CTA — solid purple, prominent */}
+        {/* Hero CTA — balanced prominence */}
         <motion.button
           onClick={scrollToContent}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 group"
@@ -909,15 +932,15 @@ function ResearchContent() {
         >
           <div className="flex flex-col items-center gap-3">
             <motion.div
-              className="bg-aram-purple border-2 border-aram-purple-light/40 rounded-2xl px-8 py-4 flex items-center gap-3 shadow-xl shadow-aram-purple/50 group-hover:bg-aram-purple-dark group-hover:shadow-aram-purple/70 transition-all duration-300"
-              animate={{ y: [0, 7, 0] }}
+              className="bg-aram-purple/75 backdrop-blur-sm border border-white/30 rounded-2xl px-7 py-3.5 flex items-center gap-2.5 shadow-xl shadow-black/25 group-hover:bg-aram-purple/90 group-hover:shadow-aram-purple/40 transition-all duration-300"
+              animate={{ y: [0, 5, 0] }}
               transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
             >
-              <Map className="w-6 h-6 text-white transition-colors" />
-              <span className="text-base font-bold text-white tracking-wide">
+              <Map className="w-5 h-5 text-white transition-colors" />
+              <span className="text-sm md:text-base font-semibold text-white tracking-wide">
                 Explore the Map
               </span>
-              <ArrowDown className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" />
+              <ArrowDown className="w-4 h-4 text-white/80 group-hover:text-white transition-colors" />
             </motion.div>
             <div className="w-px h-6 bg-white/30 relative overflow-hidden">
               <div className="w-1.5 h-1.5 rounded-full bg-white absolute left-1/2 -translate-x-1/2 animate-bounce-dot" />
@@ -951,46 +974,6 @@ function ResearchContent() {
           </Link>
         </div>
       </div>
-
-      {/* ── Tutorial hint bar — sticky below toggle, auto-dismisses ── */}
-      <AnimatePresence>
-        {showTutorial && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="sticky top-[49px] z-20 overflow-hidden"
-          >
-            <div className="bg-[#F6F2FC] border-b border-aram-purple/15 px-4 py-2">
-              <div className="max-w-6xl mx-auto flex items-center gap-4">
-                {/* Callout 1 — Map/Cards toggle (left side of bar) */}
-                <div className="flex items-center gap-1.5 text-xs text-aram-purple-dark">
-                  <span className="text-aram-purple font-bold text-sm leading-none">↑</span>
-                  <span>Switch between <strong>Map</strong> &amp; <strong>Cards</strong></span>
-                </div>
-
-                <div className="w-px h-3.5 bg-aram-purple/20 flex-shrink-0" />
-
-                {/* Callout 2 — Insights/Partners toggle (centre of bar) */}
-                <div className="flex items-center gap-1.5 text-xs text-aram-purple-dark flex-1">
-                  <span className="text-aram-purple font-bold text-sm leading-none">↑</span>
-                  <span>Toggle between <strong>Insights</strong> &amp; <strong>Partners</strong></span>
-                </div>
-
-                {/* Dismiss */}
-                <button
-                  onClick={() => setShowTutorial(false)}
-                  className="flex-shrink-0 text-aram-purple/40 hover:text-aram-purple transition-colors"
-                  aria-label="Dismiss hint"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* ── Detail overlay (Fix #2: z-[9999], fully opaque) ── */}
       <AnimatePresence>
@@ -1038,9 +1021,56 @@ function ResearchContent() {
                     />
                   </div>
 
+                  {/* Tutorial callouts overlayed on map (not an extra header row) */}
+                  <AnimatePresence>
+                    {showTutorial && !hasSidebar && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute top-2 left-0 right-0 z-40 pointer-events-none"
+                      >
+                        <div className="max-w-6xl mx-auto px-4 relative h-28">
+                          <motion.div
+                            animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
+                            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                            className="pointer-events-auto absolute left-0 top-2"
+                          >
+                            <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/45 px-4 py-3 border border-white/25 max-w-[260px]">
+                              <div className="absolute -top-2 left-6 w-4 h-4 bg-aram-purple rotate-45" />
+                              <p className="text-sm font-bold leading-tight">Switch how you browse the research</p>
+                              <p className="text-xs text-white/90 mt-1 leading-snug">Use this toggle to move between map exploration and card view.</p>
+                            </div>
+                          </motion.div>
+
+                          <motion.div
+                            animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
+                            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut', delay: 0.25 }}
+                            className="pointer-events-auto absolute left-1/2 -translate-x-1/2 top-2"
+                          >
+                            <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/45 px-4 py-3 pr-10 border border-white/25 max-w-[300px]">
+                              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
+                              <p className="text-sm font-bold leading-tight">Choose what appears on the page</p>
+                              <p className="text-xs text-white/90 mt-1 leading-snug">Toggle between insights from research and partner organisations.</p>
+                              <button
+                                onClick={() => setShowTutorial(false)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
+                                aria-label="Dismiss hint"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </motion.div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+
                   {/* Map hint — only when no district selected */}
                   {!hasSidebar && (
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+                    <div className="absolute bottom-4 right-4 z-10 pointer-events-none">
                       <motion.div
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
