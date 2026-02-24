@@ -77,7 +77,7 @@ export const tripDays = [
     title: 'Ohiya to Batticaloa — The Big Move East',
     locations: [
       { group: 'A', label: 'Ohiya → Batticaloa', districts: ['BD', 'BC'], lat: 6.82, lng: 80.84 },
-      { group: 'B', label: 'Hatton', districts: ['NW'], lat: 6.90, lng: 80.59 },
+      { group: 'B', label: 'Hatton', districts: ['NW'], lat: 6.89, lng: 80.60 },
     ],
     summary: 'The biggest geographic leap of the trip. A special group heads to Ohiya for a school visit and the scenic hike down to Kalupuhana, before making the cross-country transfer to Batticaloa on the east coast. Meanwhile, healthcare, CV workshop, and Grow tech teams continue in Hatton.',
     activities: [
@@ -134,8 +134,8 @@ export const tripDays = [
     date: '2025-07-05',
     title: 'Batticaloa to Trincomalee',
     locations: [
-      { group: 'A', label: 'Eastern University', districts: ['BC'], lat: 7.73, lng: 81.70 },
-      { group: 'B', label: 'HOPE / Saratha', districts: ['BC'], lat: 7.73, lng: 81.70 },
+      { group: 'A', label: 'Eastern University', districts: ['BC'], lat: 7.72, lng: 81.69 },
+      { group: 'B', label: 'HOPE / Saratha', districts: ['BC'], lat: 7.74, lng: 81.72 },
     ],
     summary: 'Group A attends the Eastern University conference. Group B runs the HOPE play circuit and parents workshop, with a minibus team heading to Saratha for study skills and robotics sessions. The day ends with the transfer north to Trincomalee.',
     activities: [
@@ -153,7 +153,7 @@ export const tripDays = [
     title: 'Trincomalee to Vavuniya',
     locations: [
       { group: 'A', label: 'Trincomalee', districts: ['TC'], lat: 8.57, lng: 81.23 },
-      { group: 'B', label: 'Trincomalee → Vavuniya', districts: ['TC', 'VA'], lat: 8.57, lng: 81.23 },
+      { group: 'B', label: 'Trincomalee → Vavuniya', districts: ['TC', 'VA'], lat: 8.58, lng: 81.22 },
     ],
     summary: 'Morning sessions split between locations. Group A delivers Saratha wellbeing and menstrual hygiene workshops, plus Anbu Illam careers. Group B attends the Northern Conference, runs ORHAN parents workshop, then everyone transfers to Vavuniya.',
     activities: [
@@ -223,7 +223,7 @@ export const tripDays = [
     date: '2025-07-10',
     title: 'Jaffna — Dragons Den & University',
     locations: [
-      { group: 'A', label: 'Varany', districts: ['JA'], lat: 9.66, lng: 80.02 },
+      { group: 'A', label: 'Varany', districts: ['JA'], lat: 9.64, lng: 80.05 },
       { group: 'B', label: 'Jaffna University', districts: ['JA'], lat: 9.68, lng: 80.01 },
     ],
     summary: 'Group A runs Dragons Den and financial literacy sessions at Varany, alongside dental and IT workshops. Group B hosts a marketing exhibition at Jaffna University, capped off with the Ellai game.',

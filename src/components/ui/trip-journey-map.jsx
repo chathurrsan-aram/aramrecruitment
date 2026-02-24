@@ -1,30 +1,112 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Polyline, Marker, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, Polyline, Marker, CircleMarker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { DISTRICT_META, enrichGeoData } from '@/components/ui/map-utils';
 
 /* ─── Colours ────────────────────────────────────── */
 const ACTIVE_COLOR = '#6D4A9E';
+const GROUP_B_COLOR = '#2A9D8F';
 const VISITED_COLOR = '#C4B1DD';
 const UNVISITED_COLOR = '#D1D5DB';
 
 /* ─── Pulsing marker icon ────────────────────────── */
 function makePulseIcon(label) {
+  const bg = label && label.startsWith('B:') ? GROUP_B_COLOR : ACTIVE_COLOR;
   return L.divIcon({
     className: '',
     iconSize: [24, 24],
     iconAnchor: [12, 12],
     html: `
       <div style="position:relative;width:24px;height:24px;">
-        <div style="position:absolute;inset:0;border-radius:50%;background:${ACTIVE_COLOR};opacity:0.3;animation:trip-pulse 2s ease-in-out infinite;"></div>
-        <div style="position:absolute;top:6px;left:6px;width:12px;height:12px;border-radius:50%;background:${ACTIVE_COLOR};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>
-        ${label ? `<div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);background:${ACTIVE_COLOR};color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;white-space:nowrap;letter-spacing:0.5px;">${label}</div>` : ''}
+        <div style="position:absolute;inset:0;border-radius:50%;background:${bg};opacity:0.3;animation:trip-pulse 2s ease-in-out infinite;"></div>
+        <div style="position:absolute;top:6px;left:6px;width:12px;height:12px;border-radius:50%;background:${bg};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>
+        ${label ? `<div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);background:${bg};color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;white-space:nowrap;letter-spacing:0.5px;">${label}</div>` : ''}
       </div>
     `,
   });
+}
+
+/* ─── Stop label icon (small gray dot + place name) ── */
+function makeStopLabel(name) {
+  return L.divIcon({
+    className: '',
+    iconSize: [6, 6],
+    iconAnchor: [3, 3],
+    html: `
+      <div style="position:relative;width:6px;height:6px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:${VISITED_COLOR};border:1px solid #fff;"></div>
+        <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:9px;color:rgba(109,74,158,0.6);white-space:nowrap;font-weight:500;text-shadow:0 0 3px #fff, 0 0 3px #fff;">${name}</div>
+      </div>
+    `,
+  });
+}
+
+/* ─── Route segment builder ──────────────────────── */
+function buildRouteSegments(tripDays, upToDay = Infinity) {
+  const segments = [];
+  let currentMain = [];
+  let currentA = [];
+  let currentB = [];
+  let lastState = 'together';
+  let lastTogetherPoint = null;
+
+  for (const day of tripDays) {
+    if (day.day > upToDay) break;
+
+    const isSplit = day.locations.length > 1;
+
+    if (!isSplit) {
+      const point = [day.locations[0].lat, day.locations[0].lng];
+
+      if (lastState === 'split') {
+        // Transitioning split → together: close branch segments at this point
+        currentA.push(point);
+        currentB.push(point);
+        if (currentA.length > 1) segments.push({ positions: [...currentA], type: 'groupA' });
+        if (currentB.length > 1) segments.push({ positions: [...currentB], type: 'groupB' });
+        currentA = [];
+        currentB = [];
+      }
+
+      currentMain.push(point);
+      lastTogetherPoint = point;
+      lastState = 'together';
+    } else {
+      // Split day
+      const locA = day.locations.find(l => l.group === 'A');
+      const locB = day.locations.find(l => l.group === 'B');
+      const pointA = locA ? [locA.lat, locA.lng] : null;
+      const pointB = locB ? [locB.lat, locB.lng] : null;
+
+      if (lastState === 'together') {
+        // Transitioning together → split: close main, start branches
+        if (currentMain.length > 1) segments.push({ positions: [...currentMain], type: 'main' });
+        currentMain = [];
+
+        if (lastTogetherPoint) {
+          currentA = [lastTogetherPoint];
+          currentB = [lastTogetherPoint];
+        } else {
+          currentA = [];
+          currentB = [];
+        }
+      }
+
+      if (pointA) currentA.push(pointA);
+      if (pointB) currentB.push(pointB);
+      lastState = 'split';
+    }
+  }
+
+  // Flush remaining segments
+  if (currentMain.length > 1) segments.push({ positions: currentMain, type: 'main' });
+  if (currentA.length > 1) segments.push({ positions: currentA, type: 'groupA' });
+  if (currentB.length > 1) segments.push({ positions: currentB, type: 'groupB' });
+
+  return segments;
 }
 
 /* ─── Style function ─────────────────────────────── */
@@ -141,29 +223,42 @@ export default function TripJourneyMap({ activeDay, tripDays }) {
     return { activeDistricts: active, visitedDistricts: visited };
   }, [activeDay, tripDays]);
 
-  /* Location markers for the active day */
+  /* Active day marker labels — show place name instead of just "A"/"B" */
   const activeLocations = useMemo(() => {
     const day = tripDays.find(d => d.day === activeDay);
     if (!day) return [];
-    return day.locations;
+    return day.locations.map(loc => ({
+      ...loc,
+      markerLabel: loc.group ? `${loc.group}: ${loc.label}` : loc.label,
+    }));
   }, [activeDay, tripDays]);
 
-  /* Full route (all days, faint) */
-  const fullRoutePositions = useMemo(() => {
-    const positions = [];
+  /* Visited stop labels — deduplicated past locations */
+  const visitedStops = useMemo(() => {
+    const seen = new Set();
+    const stops = [];
     for (const day of tripDays) {
+      if (day.day >= activeDay) break;
       for (const loc of day.locations) {
-        positions.push([loc.lat, loc.lng]);
+        if (!seen.has(loc.label)) {
+          seen.add(loc.label);
+          stops.push({ lat: loc.lat, lng: loc.lng, label: loc.label });
+        }
       }
     }
-    return positions;
-  }, [tripDays]);
+    return stops;
+  }, [activeDay, tripDays]);
 
-  /* Completed route (up to activeDay, bold) */
-  const completedRoutePositions = useMemo(() => {
+  /* Build route segments (branching A/B instead of zigzag) */
+  const fullSegments = useMemo(() => buildRouteSegments(tripDays), [tripDays]);
+  const completedSegments = useMemo(() => buildRouteSegments(tripDays, activeDay), [activeDay, tripDays]);
+
+  /* Stop circle positions along completed route */
+  const completedStopPositions = useMemo(() => {
     const positions = [];
     for (const day of tripDays) {
       if (day.day > activeDay) break;
+      if (day.day === activeDay) continue; // don't show stop circle for active day
       for (const loc of day.locations) {
         positions.push([loc.lat, loc.lng]);
       }
@@ -188,6 +283,46 @@ export default function TripJourneyMap({ activeDay, tripDays }) {
       </div>
     );
   }
+
+  /* Segment style helpers */
+  const segmentStyle = (seg, isFull) => {
+    if (isFull) {
+      // Full route: all faint gray
+      return {
+        color: '#D1D5DB',
+        weight: 2,
+        opacity: 0.4,
+        dashArray: seg.type === 'main' ? '4 8' : '3 6',
+      };
+    }
+    // Completed route
+    if (seg.type === 'main') {
+      return {
+        color: ACTIVE_COLOR,
+        weight: 3,
+        opacity: 0.6,
+        dashArray: '8 6',
+        className: 'trip-route-animated',
+      };
+    }
+    if (seg.type === 'groupA') {
+      return {
+        color: ACTIVE_COLOR,
+        weight: 2.5,
+        opacity: 0.5,
+        dashArray: '6 4',
+        className: 'trip-route-animated',
+      };
+    }
+    // groupB
+    return {
+      color: GROUP_B_COLOR,
+      weight: 2.5,
+      opacity: 0.5,
+      dashArray: '6 4',
+      className: 'trip-route-animated',
+    };
+  };
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -234,39 +369,55 @@ export default function TripJourneyMap({ activeDay, tripDays }) {
           style={styleFn}
         />
 
-        {/* Full route — faint gray line showing the entire path */}
-        {fullRoutePositions.length > 1 && (
+        {/* Full route segments — faint gray lines */}
+        {fullSegments.map((seg, i) => (
           <Polyline
-            positions={fullRoutePositions}
+            key={`full-${i}`}
+            positions={seg.positions}
+            pathOptions={segmentStyle(seg, true)}
+          />
+        ))}
+
+        {/* Completed route segments — bold purple/teal animated lines */}
+        {completedSegments.map((seg, i) => (
+          <Polyline
+            key={`comp-${i}`}
+            positions={seg.positions}
+            pathOptions={segmentStyle(seg, false)}
+          />
+        ))}
+
+        {/* Stop circles along completed route */}
+        {completedStopPositions.map((pos, i) => (
+          <CircleMarker
+            key={`stop-${i}`}
+            center={pos}
+            radius={4}
             pathOptions={{
-              color: '#D1D5DB',
-              weight: 2,
-              opacity: 0.4,
-              dashArray: '4 8',
+              color: '#fff',
+              weight: 1,
+              fillColor: VISITED_COLOR,
+              fillOpacity: 0.7,
             }}
           />
-        )}
+        ))}
 
-        {/* Completed route — bold purple animated line */}
-        {completedRoutePositions.length > 1 && (
-          <Polyline
-            positions={completedRoutePositions}
-            pathOptions={{
-              color: ACTIVE_COLOR,
-              weight: 3,
-              opacity: 0.6,
-              dashArray: '8 6',
-              className: 'trip-route-animated',
-            }}
+        {/* Visited stop labels (place names at past locations) */}
+        {visitedStops.map((stop, i) => (
+          <Marker
+            key={`label-${i}`}
+            position={[stop.lat, stop.lng]}
+            icon={makeStopLabel(stop.label)}
+            interactive={false}
           />
-        )}
+        ))}
 
-        {/* Location markers */}
+        {/* Active day location markers with place names */}
         {activeLocations.map((loc, i) => (
           <Marker
             key={`marker-${activeDay}-${i}`}
             position={[loc.lat, loc.lng]}
-            icon={makePulseIcon(loc.group)}
+            icon={makePulseIcon(loc.markerLabel)}
           />
         ))}
 
@@ -282,6 +433,7 @@ export default function TripJourneyMap({ activeDay, tripDays }) {
           { color: ACTIVE_COLOR, label: 'Current day' },
           { color: VISITED_COLOR, label: 'Previously visited' },
           { color: UNVISITED_COLOR, label: 'Upcoming' },
+          { color: GROUP_B_COLOR, label: 'Group B route' },
         ].map(item => (
           <div key={item.label} className="flex items-center gap-2 py-0.5">
             <span className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: item.color }} />
