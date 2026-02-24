@@ -2,6 +2,8 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+
+void motion;
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { StaggerContainer, StaggerItem } from '@/components/ui/motion';
@@ -525,7 +527,6 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
     return filtered;
   }, [searchQuery, sectorFilter, regionFilter]);
 
-  const items = contentMode === 'insights' ? filteredInsights : filteredPartners;
   const itemLabel = contentMode === 'insights' ? 'insights' : 'partners';
 
   const filterBar = (
@@ -1024,34 +1025,34 @@ function ResearchContent() {
                   <AnimatePresence>
                     {showTutorial && !hasSidebar && (
                       <motion.div
-                        initial={{ opacity: 0, y: -14 }}
+                        initial={{ opacity: 0, y: -12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -12 }}
+                        exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.3 }}
-                        className="absolute bottom-3 left-0 right-0 z-20 pointer-events-none"
+                        className="absolute top-2 left-0 right-0 z-40 pointer-events-none"
                       >
-                        <div className="relative h-28">
+                        <div className="max-w-6xl mx-auto px-4 relative h-28">
                           <motion.div
                             animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
-                            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
-                            className="pointer-events-auto absolute left-[15%] sm:left-[17%] -translate-x-1/2"
+                            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                            className="pointer-events-auto absolute left-0 top-2"
                           >
-                            <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/40 px-4 py-3 border border-white/20">
-                              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
-                              <p className="text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap">Toggle MAP ↔ CARDS</p>
-                              <p className="text-[11px] sm:text-xs text-white/85 mt-0.5 whitespace-nowrap">Use the top-left toggle</p>
+                            <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/45 px-4 py-3 border border-white/25 max-w-[260px]">
+                              <div className="absolute -top-2 left-6 w-4 h-4 bg-aram-purple rotate-45" />
+                              <p className="text-sm font-bold leading-tight">Switch how you browse the research</p>
+                              <p className="text-xs text-white/90 mt-1 leading-snug">Use this toggle to move between map exploration and card view.</p>
                             </div>
                           </motion.div>
 
                           <motion.div
                             animate={{ y: [0, -4, 0], scale: [1, 1.02, 1] }}
-                            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut', delay: 0.25 }}
-                            className="pointer-events-auto absolute left-1/2 -translate-x-1/2"
+                            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut', delay: 0.25 }}
+                            className="pointer-events-auto absolute left-1/2 -translate-x-1/2 top-2"
                           >
-                            <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/40 px-4 py-3 pr-10 border border-white/20">
+                            <div className="relative rounded-xl bg-aram-purple text-white shadow-2xl shadow-aram-purple/45 px-4 py-3 pr-10 border border-white/25 max-w-[300px]">
                               <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-aram-purple rotate-45" />
-                              <p className="text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap">Toggle INSIGHTS ↔ PARTNERS</p>
-                              <p className="text-[11px] sm:text-xs text-white/85 mt-0.5 whitespace-nowrap">Use the top-centre toggle</p>
+                              <p className="text-sm font-bold leading-tight">Choose what appears on the page</p>
+                              <p className="text-xs text-white/90 mt-1 leading-snug">Toggle between insights from research and partner organisations.</p>
                               <button
                                 onClick={() => setShowTutorial(false)}
                                 className="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
@@ -1069,7 +1070,7 @@ function ResearchContent() {
 
                   {/* Map hint — only when no district selected */}
                   {!hasSidebar && (
-                    <div className="absolute bottom-4 left-4 z-10 pointer-events-none">
+                    <div className="absolute bottom-4 right-4 z-10 pointer-events-none">
                       <motion.div
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
