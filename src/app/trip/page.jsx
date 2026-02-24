@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter } from '@/components/ui/motion';
-import { ArrowRight, Download, Calendar, MapPin, Users, FileText, Quote, Map } from 'lucide-react';
+import { ArrowRight, Download, Calendar, MapPin, Users, FileText, Quote, Map, X } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 /* Lazy-load the heavy scrollytelling component (includes Leaflet) */
@@ -13,7 +13,7 @@ const TripScrollytelling = dynamic(
 );
 
 /* ─── Hero ─────────────────────────────────────────── */
-function TripHero({ onLaunchJourney }) {
+function TripHero({ onLaunchJourney, showJourney, onCloseJourney }) {
   return (
     <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#F6F2FC' }}>
       <div className="absolute inset-0">
@@ -38,14 +38,24 @@ function TripHero({ onLaunchJourney }) {
           </p>
         </Reveal>
         <Reveal delay={0.3}>
-          <button
-            onClick={onLaunchJourney}
-            className="group inline-flex items-center gap-3 bg-gradient-to-r from-aram-purple to-aram-purple-dark text-white font-semibold text-sm md:text-base px-7 py-3.5 rounded-full shadow-lg shadow-aram-purple/25 hover:shadow-xl hover:shadow-aram-purple/30 hover:-translate-y-0.5 transition-all duration-300"
-          >
-            <Map className="w-5 h-5" />
-            Explore Our 2025 Journey
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </button>
+          {showJourney ? (
+            <button
+              onClick={onCloseJourney}
+              className="group inline-flex items-center gap-3 bg-aram-warm-100 text-aram-green-900 font-semibold text-sm md:text-base px-7 py-3.5 rounded-full border border-aram-warm-200 hover:bg-aram-warm-200 hover:-translate-y-0.5 transition-all duration-300"
+            >
+              <X className="w-5 h-5" />
+              Close Journey
+            </button>
+          ) : (
+            <button
+              onClick={onLaunchJourney}
+              className="group inline-flex items-center gap-3 bg-gradient-to-r from-aram-purple to-aram-purple-dark text-white font-semibold text-sm md:text-base px-7 py-3.5 rounded-full shadow-lg shadow-aram-purple/25 hover:shadow-xl hover:shadow-aram-purple/30 hover:-translate-y-0.5 transition-all duration-300"
+            >
+              <Map className="w-5 h-5" />
+              Explore Our 2025 Journey
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </button>
+          )}
         </Reveal>
       </div>
     </section>
@@ -343,18 +353,29 @@ export default function TripPage() {
 
   return (
     <div>
-      <TripHero onLaunchJourney={() => setShowJourney(true)} />
-      <HowItWorks />
-      <Trip2026 />
-      <PastTrips onLaunchJourney={() => setShowJourney(true)} />
-      <Testimonials />
+      <TripHero
+        onLaunchJourney={() => setShowJourney(true)}
+        showJourney={showJourney}
+        onCloseJourney={() => setShowJourney(false)}
+      />
 
-      {/* Full-page scrollytelling overlay */}
+      {/* Journey section — inline, below hero */}
       <AnimatePresence>
         {showJourney && (
           <TripScrollytelling onClose={() => setShowJourney(false)} />
         )}
       </AnimatePresence>
+
+      {/* Hide other sections when journey is active */}
+      {!showJourney && (
+        <>
+          <HowItWorks />
+          <Trip2026 />
+          <PastTrips onLaunchJourney={() => setShowJourney(true)} />
+        </>
+      )}
+
+      <Testimonials />
     </div>
   );
 }

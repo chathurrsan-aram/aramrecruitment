@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { MapContainer, TileLayer, GeoJSON, Polyline, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -63,25 +63,30 @@ function getStyle(feature, activeDistricts, visitedDistricts) {
 /* ─── Map controller ─────────────────────────────── */
 function MapController({ geoData, activeDistricts }) {
   const map = useMap();
+  const prevActiveRef = useRef(null);
 
+  /* Disable scroll-wheel zoom (would fight page scroll) but allow drag + pinch */
   useEffect(() => {
     map.scrollWheelZoom.disable();
-    map.dragging.disable();
-    map.touchZoom.disable();
-    map.doubleClickZoom.disable();
-    map.boxZoom.disable();
-    map.keyboard.disable();
   }, [map]);
 
+  /* Periodic invalidateSize to handle sticky container resizing */
   useEffect(() => {
     map.invalidateSize();
-    const t = setTimeout(() => map.invalidateSize(), 300);
-    return () => clearTimeout(t);
+    const t1 = setTimeout(() => map.invalidateSize(), 300);
+    const t2 = setTimeout(() => map.invalidateSize(), 800);
+    const t3 = setTimeout(() => map.invalidateSize(), 1500);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [map]);
 
   /* Fly to active districts when they change */
   useEffect(() => {
     if (!geoData || activeDistricts.size === 0) return;
+
+    // Serialize to compare — only fly if districts actually changed
+    const key = [...activeDistricts].sort().join(',');
+    if (key === prevActiveRef.current) return;
+    prevActiveRef.current = key;
 
     const features = geoData.features.filter(f => activeDistricts.has(f.properties.code));
     if (features.length === 0) return;
@@ -89,9 +94,8 @@ function MapController({ geoData, activeDistricts }) {
     const layer = L.geoJSON({ type: 'FeatureCollection', features });
     const bounds = layer.getBounds();
 
-    // Add some padding and constrain zoom
     map.flyToBounds(bounds, {
-      padding: [60, 60],
+      padding: [50, 50],
       maxZoom: 9,
       minZoom: 7,
       duration: 1.2,
@@ -144,8 +148,19 @@ export default function TripJourneyMap({ activeDay, tripDays }) {
     return day.locations;
   }, [activeDay, tripDays]);
 
-  /* Route polyline: connect all visited + active location centers in order */
-  const routePositions = useMemo(() => {
+  /* Full route (all days, faint) */
+  const fullRoutePositions = useMemo(() => {
+    const positions = [];
+    for (const day of tripDays) {
+      for (const loc of day.locations) {
+        positions.push([loc.lat, loc.lng]);
+      }
+    }
+    return positions;
+  }, [tripDays]);
+
+  /* Completed route (up to activeDay, bold) */
+  const completedRoutePositions = useMemo(() => {
     const positions = [];
     for (const day of tripDays) {
       if (day.day > activeDay) break;
@@ -182,6 +197,12 @@ export default function TripJourneyMap({ activeDay, tripDays }) {
           0%, 100% { transform: scale(1); opacity: 0.3; }
           50% { transform: scale(2.2); opacity: 0; }
         }
+        .trip-route-animated {
+          animation: trip-dash 30s linear infinite;
+        }
+        @keyframes trip-dash {
+          to { stroke-dashoffset: -1000; }
+        }
       `}</style>
 
       <MapContainer
@@ -190,9 +211,9 @@ export default function TripJourneyMap({ activeDay, tripDays }) {
         className="w-full h-full"
         zoomControl={false}
         scrollWheelZoom={false}
-        dragging={false}
+        dragging={true}
         doubleClickZoom={false}
-        touchZoom={false}
+        touchZoom={true}
         attributionControl={false}
         style={{ background: '#F8FAFC' }}
         minZoom={6}
@@ -213,15 +234,29 @@ export default function TripJourneyMap({ activeDay, tripDays }) {
           style={styleFn}
         />
 
-        {/* Route polyline */}
-        {routePositions.length > 1 && (
+        {/* Full route — faint gray line showing the entire path */}
+        {fullRoutePositions.length > 1 && (
           <Polyline
-            positions={routePositions}
+            positions={fullRoutePositions}
+            pathOptions={{
+              color: '#D1D5DB',
+              weight: 2,
+              opacity: 0.4,
+              dashArray: '4 8',
+            }}
+          />
+        )}
+
+        {/* Completed route — bold purple animated line */}
+        {completedRoutePositions.length > 1 && (
+          <Polyline
+            positions={completedRoutePositions}
             pathOptions={{
               color: ACTIVE_COLOR,
-              weight: 2.5,
-              opacity: 0.5,
+              weight: 3,
+              opacity: 0.6,
               dashArray: '8 6',
+              className: 'trip-route-animated',
             }}
           />
         )}
