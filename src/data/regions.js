@@ -10,7 +10,6 @@ export const regions = [
     subRegions: [
       { id: "maskeliya", name: "Maskeliya", lat: 6.83, lng: 80.52 },
       { id: "ohiya", name: "Ohiya", lat: 6.82, lng: 80.84 },
-      { id: "vavuniya", name: "Vavuniya", lat: 8.75, lng: 80.50 },
     ],
   },
   {
@@ -38,6 +37,7 @@ export const regions = [
     subRegions: [
       { id: "jaffna", name: "Jaffna", lat: 9.66, lng: 80.02 },
       { id: "mullaitivu", name: "Mullaitivu", lat: 9.27, lng: 80.57 },
+      { id: "vavuniya", name: "Vavuniya", lat: 8.75, lng: 80.50 },
     ],
   },
   {
