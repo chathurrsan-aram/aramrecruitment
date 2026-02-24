@@ -3,10 +3,17 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter } from '@/components/ui/motion';
-import { ArrowRight, Download, Calendar, MapPin, Users, FileText, Quote } from 'lucide-react';
+import { ArrowRight, Download, Calendar, MapPin, Users, FileText, Quote, Map } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+/* Lazy-load the heavy scrollytelling component (includes Leaflet) */
+const TripScrollytelling = dynamic(
+  () => import('@/components/ui/trip-scrollytelling'),
+  { ssr: false }
+);
 
 /* ─── Hero ─────────────────────────────────────────── */
-function TripHero() {
+function TripHero({ onLaunchJourney }) {
   return (
     <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#F6F2FC' }}>
       <div className="absolute inset-0">
@@ -26,9 +33,19 @@ function TripHero() {
           </h1>
         </Reveal>
         <Reveal delay={0.15}>
-          <p className="text-lg text-aram-warm-500 leading-relaxed max-w-xl mx-auto">
+          <p className="text-lg text-aram-warm-500 leading-relaxed max-w-xl mx-auto mb-8">
             The cornerstone of our mission — a yearly trip to Sri Lanka where our team connects directly with communities.
           </p>
+        </Reveal>
+        <Reveal delay={0.3}>
+          <button
+            onClick={onLaunchJourney}
+            className="group inline-flex items-center gap-3 bg-gradient-to-r from-aram-purple to-aram-purple-dark text-white font-semibold text-sm md:text-base px-7 py-3.5 rounded-full shadow-lg shadow-aram-purple/25 hover:shadow-xl hover:shadow-aram-purple/30 hover:-translate-y-0.5 transition-all duration-300"
+          >
+            <Map className="w-5 h-5" />
+            Explore Our 2025 Journey
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </button>
         </Reveal>
       </div>
     </section>
@@ -143,10 +160,20 @@ function Trip2026() {
 }
 
 /* ─── Past Trips ───────────────────────────────────── */
-function PastTrips() {
-  const [activeTab, setActiveTab] = useState('2024');
+function PastTrips({ onLaunchJourney }) {
+  const [activeTab, setActiveTab] = useState('2025');
 
   const trips = {
+    '2025': {
+      summary: 'Our most ambitious trip — 40+ volunteers across two groups deployed across 7 districts over 15 days, delivering healthcare camps, career guidance, technology workshops, mentoring, and community development.',
+      stats: [
+        { target: 40, suffix: '+', label: 'Volunteers' },
+        { target: 7, suffix: '', label: 'Districts' },
+        { target: 15, suffix: '', label: 'Days' },
+      ],
+      reportUrl: null,
+      hasJourney: true,
+    },
     '2024': {
       summary: 'Our largest trip yet — 30 volunteers deployed across three provinces, delivering healthcare camps, career guidance sessions, mentoring pilots, and technology workshops to 12+ communities.',
       stats: [
@@ -182,7 +209,7 @@ function PastTrips() {
         </Reveal>
 
         <div className="flex justify-center gap-1 mb-10 relative">
-          {['2024', '2023'].map((tab) => (
+          {['2025', '2024', '2023'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -227,6 +254,21 @@ function PastTrips() {
               ))}
             </div>
 
+            {/* Journey CTA for 2025 */}
+            {trip.hasJourney && (
+              <div className="text-center mb-8">
+                <button
+                  onClick={onLaunchJourney}
+                  className="group inline-flex items-center gap-3 bg-gradient-to-r from-aram-purple to-aram-purple-dark text-white font-semibold text-sm px-6 py-3 rounded-full shadow-lg shadow-aram-purple/20 hover:shadow-xl hover:shadow-aram-purple/30 hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <Map className="w-4 h-4" />
+                  Explore the Journey
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </button>
+              </div>
+            )}
+
+            {/* Photo grid placeholder */}
             <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8" staggerDelay={0.08}>
               {[...Array(6)].map((_, i) => (
                 <StaggerItem key={i}>
@@ -241,16 +283,19 @@ function PastTrips() {
               ))}
             </StaggerContainer>
 
-            <div className="text-center">
-              <a
-                href={trip.reportUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-aram-green-900 font-semibold hover:text-aram-purple transition-colors"
-              >
-                Read Full Report <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
+            {/* Report link */}
+            {trip.reportUrl && (
+              <div className="text-center">
+                <a
+                  href={trip.reportUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-aram-green-900 font-semibold hover:text-aram-purple transition-colors"
+                >
+                  Read Full Report <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -294,13 +339,22 @@ function Testimonials() {
 
 /* ─── Page ─────────────────────────────────────────── */
 export default function TripPage() {
+  const [showJourney, setShowJourney] = useState(false);
+
   return (
     <div>
-      <TripHero />
+      <TripHero onLaunchJourney={() => setShowJourney(true)} />
       <HowItWorks />
       <Trip2026 />
-      <PastTrips />
+      <PastTrips onLaunchJourney={() => setShowJourney(true)} />
       <Testimonials />
+
+      {/* Full-page scrollytelling overlay */}
+      <AnimatePresence>
+        {showJourney && (
+          <TripScrollytelling onClose={() => setShowJourney(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
