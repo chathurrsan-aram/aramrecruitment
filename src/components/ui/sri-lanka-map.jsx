@@ -181,6 +181,8 @@ function MapController({ geoData, selectedCode, selectedRegion, hasSidebar }) {
     if (!geoData) return;
 
     const doFit = () => {
+      const L = require('leaflet');
+
       if (selectedCode) {
         const feature = geoData.features.find(f => f.properties.code === selectedCode);
         if (feature) {
