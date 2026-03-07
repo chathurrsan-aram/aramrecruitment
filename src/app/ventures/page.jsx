@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter } from '@/components/ui/motion';
 import { ArrowRight, Briefcase, TrendingUp, BookOpen, ChevronDown } from 'lucide-react';
+import { useFounderModal } from '@/components/ventures/founder-modal';
 
 /* ─── Waitlist Form ───────────────────────────────────────────────────────── */
 function WaitlistForm() {
@@ -210,6 +211,71 @@ function VenturesHero() {
   );
 }
 
+/* ─── True Potential Section ───────────────────────────────────────────────── */
+function TruePotentialSection() {
+  const { open } = useFounderModal();
+
+  return (
+    <section className="py-24 px-6" style={{ backgroundColor: '#1B3A4B' }}>
+      <div className="max-w-5xl mx-auto">
+        <Reveal>
+          <div className="text-center mb-12">
+            <div className="flex justify-center mb-6">
+              <img
+                src="/images/tempImage5CilK3.jpeg"
+                alt="True Potential"
+                className="h-14 md:h-16 rounded-xl object-contain"
+              />
+            </div>
+            <p className="font-mono text-xs tracking-[0.25em] text-[#C9A84C] uppercase mb-4">
+              THE EXECUTION LAYER
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
+              Every True Potential-backed venture has an execution partner built in.
+            </h2>
+            <p className="text-lg text-[#A8C4D4] max-w-3xl mx-auto leading-relaxed">
+              Spotting opportunities isn&apos;t enough. True Potential is the hands-on capability that turns early-stage ideas into structured, deliverable ventures — strategy, technology, and project execution in one.
+            </p>
+          </div>
+        </Reveal>
+
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {[
+            { emoji: '🧠', title: 'Strategy', desc: 'Structuring the problem, validating the thesis, building the plan' },
+            { emoji: '📦', title: 'Delivery', desc: 'Project execution from first milestone to market' },
+            { emoji: '💻', title: 'Tech', desc: "Digital tools and platforms built for the venture's specific context" },
+          ].map(pillar => (
+            <StaggerItem key={pillar.title}>
+              <div className="bg-[#0D2B3A] border border-[#2A4A5A] rounded-2xl p-8 text-center hover:border-[#C9A84C]/40 transition-all duration-200">
+                <span className="text-3xl mb-4 block">{pillar.emoji}</span>
+                <h3 className="font-display text-lg font-semibold text-[#C9A84C] mb-2">{pillar.title}</h3>
+                <p className="text-[#A8C4D4] text-sm">{pillar.desc}</p>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+
+        <Reveal delay={0.2}>
+          <p className="text-center text-sm text-[#A8C4D4]/60 mb-8">
+            Ventures carrying the ✦ badge have True Potential actively involved.
+          </p>
+        </Reveal>
+
+        <Reveal delay={0.3}>
+          <div className="text-center">
+            <button
+              onClick={open}
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#C9A84C] text-[#0D2B3A] rounded-xl font-semibold hover:-translate-y-0.5 transition-all"
+            >
+              Meet the founder <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 /* ─── Landing Page ────────────────────────────────────────────────────────── */
 export default function VenturesLanding() {
   return (
@@ -244,50 +310,7 @@ export default function VenturesLanding() {
       </section>
 
       {/* ── 2. True Potential ────────────────────────────────────── */}
-      <section className="py-24 px-6 border-t border-[#2A2A40]/50">
-        <div className="max-w-5xl mx-auto">
-          <Reveal>
-            <div className="text-center mb-12">
-              <div className="flex justify-center mb-6">
-                <img
-                  src="/images/tempImage5CilK3.jpeg"
-                  alt="True Potential"
-                  className="h-14 md:h-16 rounded-xl object-contain brightness-0 invert"
-                />
-              </div>
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Backed by True Potential</h2>
-              <p className="text-lg text-[#7A7A9A]">Every venture in our portfolio has execution support built in.</p>
-            </div>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="text-[#7A7A9A] max-w-3xl mx-auto text-center leading-relaxed mb-16">
-              True Potential is the operating arm of Aram Ventures. It provides strategy, project delivery and tech enablement to portfolio companies — taking equity and success fees rather than day rates. That means every True Potential-backed venture has a dedicated execution partner invested in the outcome, not just the invoice.
-            </p>
-          </Reveal>
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { emoji: '🧠', title: 'Problem Structuring', desc: 'Turning ambiguous challenges into structured plans' },
-              { emoji: '📦', title: 'Project Delivery', desc: 'End-to-end execution you can hand over and trust' },
-              { emoji: '💻', title: 'Tech Enablement', desc: "Digital tools built for your community's context" },
-            ].map(pillar => (
-              <StaggerItem key={pillar.title}>
-                <div className="bg-[#13131F] border border-[#C9A84C]/20 rounded-2xl p-8 text-center hover:border-[#C9A84C]/40 transition-all duration-200">
-                  <span className="text-3xl mb-4 block">{pillar.emoji}</span>
-                  <h3 className="font-display text-lg font-semibold text-[#C9A84C] mb-2">{pillar.title}</h3>
-                  <p className="text-[#7A7A9A] text-sm">{pillar.desc}</p>
-                </div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-          <Reveal delay={0.3}>
-            <div className="text-center mt-8">
-              <a href="#" className="text-sm text-[#C9A84C] hover:text-[#F2E4B8] transition-colors inline-flex items-center gap-1">
-                Learn more about True Potential <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <TruePotentialSection />
 
       {/* ── 3. The Opportunity ───────────────────────────────────── */}
       <section className="py-24 px-6 border-t border-[#2A2A40]/50">
@@ -315,52 +338,7 @@ export default function VenturesLanding() {
         </div>
       </section>
 
-      {/* ── 4. About the Founder ─────────────────────────────────── */}
-      <section className="py-24 px-6 border-t border-[#2A2A40]/50">
-        <div className="max-w-3xl mx-auto">
-          <Reveal>
-            <div className="bg-[#13131F] border border-[#2A2A40] rounded-2xl p-8 md:p-12">
-              <div className="flex items-center gap-5 mb-8">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#C9A84C] to-[#C9A84C]/60 flex items-center justify-center flex-shrink-0">
-                  <span className="font-display text-xl font-bold text-[#0D0D14]">C</span>
-                </div>
-                <div>
-                  <h3 className="font-display text-xl font-bold">Strategy Consultant & Co-Founder</h3>
-                  <p className="text-[#7A7A9A] text-sm">Aram Ventures / True Potential · Age 25 · London, UK · Sri Lankan Tamil</p>
-                </div>
-              </div>
-
-              <div className="space-y-4 mb-8">
-                {[
-                  { icon: '📊', title: 'Strategy & CDD', desc: 'PwC, Alpha FMC, Marathon Capital, Barclays, McKinsey — PE-grade commercial due diligence' },
-                  { icon: '🌍', title: 'Founded Aram', desc: '4 years, 500+ members, grassroots development across Sri Lanka' },
-                  { icon: '⚡', title: 'Strategy + Builder', desc: 'Structures problems at consulting speed, builds the technical solution' },
-                  { icon: '🎯', title: 'Known for', desc: 'Breaking ambiguous problems into structured, executable plans' },
-                ].map(row => (
-                  <div key={row.title} className="flex items-start gap-4 p-4 rounded-xl bg-[#1A1A2E] border border-[#2A2A40]">
-                    <span className="text-lg flex-shrink-0 mt-0.5">{row.icon}</span>
-                    <div>
-                      <p className="font-semibold text-sm text-white mb-0.5">{row.title}</p>
-                      <p className="text-sm text-[#7A7A9A]">{row.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1.5 rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C] text-xs font-medium">
-                  PwC · Alpha FMC · Private Equity
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C] text-xs font-medium">
-                  Co-founded Aram & True Potential
-                </span>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ── 5. Waitlist ──────────────────────────────────────────── */}
+      {/* ── 4. Waitlist ──────────────────────────────────────────── */}
       <section id="waitlist" className="py-24 px-6 border-t border-[#2A2A40]/50">
         <div className="max-w-3xl mx-auto text-center">
           <Reveal>

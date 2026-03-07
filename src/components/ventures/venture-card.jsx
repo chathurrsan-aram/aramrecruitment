@@ -1,6 +1,7 @@
 'use client';
 
 import { ventureSectors } from '@/data/venturesData';
+import { useFounderModal } from './founder-modal';
 
 function SectorPill({ sectorId }) {
   const sector = ventureSectors.find(s => s.id === sectorId);
@@ -29,9 +30,23 @@ function StagePill({ stage }) {
   );
 }
 
-export function TruePotentialBadge({ size = 'sm' }) {
+export function TruePotentialBadge({ size = 'sm', clickable = true }) {
+  const { open } = useFounderModal();
   const px = size === 'sm' ? 'px-2.5 py-0.5' : 'px-3 py-1';
   const text = size === 'sm' ? 'text-[11px]' : 'text-xs';
+
+  if (clickable) {
+    return (
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); open(); }}
+        className={`inline-flex items-center gap-1 ${px} rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C] ${text} font-medium hover:bg-[#C9A84C]/25 transition-colors cursor-pointer`}
+      >
+        ✦ True Potential
+      </button>
+    );
+  }
+
   return (
     <span className={`inline-flex items-center gap-1 ${px} rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C] ${text} font-medium`}>
       ✦ True Potential

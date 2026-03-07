@@ -4,7 +4,61 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Maximize2, Minimize2, ArrowRight, FileText, Table, Lock } from 'lucide-react';
 import { TruePotentialBadge } from './venture-card';
+import { useFounderModal } from './founder-modal';
 import { ventureSectors } from '@/data/venturesData';
+
+/* ─── True Potential involvement data per venture ─────────────────────── */
+const TP_INVOLVEMENT = {
+  'vanni-agriconnect': {
+    strategy: 'Go-to-market planning and farmer network structure for the Vanni corridor',
+    tech: 'WhatsApp-native ordering platform design and build',
+    delivery: 'Colombo buyer partnership coordination and pilot management',
+  },
+  'malai-learn': {
+    strategy: 'Estate school market entry scoping and distribution strategy',
+    tech: 'Offline-first Android app architecture and Tamil content integration',
+    delivery: 'NGO licensing pipeline and estate welfare society outreach',
+  },
+};
+
+/* ─── True Potential Involvement Block ────────────────────────────────── */
+function TruePotentialBlock({ ventureId }) {
+  const { open } = useFounderModal();
+  const involvement = TP_INVOLVEMENT[ventureId];
+  if (!involvement) return null;
+
+  return (
+    <div className="rounded-xl border-l-4 border-l-[#C9A84C] overflow-hidden" style={{ backgroundColor: '#1B3A4B' }}>
+      <div className="p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <img src="/images/tempImage5CilK3.jpeg" alt="True Potential" className="h-4 rounded object-contain" />
+          <span className="text-xs font-semibold text-[#C9A84C]">True Potential Involvement</span>
+        </div>
+        <div className="space-y-3">
+          {[
+            { icon: '🧠', label: 'Strategy', text: involvement.strategy },
+            { icon: '💻', label: 'Tech', text: involvement.tech },
+            { icon: '📦', label: 'Delivery', text: involvement.delivery },
+          ].map(row => (
+            <div key={row.label} className="flex items-start gap-2.5">
+              <span className="text-sm flex-shrink-0 mt-0.5">{row.icon}</span>
+              <div>
+                <span className="text-xs font-semibold text-[#C9A84C]">{row.label}: </span>
+                <span className="text-xs text-[#A8C4D4]">{row.text}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={open}
+          className="mt-4 text-xs text-[#C9A84C] hover:text-[#F2E4B8] transition-colors inline-flex items-center gap-1"
+        >
+          Who is behind True Potential? <ArrowRight className="w-3 h-3" />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 /* ─── Stat Block ─────────────────────────────────────────────────────── */
 function StatBlock({ label, value }) {
@@ -221,6 +275,8 @@ function PortfolioPanelContent({ company }) {
             <h3 className="text-sm font-semibold text-white mb-2">Thesis</h3>
             <p className="text-sm text-[#7A7A9A] leading-relaxed">{company.thesis}</p>
           </div>
+          {/* True Potential involvement */}
+          {company.truePotential && <TruePotentialBlock ventureId={company.id} />}
           {/* Founder card */}
           <div className="p-4 rounded-xl bg-[#1A1A2E] border border-[#2A2A40]">
             <div className="flex items-center gap-3 mb-3">
