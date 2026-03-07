@@ -230,7 +230,7 @@ function SearchAutocomplete({ searchQuery, onChange, onSelectSuggestion, classNa
   );
 }
 
-/* ─── Full-page Detail View (slide-in, fully opaque — Fix #2) ── */
+/* ─── Full-page Detail View (slide-in, fully opaque - Fix #2) ── */
 function DetailView({ item, type, onBack, backLabel }) {
   if (type === 'insight') {
     const region = regions.find(r => r.id === item.region);
@@ -869,7 +869,7 @@ function ResearchContent() {
 
   return (
     <div className="flex flex-col">
-      {/* ── Hero section — video background like home page ────── */}
+      {/* ── Hero section - video background like home page ────── */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Video background with parallax */}
         <motion.div className="absolute inset-0 noise-overlay" style={{ y: bgY, scale: bgScale }}>
@@ -945,7 +945,7 @@ function ResearchContent() {
           </motion.div>
         </motion.div>
 
-        {/* Hero CTA — balanced prominence */}
+        {/* Hero CTA - balanced prominence */}
         <motion.button
           onClick={scrollToContent}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 group"
@@ -1026,7 +1026,7 @@ function ResearchContent() {
               {/* Fix #1: overflow-hidden prevents map bleeding into controls.
                   Fix #6: 55/45 split gives sidebar enough room. */}
               <div className="flex flex-col lg:flex-row" style={{ height: 'calc(100vh - 49px)' }}>
-                {/* Map container — overflow hidden clips the map strictly */}
+                {/* Map container - overflow hidden clips the map strictly */}
                 <div
                   className="relative overflow-hidden transition-all duration-500 ease-in-out"
                   style={{
@@ -1091,7 +1091,7 @@ function ResearchContent() {
                   </AnimatePresence>
 
 
-                  {/* Map hint — only when no district selected */}
+                  {/* Map hint - only when no district selected */}
                   {!hasSidebar && (
                     <div className="absolute bottom-4 right-4 z-10 pointer-events-none">
                       <motion.div
@@ -1170,7 +1170,7 @@ function ResearchContent() {
         </AnimatePresence>
       </div>
 
-      {/* Floating "scroll back to map" button — visible when user has scrolled past the map */}
+      {/* Floating "scroll back to map" button - visible when user has scrolled past the map */}
       <AnimatePresence>
         {showScrollUp && !isCardView && (
           <motion.button

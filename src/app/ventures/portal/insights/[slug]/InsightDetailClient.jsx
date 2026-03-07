@@ -193,7 +193,7 @@ export default function InsightDetailClient() {
                     <p className="text-sm font-semibold text-gray-900">{player.name}</p>
                   </div>
                   <p className="text-xs text-gray-500 leading-relaxed sm:border-l sm:border-gray-200 sm:pl-3">
-                    {player.description} — <span className="text-gray-700">{player.relevance}</span>
+                    {player.description} - <span className="text-gray-700">{player.relevance}</span>
                   </p>
                 </div>
               </StaggerItem>

@@ -1,4 +1,4 @@
-// ─── Aram Ventures — McKinsey-Style Insight Pages ────────────────────────────
+// ─── Aram Ventures - McKinsey-Style Insight Pages ────────────────────────────
 // Each page follows: Top Line, Observation, Key Metrics, Why Now, Investment
 // Parameters, Named Players. Data sourced from /src/data/research/ markdown files.
 
@@ -13,13 +13,13 @@ export const insightPages = [
     readTime: 5,
 
     topLine:
-      '$6.6B in diaspora remittances, $1.3B in multilateral capital, and 1 of 23 BOI enterprises diaspora-funded — the gap is the opportunity.',
+      '$6.6B in diaspora remittances, $1.3B in multilateral capital, and 1 of 23 BOI enterprises diaspora-funded - the gap is the opportunity.',
 
     observation:
-      "Sri Lanka's Tamil-majority Northern and Eastern Provinces are home to 5 million people but contribute just 9.2% of GDP — down from 9.9% in 2019. The IMF's $3B Extended Fund Facility has stabilised the macro picture: GDP grew 5.0% in 2024, inflation collapsed from 69.8% to near-zero, and reserves rebuilt to $6.5B. Diaspora remittances hit a record $6.58B in 2024, with North America corridors growing 200%, yet only 1 of 23 BOI-registered Northern Province enterprises is diaspora-funded. BOI offers $50K minimum thresholds (vs. $250K in Colombo), 200% capital allowances, and 0% agri-farming tax — the most generous incentive framework in the country. No dedicated Sri Lankan Tamil diaspora venture fund exists; this structural absence is the binding constraint and the single most actionable opportunity.",
+      "Sri Lanka's Tamil-majority Northern and Eastern Provinces are home to 5 million people but contribute just 9.2% of GDP - down from 9.9% in 2019. The IMF's $3B Extended Fund Facility has stabilised the macro picture: GDP grew 5.0% in 2024, inflation collapsed from 69.8% to near-zero, and reserves rebuilt to $6.5B. Diaspora remittances hit a record $6.58B in 2024, with North America corridors growing 200%, yet only 1 of 23 BOI-registered Northern Province enterprises is diaspora-funded. BOI offers $50K minimum thresholds (vs. $250K in Colombo), 200% capital allowances, and 0% agri-farming tax - the most generous incentive framework in the country. No dedicated Sri Lankan Tamil diaspora venture fund exists; this structural absence is the binding constraint and the single most actionable opportunity.",
 
     keyMetrics: [
-      { label: 'N/E GDP share', value: '9.2%', context: 'Declining from 9.9% in 2019 — not keeping pace with national recovery' },
+      { label: 'N/E GDP share', value: '9.2%', context: 'Declining from 9.9% in 2019 - not keeping pace with national recovery' },
       { label: 'Diaspora remittances', value: '$6.58B', context: '2024 record; projected $7.4B in 2025' },
       { label: 'BOI diaspora enterprises (NP)', value: '1 of 23', context: 'Single diaspora-funded enterprise among 23 BOI-registered in North' },
       { label: 'Multilateral capital committed', value: '$1.3B+', context: 'Agriculture and N/E development, 2024-2028' },
@@ -29,7 +29,7 @@ export const insightPages = [
     whyNow: [
       { catalyst: 'Macro reset', detail: 'IMF programme on track ($1.74B disbursed, all targets met), sovereign debt 90-94% restructured, creating the first stable investment window since 2019.' },
       { catalyst: 'Capital inflow', detail: 'World Bank committed $1B in May 2025 including $200M earmarked for Northern and Eastern Province development; remittances from Tamil diaspora corridors grew 200% in 2023-2024.' },
-      { catalyst: 'Structural gap', detail: 'No dedicated Tamil diaspora venture fund exists despite 700,000-1.2M diaspora across 91 countries — the January 2026 Northern Investment Summit (400+ delegates) called for one but none has been established.' },
+      { catalyst: 'Structural gap', detail: 'No dedicated Tamil diaspora venture fund exists despite 700,000-1.2M diaspora across 91 countries - the January 2026 Northern Investment Summit (400+ delegates) called for one but none has been established.' },
     ],
 
     investmentParameters: {
@@ -62,7 +62,7 @@ export const insightPages = [
       'Northern Province loses $200M in crops annually to a cold chain gap that zero investors have addressed.',
 
     observation:
-      'Post-harvest losses reach 40% for fruits and vegetables across the North and East, destroying approximately 580,000 metric tons and $200M in value annually — with virtually zero cold storage infrastructure outside Colombo. Only 1% of fresh produce flows through supermarket channels. Palmyrah exports from Jaffna surged 322% YoY (Rs. 22M to Rs. 93M in Jan-Feb 2025), proving latent demand when supply chains function. The $89M World Bank ASMP has established technology parks across five Tamil-majority districts, and the GoviLab Accelerator (Gates Foundation-backed) ran its first cohort of 10 agritech startups in 2024. With 0% corporate tax on agri-farming and 200% capital allowances in the North, first movers face minimal competition: only ~40 AgriTech startups serve the entire country, just 4 funded.',
+      'Post-harvest losses reach 40% for fruits and vegetables across the North and East, destroying approximately 580,000 metric tons and $200M in value annually - with virtually zero cold storage infrastructure outside Colombo. Only 1% of fresh produce flows through supermarket channels. Palmyrah exports from Jaffna surged 322% YoY (Rs. 22M to Rs. 93M in Jan-Feb 2025), proving latent demand when supply chains function. The $89M World Bank ASMP has established technology parks across five Tamil-majority districts, and the GoviLab Accelerator (Gates Foundation-backed) ran its first cohort of 10 agritech startups in 2024. With 0% corporate tax on agri-farming and 200% capital allowances in the North, first movers face minimal competition: only ~40 AgriTech startups serve the entire country, just 4 funded.',
 
     keyMetrics: [
       { label: 'Post-harvest loss rate', value: '40%', context: 'Fruits and vegetables, Northern Province' },
@@ -83,7 +83,7 @@ export const insightPages = [
       ticketSize: { angel: '\u00A350-250K', institutional: '\u00A3250K+' },
       timeline: 'Near-term (1-3 yrs)',
       riskLevel: 'Moderate',
-      keyRisk: '43% of Jaffna paddy land permanently abandoned due to groundwater salinity — remaining productive land must be optimised.',
+      keyRisk: '43% of Jaffna paddy land permanently abandoned due to groundwater salinity - remaining productive land must be optimised.',
     },
 
     namedPlayers: [
