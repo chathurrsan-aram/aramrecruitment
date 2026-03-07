@@ -20,17 +20,14 @@ function PortalSegmentedControl({ tabs, activeHref }) {
       {tabs.map((tab, idx) => {
         const Icon = tab.icon;
         const isActive = activeHref.startsWith(tab.href);
-        const isPortfolioActive = isActive && tab.href.includes('portfolio');
         return (
           <Link
             key={tab.href}
             href={tab.href}
             className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex-1 text-center ${
-              isPortfolioActive
+              isActive
                 ? 'bg-[#6D4A9E] text-white'
-                : isActive
-                  ? 'bg-[#6D4A9E]/20 text-[#9B72CF]'
-                  : 'text-[#7A7A9A] hover:text-white'
+                : 'text-[#7A7A9A] hover:text-white'
             }`}
           >
             <Icon className="w-4 h-4 hidden sm:block" />
@@ -90,7 +87,7 @@ export default function PortalShell({ children }) {
               src="/images/Aram_Ventures.png"
               alt="Aram Ventures"
               className="h-10"
-              style={{ mixBlendMode: 'lighten' }}
+              style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }}
             />
           </Link>
 

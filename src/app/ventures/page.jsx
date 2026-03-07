@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter } from '@/components/ui/motion';
-import { ArrowRight, Briefcase, TrendingUp, BookOpen, ChevronDown, X, Search, Filter, DollarSign, PieChart, Map, LayoutGrid, Star } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Briefcase, TrendingUp, BookOpen, ChevronDown, X, Search, Filter, DollarSign, PieChart, Map, LayoutGrid, Star, Clock, AlertTriangle, Users, BarChart3, Zap } from 'lucide-react';
 import { useFounderModal } from '@/components/ventures/founder-modal';
 import { videos } from '@/lib/cloudinary';
 import { portfolioCompanies, emergingVentures, ventureInsights, ventureSectors, ventureRegions, investorPositions, getVenturesByDistrict } from '@/data/venturesData';
+import { insightPages } from '@/data/insightPages';
 import { ViewToggle } from '@/components/ventures/portal-shell';
 import { PortfolioCard, EmergingCard, VentureInsightCard } from '@/components/ventures/venture-card';
 import SlidePanel from '@/components/ventures/slide-panel';
@@ -193,17 +194,25 @@ function VenturesHero({ onOpenOpportunity }) {
               src="/images/Aram_Ventures.png"
               alt="Aram Ventures"
               className="h-16 md:h-24"
-              style={{ filter: 'brightness(0) invert(1)' }}
+              style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }}
             />
             <div className="w-px h-10 md:h-14 bg-white/30" />
             <img
               src="/images/Untitled design-6.png"
               alt="True Potential"
               className="h-14 md:h-20"
-              style={{ filter: 'brightness(0) invert(1)' }}
+              style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }}
             />
           </div>
         </motion.div>
+        <motion.p
+          className="font-mono text-[10px] tracking-[0.25em] text-[#9B72CF] uppercase mb-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={loaded ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.5, delay: 0.15 }}
+        >
+          Aram Initiative · Ventures
+        </motion.p>
         <motion.h1
           className="font-display text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
           initial={{ opacity: 0, y: 20 }}
@@ -219,7 +228,7 @@ function VenturesHero({ onOpenOpportunity }) {
           animate={loaded ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          Connecting UK diaspora capital with vetted, high-potential ventures across Tamil Sri Lanka, backed by four years of on-the-ground research.
+          The Aram Initiative has spent four years researching Tamil Sri Lanka from the ground up. Aram Ventures is where that intelligence becomes investable.
         </motion.p>
         <motion.div
           className="flex flex-col items-center"
@@ -318,11 +327,182 @@ const opportunityLegend = [
 ];
 
 /* ─── Full Inline Portal ─────────────────────────────────────────────────── */
+function InlineInsightDetail({ insight, onBack }) {
+  const page = insightPages.find(p => p.slug === insight.insightPageSlug);
+  if (!page) return null;
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 md:py-10">
+      <Reveal>
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1.5 text-gray-400 hover:text-gray-900 transition-colors text-sm mb-6 group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+          Back to Insights
+        </button>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <div className="flex items-center gap-2 mb-4 flex-wrap">
+          {page.sectors.map(s => {
+            const sector = ventureSectors.find(sec => sec.id === s);
+            if (!sector) return null;
+            return (
+              <span key={s} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium"
+                style={{ backgroundColor: `${sector.color}15`, color: sector.color, border: `1px solid ${sector.color}30` }}>
+                {sector.name}
+              </span>
+            );
+          })}
+          <span className="text-gray-400 text-xs font-mono">{page.region}</span>
+          <span className="text-gray-200">|</span>
+          <span className="flex items-center gap-1 text-gray-400 text-xs">
+            <Clock className="w-3 h-3" /> {page.readTime} min read
+          </span>
+        </div>
+      </Reveal>
+
+      <Reveal delay={0.1}>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-6 tracking-tight">
+          {page.topLine}
+        </h1>
+      </Reveal>
+
+      <div className="h-px bg-gradient-to-r from-[#6D4A9E]/40 via-[#6D4A9E]/10 to-transparent mb-8" />
+
+      <Reveal delay={0.15}>
+        <section className="mb-8">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-3 flex items-center gap-2">
+            <BarChart3 className="w-3.5 h-3.5" /> Observation
+          </h2>
+          <p className="text-[15px] leading-relaxed text-gray-600">{page.observation}</p>
+        </section>
+      </Reveal>
+
+      <div className="h-px bg-gray-200 mb-8" />
+
+      <Reveal delay={0.2}>
+        <section className="mb-8">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-4 flex items-center gap-2">
+            <TrendingUp className="w-3.5 h-3.5" /> Key Metrics
+          </h2>
+          <StaggerContainer staggerDelay={0.07} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {page.keyMetrics.map((metric, i) => (
+              <StaggerItem key={i}>
+                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[#6D4A9E]/30 transition-colors shadow-sm">
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">{metric.label}</p>
+                  <p className="text-xl font-bold text-gray-900 font-mono mb-1">{metric.value}</p>
+                  <p className="text-xs text-gray-500 leading-snug">{metric.context}</p>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </section>
+      </Reveal>
+
+      <div className="h-px bg-gray-200 mb-8" />
+
+      <Reveal delay={0.25}>
+        <section className="mb-8">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-4 flex items-center gap-2">
+            <Zap className="w-3.5 h-3.5" /> Why Now
+          </h2>
+          <div className="space-y-3">
+            {page.whyNow.map((item, i) => (
+              <div key={i} className="flex gap-3 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                <div className="flex-shrink-0 mt-0.5">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-[#6D4A9E]/10 text-[#6D4A9E] border border-[#6D4A9E]/15">
+                    {item.catalyst}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </Reveal>
+
+      <div className="h-px bg-gray-200 mb-8" />
+
+      <Reveal delay={0.3}>
+        <section className="mb-8">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-3.5 h-3.5" /> Investment Parameters
+          </h2>
+          <div className="bg-white border border-gray-200 rounded-lg p-5 space-y-3 shadow-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-0.5">Market Opportunity</p>
+                <p className="text-base font-semibold text-gray-900">{page.investmentParameters.marketOpportunity}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-0.5">Timeline</p>
+                <p className="text-base font-semibold text-gray-900">{page.investmentParameters.timeline}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-0.5">Ticket Size</p>
+                <p className="text-sm text-gray-900">
+                  <span className="text-[#6D4A9E]">Angel/HNW:</span> {page.investmentParameters.ticketSize.angel}
+                  {page.investmentParameters.ticketSize.institutional && (
+                    <span className="ml-3"><span className="text-[#6D4A9E]">Institutional:</span> {page.investmentParameters.ticketSize.institutional}</span>
+                  )}
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-0.5">Risk Level</p>
+                <p className="text-base font-semibold">
+                  <span className={
+                    page.investmentParameters.riskLevel === 'High' ? 'text-[#C85C5C]' :
+                    page.investmentParameters.riskLevel === 'Very High' ? 'text-red-500' :
+                    'text-[#C9A84C]'
+                  }>
+                    {page.investmentParameters.riskLevel}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div className="pt-3 border-t border-gray-100">
+              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">Key Risk</p>
+              <p className="text-sm text-gray-600 leading-relaxed">{page.investmentParameters.keyRisk}</p>
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      <div className="h-px bg-gray-200 mb-8" />
+
+      <Reveal delay={0.35}>
+        <section className="mb-8">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-4 flex items-center gap-2">
+            <Users className="w-3.5 h-3.5" /> Named Players
+          </h2>
+          <StaggerContainer staggerDelay={0.06} className="space-y-2">
+            {page.namedPlayers.map((player, i) => (
+              <StaggerItem key={i}>
+                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3 bg-white border border-gray-200 rounded-lg p-4 hover:border-[#6D4A9E]/20 transition-colors shadow-sm">
+                  <div className="flex-shrink-0">
+                    <p className="text-sm font-semibold text-gray-900">{player.name}</p>
+                  </div>
+                  <p className="text-xs text-gray-500 leading-relaxed sm:border-l sm:border-gray-200 sm:pl-3">
+                    {player.description} - <span className="text-gray-700">{player.relevance}</span>
+                  </p>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </section>
+      </Reveal>
+    </div>
+  );
+}
+
 function InlinePortal() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('portfolio');
   const [isCards, setIsCards] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedInsight, setSelectedInsight] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sectorFilter, setSectorFilter] = useState(null);
   const [regionFilter, setRegionFilter] = useState('all');
@@ -340,6 +520,7 @@ function InlinePortal() {
     setSectorFilter(null);
     setRegionFilter('all');
     setSelectedItem(null);
+    setSelectedInsight(null);
     setSelectedDistrict(null);
     setSelectedRegion(null);
     setIsCards(true);
@@ -401,12 +582,17 @@ function InlinePortal() {
   return (
     <section id="platform-preview" className="bg-[#FAFAFA]">
       {/* ── Portal Navbar ─────────────────────────────────────── */}
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+      <div className="sticky top-0 z-30 bg-[#1B3A4B] border-b border-[#1B3A4B] shadow-sm">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/images/Aram_Ventures.png" alt="Aram Ventures" className="h-10" />
+            <img
+              src="/images/Aram_Ventures.png"
+              alt="Aram Ventures"
+              className="h-10"
+              style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }}
+            />
           </div>
-          <div className="flex bg-gray-100 rounded-xl p-1 max-w-md">
+          <div className="flex bg-[#0F2A38] rounded-xl p-1 max-w-md">
             {tabs.map(tab => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -415,7 +601,7 @@ function InlinePortal() {
                   key={tab.id}
                   onClick={() => { setActiveTab(tab.id); resetFilters(); }}
                   className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                    isActive ? 'bg-[#6D4A9E] text-white shadow-sm' : 'text-gray-500 hover:text-gray-900'
+                    isActive ? 'bg-[#6D4A9E] text-white shadow-sm' : 'text-white/70 hover:text-white'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -424,7 +610,9 @@ function InlinePortal() {
               );
             })}
           </div>
-          <div className="w-10" />
+          <span className="flex-shrink-0 px-2.5 py-1 rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C] text-[10px] font-mono tracking-wider uppercase">
+            Demo
+          </span>
         </div>
       </div>
 
@@ -483,26 +671,26 @@ function InlinePortal() {
         <div className="bg-white border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
             <div className="grid grid-cols-3 gap-4">
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <div className="bg-[#0D0D14] rounded-xl p-4 border border-[#2A2A40]">
                 <div className="flex items-center gap-2 mb-1">
-                  <Briefcase className="w-4 h-4 text-[#6D4A9E]" />
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500">Active Ventures</p>
+                  <Briefcase className="w-4 h-4 text-[#9B72CF]" />
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">Active Ventures</p>
                 </div>
-                <p className="text-xl font-bold text-gray-900">{portfolioCompanies.length}</p>
+                <p className="text-xl font-bold text-white">{portfolioCompanies.length}</p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <div className="bg-[#0D0D14] rounded-xl p-4 border border-[#2A2A40]">
                 <div className="flex items-center gap-2 mb-1">
-                  <DollarSign className="w-4 h-4 text-[#6D4A9E]" />
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500">Total Seeking</p>
+                  <DollarSign className="w-4 h-4 text-[#9B72CF]" />
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">Total Seeking</p>
                 </div>
-                <p className="text-xl font-bold text-gray-900">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
+                <p className="text-xl font-bold text-white">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <div className="bg-[#0D0D14] rounded-xl p-4 border border-[#2A2A40]">
                 <div className="flex items-center gap-2 mb-1">
                   <Star className="w-4 h-4 text-[#C9A84C]" />
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500">True Potential Backed</p>
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">True Potential Backed</p>
                 </div>
-                <p className="text-xl font-bold text-gray-900">{truePotentialCount}</p>
+                <p className="text-xl font-bold text-white">{truePotentialCount}</p>
               </div>
             </div>
           </div>
@@ -527,7 +715,7 @@ function InlinePortal() {
               )}
             </div>
           ) : (
-            <div className="h-[600px] relative">
+            <div className="h-[600px] relative bg-[#F5F5F0]">
               <SriLankaMap
                 selectedRegion={selectedRegion}
                 onSelectRegion={setSelectedRegion}
@@ -557,7 +745,7 @@ function InlinePortal() {
               )}
             </div>
           ) : (
-            <div className="h-[600px] relative">
+            <div className="h-[600px] relative bg-[#F5F5F0]">
               <SriLankaMap
                 selectedRegion={selectedRegion}
                 onSelectRegion={setSelectedRegion}
@@ -573,62 +761,65 @@ function InlinePortal() {
 
         {/* ── Insights Tab ──────────────────────────────────── */}
         {activeTab === 'insights' && (
-          <div className="p-4 md:p-6">
-            {showFeatured && featuredInsight && (
-              <Reveal>
-                <button
-                  onClick={() => router.push(`/ventures/portal/insights/${featuredInsight.insightPageSlug}`)}
-                  className="w-full text-left mb-6 bg-gradient-to-br from-white to-gray-50 border border-[#6D4A9E]/20 rounded-xl p-6 md:p-8 transition-all duration-200 hover:border-[#6D4A9E]/40 hover:shadow-xl hover:shadow-[#6D4A9E]/5 group"
-                >
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#6D4A9E]/10 text-[#6D4A9E] border border-[#6D4A9E]/20">
-                      Macro Overview
-                    </span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono text-[#C9A84C] bg-[#C9A84C]/10 border border-[#C9A84C]/15">
-                      Start Here
-                    </span>
-                  </div>
-                  <h2 className="font-display text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-[#6D4A9E] transition-colors">
-                    Why Sri Lanka&apos;s Tamil-majority regions, why now, and why diaspora capital
-                  </h2>
-                  <p className="text-sm text-gray-500 leading-relaxed mb-4 max-w-3xl">{featuredInsight.summary}</p>
-                  <div className="flex items-center gap-2 text-xs text-[#6D4A9E] font-medium group-hover:gap-3 transition-all">
-                    Read the macro thesis <ArrowRight className="w-3.5 h-3.5" />
-                  </div>
-                </button>
-              </Reveal>
-            )}
-            {showFeatured && (
-              <div className="flex items-center gap-3 mb-4">
-                <h3 className="text-xs font-mono uppercase tracking-widest text-gray-400">Sector Deep Dives</h3>
-                <div className="flex-1 h-px bg-gray-200" />
-                <span className="text-xs text-gray-400 font-mono">{sectorInsights.length} sectors</span>
-              </div>
-            )}
-            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredInsights.map(insight => (
-                <StaggerItem key={insight.id}>
-                  <VentureInsightCard insight={insight} />
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
-            {filteredInsights.length === 0 && (
-              <div className="text-center py-20"><p className="text-gray-400">No insights match your filters</p></div>
-            )}
-          </div>
+          selectedInsight ? (
+            <InlineInsightDetail
+              insight={selectedInsight}
+              onBack={() => setSelectedInsight(null)}
+            />
+          ) : (
+            <div className="p-4 md:p-6">
+              {showFeatured && featuredInsight && (
+                <Reveal>
+                  <button
+                    onClick={() => setSelectedInsight(featuredInsight)}
+                    className="w-full text-left mb-6 bg-gradient-to-br from-white to-gray-50 border border-[#6D4A9E]/20 rounded-xl p-6 md:p-8 transition-all duration-200 hover:border-[#6D4A9E]/40 hover:shadow-xl hover:shadow-[#6D4A9E]/5 group"
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#6D4A9E]/10 text-[#6D4A9E] border border-[#6D4A9E]/20">
+                        Macro Overview
+                      </span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono text-[#C9A84C] bg-[#C9A84C]/10 border border-[#C9A84C]/15">
+                        Start Here
+                      </span>
+                    </div>
+                    <h2 className="font-display text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-[#6D4A9E] transition-colors">
+                      Why Sri Lanka&apos;s Tamil-majority regions, why now, and why diaspora capital
+                    </h2>
+                    <p className="text-sm text-gray-500 leading-relaxed mb-4 max-w-3xl">{featuredInsight.summary}</p>
+                    <div className="flex items-center gap-2 text-xs text-[#6D4A9E] font-medium group-hover:gap-3 transition-all">
+                      Read the macro thesis <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </button>
+                </Reveal>
+              )}
+              {showFeatured && (
+                <div className="flex items-center gap-3 mb-4">
+                  <h3 className="text-xs font-mono uppercase tracking-widest text-gray-400">Sector Deep Dives</h3>
+                  <div className="flex-1 h-px bg-gray-200" />
+                  <span className="text-xs text-gray-400 font-mono">{sectorInsights.length} sectors</span>
+                </div>
+              )}
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredInsights.map(insight => (
+                  <StaggerItem key={insight.id}>
+                    <VentureInsightCard insight={insight} onClick={setSelectedInsight} />
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+              {filteredInsights.length === 0 && (
+                <div className="text-center py-20"><p className="text-gray-400">No insights match your filters</p></div>
+              )}
+            </div>
+          )
         )}
       </div>
 
       {/* Slide-out panel */}
-      <AnimatePresence>
-        {selectedItem && (
-          <SlidePanel
-            item={selectedItem}
-            type={activeTab === 'opportunities' ? 'emerging' : 'portfolio'}
-            onClose={() => setSelectedItem(null)}
-          />
-        )}
-      </AnimatePresence>
+      <SlidePanel
+        item={selectedItem}
+        type={activeTab === 'opportunities' ? 'emerging' : 'portfolio'}
+        onClose={() => setSelectedItem(null)}
+      />
     </section>
   );
 }
@@ -674,6 +865,7 @@ export default function VenturesLanding() {
               src="/images/Aram_Ventures.png"
               alt="Aram Ventures"
               className="h-8"
+              style={{ mixBlendMode: 'multiply', background: 'transparent' }}
             />
             <span className="text-sm text-gray-500">Aram Ventures © 2026</span>
           </div>

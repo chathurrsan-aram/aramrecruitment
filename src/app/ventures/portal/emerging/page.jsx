@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { AnimatePresence } from 'framer-motion';
 import { StaggerContainer, StaggerItem } from '@/components/ui/motion';
 import { ViewToggle } from '@/components/ventures/portal-shell';
 import { EmergingCard } from '@/components/ventures/venture-card';
@@ -147,15 +146,11 @@ export default function EmergingTab() {
         )}
       </div>
 
-      <AnimatePresence>
-        {selectedItem && (
-          <SlidePanel
-            item={selectedItem}
-            type="emerging"
-            onClose={() => setSelectedItem(null)}
-          />
-        )}
-      </AnimatePresence>
+      <SlidePanel
+        item={selectedItem}
+        type="emerging"
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
 }

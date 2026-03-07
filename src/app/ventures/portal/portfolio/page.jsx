@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { AnimatePresence } from 'framer-motion';
 import { StaggerContainer, StaggerItem } from '@/components/ui/motion';
 import { ViewToggle } from '@/components/ventures/portal-shell';
 import { PortfolioCard } from '@/components/ventures/venture-card';
@@ -179,15 +178,11 @@ export default function PortfolioTab() {
       </div>
 
       {/* Slide-out panel */}
-      <AnimatePresence>
-        {selectedItem && (
-          <SlidePanel
-            item={selectedItem}
-            type="portfolio"
-            onClose={() => setSelectedItem(null)}
-          />
-        )}
-      </AnimatePresence>
+      <SlidePanel
+        item={selectedItem}
+        type="portfolio"
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
 }

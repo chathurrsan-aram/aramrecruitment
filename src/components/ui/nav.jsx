@@ -50,7 +50,7 @@ export default function Navbar() {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${venturesBg}`}>
         <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
           <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-3">
-            <img src="/images/Aram_Ventures.png" alt="Aram" className="h-[72px] transition-all duration-300 brightness-0 invert" />
+            <img src="/images/Aram_Ventures.png" alt="Aram" className="h-[72px] transition-all duration-300" style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }} />
           </Link>
 
           <nav className="hidden md:flex items-center gap-7">
@@ -111,7 +111,12 @@ export default function Navbar() {
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${bg} ${hidden ? '-translate-y-full opacity-0 pointer-events-none' : ''}`}>
       <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
         <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-3">
-          <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className={`h-[72px] transition-all duration-300 ${logoFilter}`} />
+          <img
+            src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png"
+            alt="Aram"
+            className={`h-[72px] transition-all duration-300 ${logoFilter}`}
+            style={{ mixBlendMode: solid ? 'multiply' : 'screen', background: 'transparent' }}
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-7">

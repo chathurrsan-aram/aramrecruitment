@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Maximize2, Minimize2, ArrowRight, FileText, Table, Lock } from 'lucide-react';
 import { TruePotentialBadge } from './venture-card';
@@ -521,7 +521,14 @@ function EmergingPanelContent({ venture }) {
 export default function SlidePanel({ item, type, onClose }) {
   const [fullscreen, setFullscreen] = useState(false);
 
-  if (!item) return null;
+  useEffect(() => {
+    if (!item) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [item, onClose]);
 
   const panelClasses = fullscreen
     ? 'fixed inset-0 z-50'
