@@ -22,6 +22,21 @@ const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
   ),
 });
 
+// Build district highlights from emerging/opportunities data
+const opportunityHighlights = {};
+for (const venture of emergingVentures) {
+  const sector = ventureSectors.find(s => s.id === venture.sector);
+  opportunityHighlights[venture.districtCode] = {
+    color: sector?.color || '#C9A84C',
+    label: `Opportunity — ${venture.name}`,
+  };
+}
+
+const opportunityLegend = [
+  { color: '#C9A84C', label: 'Opportunity' },
+  { color: '#D1D5DB', label: 'No opportunities' },
+];
+
 export default function EmergingTab() {
   const [isCards, setIsCards] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -52,7 +67,11 @@ export default function EmergingTab() {
       const { emerging } = getVenturesByDistrict(code);
       if (emerging.length > 0) {
         setSelectedItem(emerging[0]);
+      } else {
+        setSelectedItem(null);
       }
+    } else {
+      setSelectedItem(null);
     }
   };
 
@@ -109,7 +128,7 @@ export default function EmergingTab() {
             </StaggerContainer>
             {filteredVentures.length === 0 && (
               <div className="text-center py-20">
-                <p className="text-[#7A7A9A]">No emerging ventures match your filters</p>
+                <p className="text-[#7A7A9A]">No opportunities match your filters</p>
               </div>
             )}
           </div>
@@ -121,6 +140,8 @@ export default function EmergingTab() {
               selectedDistrict={selectedDistrict}
               onSelectDistrict={handleDistrictSelect}
               hasSidebar={!!selectedItem}
+              districtHighlights={opportunityHighlights}
+              legendItems={opportunityLegend}
             />
           </div>
         )}

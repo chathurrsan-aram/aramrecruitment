@@ -22,6 +22,21 @@ const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
   ),
 });
 
+// Build district highlights from portfolio data
+const portfolioHighlights = {};
+for (const company of portfolioCompanies) {
+  const sector = ventureSectors.find(s => s.id === company.sector);
+  portfolioHighlights[company.districtCode] = {
+    color: sector?.color || '#6D4A9E',
+    label: `Portfolio — ${company.name}`,
+  };
+}
+
+const portfolioLegend = [
+  { color: '#6D4A9E', label: 'Portfolio venture' },
+  { color: '#D1D5DB', label: 'No ventures' },
+];
+
 export default function PortfolioTab() {
   const [isCards, setIsCards] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -52,7 +67,11 @@ export default function PortfolioTab() {
       const { portfolio } = getVenturesByDistrict(code);
       if (portfolio.length > 0) {
         setSelectedItem(portfolio[0]);
+      } else {
+        setSelectedItem(null);
       }
+    } else {
+      setSelectedItem(null);
     }
   };
 
@@ -123,6 +142,8 @@ export default function PortfolioTab() {
               selectedDistrict={selectedDistrict}
               onSelectDistrict={handleDistrictSelect}
               hasSidebar={!!selectedItem}
+              districtHighlights={portfolioHighlights}
+              legendItems={portfolioLegend}
             />
           </div>
         )}

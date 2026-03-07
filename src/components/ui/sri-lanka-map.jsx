@@ -45,7 +45,12 @@ const STATUS_COLORS = {
 
 const INACTIVE_COLOR = '#D1D5DB';
 
-function getDistrictFill(code) {
+function getDistrictFill(code, districtHighlights) {
+  if (districtHighlights) {
+    const highlight = districtHighlights[code];
+    if (highlight) return highlight.color;
+    return INACTIVE_COLOR;
+  }
   const project = districtProjects[code];
   if (project?.status === 'active') return STATUS_COLORS.active;
   if (project?.status === 'planned') return STATUS_COLORS.planned;
@@ -53,12 +58,12 @@ function getDistrictFill(code) {
 }
 
 /* ─── Styles ──────────────────────────────────────── */
-function getStyle(feature, hoveredCode, selectedCode, selectedRegion) {
+function getStyle(feature, hoveredCode, selectedCode, selectedRegion, districtHighlights) {
   const code = feature.properties.code;
-  const fill = getDistrictFill(code);
+  const fill = getDistrictFill(code, districtHighlights);
   const isSelected = selectedCode === code;
   const isHovered = hoveredCode === code;
-  const hasProject = !!districtProjects[code];
+  const hasHighlight = districtHighlights ? !!districtHighlights[code] : !!districtProjects[code];
   const districtRegion = DISTRICT_TO_ARAM_REGION[code];
   const isRegionHighlighted = !selectedCode && selectedRegion && districtRegion === selectedRegion;
 
@@ -75,7 +80,7 @@ function getStyle(feature, hoveredCode, selectedCode, selectedRegion) {
   if (isRegionHighlighted) {
     return {
       fillColor: fill,
-      fillOpacity: hasProject ? 0.75 : 0.45,
+      fillOpacity: hasHighlight ? 0.75 : 0.45,
       color: '#4C3A75',
       weight: 2,
       dashArray: '4 3',
@@ -85,7 +90,7 @@ function getStyle(feature, hoveredCode, selectedCode, selectedRegion) {
   if (isHovered) {
     return {
       fillColor: fill,
-      fillOpacity: hasProject ? 0.75 : 0.4,
+      fillOpacity: hasHighlight ? 0.75 : 0.4,
       color: '#fff',
       weight: 2,
       dashArray: '',
@@ -94,7 +99,7 @@ function getStyle(feature, hoveredCode, selectedCode, selectedRegion) {
 
   return {
     fillColor: fill,
-    fillOpacity: hasProject ? 0.6 : 0.25,
+    fillOpacity: hasHighlight ? 0.6 : 0.25,
     color: 'rgba(255,255,255,0.7)',
     weight: 1,
     dashArray: '',
@@ -105,22 +110,16 @@ function getStyle(feature, hoveredCode, selectedCode, selectedRegion) {
 function MapController({ geoData, selectedCode, selectedRegion, hasSidebar }) {
   const map = useMap();
 
-  /* Always disable Leaflet's native scroll zoom; we add our own stepped handler
-     in sidebar mode so each scroll tick = exactly one zoom level. */
   useEffect(() => {
     map.scrollWheelZoom.disable();
   }, [map]);
 
-  /* Dynamic minZoom: tighter when sidebar is open (zoom 8 vs 7) */
   useEffect(() => {
     const targetMin = hasSidebar ? 8 : 7;
     map.setMinZoom(targetMin);
     if (hasSidebar && map.getZoom() < 8) map.setZoom(8, { animate: true });
   }, [hasSidebar, map]);
 
-  /* Step scroll-zoom — only active in sidebar (split) mode.
-     Keeps natural wheel flow (small cooldown), but passes through to page scroll
-     at both zoom boundaries so users can continue scrolling the site. */
   useEffect(() => {
     if (!hasSidebar) return;
 
@@ -135,7 +134,6 @@ function MapController({ geoData, selectedCode, selectedRegion, hasSidebar }) {
       const scrollingDown = delta > 0;
       const scrollingUp = delta < 0;
 
-      // At bounds, let wheel continue scrolling page naturally
       if ((atMin && scrollingDown) || (atMax && scrollingUp)) return;
 
       const now = performance.now();
@@ -160,23 +158,19 @@ function MapController({ geoData, selectedCode, selectedRegion, hasSidebar }) {
     };
   }, [hasSidebar, map]);
 
-  /* Invalidate size on mount */
   useEffect(() => {
     map.invalidateSize();
     const t = setTimeout(() => map.invalidateSize(), 300);
     return () => clearTimeout(t);
   }, [map]);
 
-  /* Re-invalidate when sidebar opens/closes so Leaflet knows the new container size */
   useEffect(() => {
-    // The sidebar animates over ~500ms (spring). Invalidate at intervals to catch the resize.
     const t1 = setTimeout(() => map.invalidateSize(), 100);
     const t2 = setTimeout(() => map.invalidateSize(), 350);
     const t3 = setTimeout(() => map.invalidateSize(), 600);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [hasSidebar, map]);
 
-  /* fitBounds on district selection or sidebar change */
   useEffect(() => {
     if (!geoData) return;
 
@@ -199,12 +193,10 @@ function MapController({ geoData, selectedCode, selectedRegion, hasSidebar }) {
         }
       }
 
-      // Fit to full Sri Lanka
       const full = L.geoJSON(geoData);
       map.fitBounds(full.getBounds(), { padding: [10, 10], animate: true });
     };
 
-    // Delay fit to let the container resize animation settle
     const t = setTimeout(doFit, hasSidebar ? 400 : 50);
     return () => clearTimeout(t);
   }, [selectedCode, selectedRegion, geoData, map, hasSidebar]);
@@ -212,7 +204,7 @@ function MapController({ geoData, selectedCode, selectedRegion, hasSidebar }) {
   return null;
 }
 
-/* ─── Zoom Control — positioned bottom-right, inside map area ── */
+/* ─── Zoom Control ─────────────────────────────────── */
 function ZoomControl() {
   const map = useMap();
   return (
@@ -242,6 +234,8 @@ export default function SriLankaMap({
   selectedDistrict,
   onSelectDistrict,
   hasSidebar = false,
+  districtHighlights = null,
+  legendItems = null,
 }) {
   const [geoData, setGeoData] = useState(null);
   const [geoError, setGeoError] = useState(false);
@@ -269,8 +263,6 @@ export default function SriLankaMap({
   }, []);
 
   const handleDistrictClick = useCallback((code) => {
-    /* Region-setting is handled by the parent's onSelectDistrict handler
-       to avoid duplicate state updates. */
     onSelectDistrict(code === selectedDistrict ? null : code);
   }, [selectedDistrict, onSelectDistrict]);
 
@@ -280,25 +272,25 @@ export default function SriLankaMap({
     layer.on({
       mouseover: (e) => {
         setHoveredCode(code);
-        const hoverStyle = getStyle(feature, code, selectedDistrict, selectedRegion);
+        const hoverStyle = getStyle(feature, code, selectedDistrict, selectedRegion, districtHighlights);
         e.target.setStyle(hoverStyle);
         e.target.bringToFront();
       },
       mouseout: (e) => {
         setHoveredCode(null);
-        const normalStyle = getStyle(feature, null, selectedDistrict, selectedRegion);
+        const normalStyle = getStyle(feature, null, selectedDistrict, selectedRegion, districtHighlights);
         e.target.setStyle(normalStyle);
       },
       click: () => handleDistrictClick(code),
     });
-  }, [handleDistrictClick, selectedDistrict, selectedRegion]);
+  }, [handleDistrictClick, selectedDistrict, selectedRegion, districtHighlights]);
 
   const styleFn = useCallback(
-    (feature) => getStyle(feature, null, selectedDistrict, selectedRegion),
-    [selectedDistrict, selectedRegion]
+    (feature) => getStyle(feature, null, selectedDistrict, selectedRegion, districtHighlights),
+    [selectedDistrict, selectedRegion, districtHighlights]
   );
 
-  const geoKey = `districts-${selectedDistrict || 'none'}-${selectedRegion || 'all'}`;
+  const geoKey = `districts-${selectedDistrict || 'none'}-${selectedRegion || 'all'}-${districtHighlights ? Object.keys(districtHighlights).join(',') : 'default'}`;
 
   if (geoError) {
     return (
@@ -321,6 +313,14 @@ export default function SriLankaMap({
       </div>
     );
   }
+
+  const defaultLegend = [
+    { color: STATUS_COLORS.active, label: 'Active', count: Object.values(districtProjects).filter(d => d.status === 'active').length },
+    { color: STATUS_COLORS.planned, label: 'Planned', count: Object.values(districtProjects).filter(d => d.status === 'planned').length },
+    { color: INACTIVE_COLOR, label: 'No operations', count: 25 - Object.keys(districtProjects).length },
+  ];
+
+  const legend = legendItems || defaultLegend;
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -359,23 +359,27 @@ export default function SriLankaMap({
         <ZoomControl />
       </MapContainer>
 
-      {hoveredCode && <DistrictTooltip code={hoveredCode} geoData={geoData} />}
+      {hoveredCode && (
+        <DistrictTooltip
+          code={hoveredCode}
+          geoData={geoData}
+          districtHighlights={districtHighlights}
+        />
+      )}
 
       {/* Legend */}
       <div className="absolute bottom-4 left-4 z-[400] bg-white/95 backdrop-blur-sm rounded-xl border border-aram-warm-200 shadow-lg px-4 py-3">
         <p className="text-[10px] font-mono uppercase tracking-wider text-aram-warm-400 mb-2">
           District Status
         </p>
-        {[
-          { color: STATUS_COLORS.active, label: 'Active', count: Object.values(districtProjects).filter(d => d.status === 'active').length },
-          { color: STATUS_COLORS.planned, label: 'Planned', count: Object.values(districtProjects).filter(d => d.status === 'planned').length },
-          { color: INACTIVE_COLOR, label: 'No operations', count: 25 - Object.keys(districtProjects).length },
-        ].map(item => (
+        {legend.map(item => (
           <div key={item.label} className="flex items-center gap-2 py-0.5">
             <span className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: item.color }} />
             <span className="text-xs text-aram-warm-500 font-medium">
               {item.label}
-              <span className="text-aram-warm-300 font-normal ml-1">({item.count})</span>
+              {item.count != null && (
+                <span className="text-aram-warm-300 font-normal ml-1">({item.count})</span>
+              )}
             </span>
           </div>
         ))}
@@ -398,9 +402,10 @@ export default function SriLankaMap({
 }
 
 /* ─── Tooltip component ───────────────────────────── */
-function DistrictTooltip({ code, geoData }) {
+function DistrictTooltip({ code, geoData, districtHighlights }) {
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const feature = geoData.features.find(f => f.properties.code === code);
+  const highlight = districtHighlights?.[code];
   const project = districtProjects[code];
 
   useEffect(() => {
@@ -419,16 +424,28 @@ function DistrictTooltip({ code, geoData }) {
       <div className="bg-aram-green-950/95 backdrop-blur-sm text-white rounded-lg px-3.5 py-2.5 shadow-xl border border-white/10">
         <p className="font-semibold text-sm">{feature.properties.name}</p>
         <p className="text-white/50 text-xs">{feature.properties.province} Province</p>
-        {project?.status === 'active' && (
-          <p className="text-aram-purple-light text-xs mt-1 font-medium">
-            Active — {project.projects.length} {project.projects.length === 1 ? 'project' : 'projects'}
-          </p>
-        )}
-        {project?.status === 'planned' && (
-          <p className="text-purple-300 text-xs mt-1 font-medium">Planned expansion</p>
-        )}
-        {!project && (
-          <p className="text-white/40 text-xs mt-1">No current operations</p>
+        {districtHighlights ? (
+          highlight ? (
+            <p className="text-xs mt-1 font-medium" style={{ color: highlight.color }}>
+              {highlight.label}
+            </p>
+          ) : (
+            <p className="text-white/40 text-xs mt-1">No ventures in this district</p>
+          )
+        ) : (
+          <>
+            {project?.status === 'active' && (
+              <p className="text-aram-purple-light text-xs mt-1 font-medium">
+                Active — {project.projects.length} {project.projects.length === 1 ? 'project' : 'projects'}
+              </p>
+            )}
+            {project?.status === 'planned' && (
+              <p className="text-purple-300 text-xs mt-1 font-medium">Planned expansion</p>
+            )}
+            {!project && (
+              <p className="text-white/40 text-xs mt-1">No current operations</p>
+            )}
+          </>
         )}
       </div>
     </div>
