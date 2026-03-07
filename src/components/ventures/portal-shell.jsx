@@ -87,7 +87,7 @@ export default function PortalShell({ children }) {
           {/* Logo */}
           <Link href="/ventures" className="flex items-center gap-2 flex-shrink-0">
             <img
-              src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
+              src="/images/Aram_Ventures.png"
               alt="Aram Ventures"
               className="h-10"
               style={{ mixBlendMode: 'lighten' }}

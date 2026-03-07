@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter } from '@/components/ui/motion';
-import { ArrowRight, Briefcase, TrendingUp, BookOpen, ChevronDown, X, Search, Filter, DollarSign, PieChart, Map, LayoutGrid } from 'lucide-react';
+import { ArrowRight, Briefcase, TrendingUp, BookOpen, ChevronDown, X, Search, Filter, DollarSign, PieChart, Map, LayoutGrid, Star } from 'lucide-react';
 import { useFounderModal } from '@/components/ventures/founder-modal';
 import { videos } from '@/lib/cloudinary';
-import { portfolioCompanies, emergingVentures, ventureInsights, ventureSectors, investorPositions, getVenturesByDistrict } from '@/data/venturesData';
+import { portfolioCompanies, emergingVentures, ventureInsights, ventureSectors, ventureRegions, investorPositions, getVenturesByDistrict } from '@/data/venturesData';
+import { ViewToggle } from '@/components/ventures/portal-shell';
 import { PortfolioCard, EmergingCard, VentureInsightCard } from '@/components/ventures/venture-card';
 import SlidePanel from '@/components/ventures/slide-panel';
 import dynamic from 'next/dynamic';
@@ -16,10 +17,10 @@ import dynamic from 'next/dynamic';
 const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[500px] flex items-center justify-center bg-[#13131F]">
+    <div className="w-full h-[500px] flex items-center justify-center bg-gray-50">
       <div className="text-center">
-        <div className="w-8 h-8 border-2 border-[#2A2A40] border-t-[#6D4A9E] rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-[#7A7A9A] text-sm">Loading map...</p>
+        <div className="w-8 h-8 border-2 border-gray-200 border-t-[#6D4A9E] rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-gray-400 text-sm">Loading map...</p>
       </div>
     </div>
   ),
@@ -187,12 +188,21 @@ function VenturesHero({ onOpenOpportunity }) {
           animate={loaded ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <img
-            src="/images/Untitled design-6.png"
-            alt="Aram Ventures - True Potential"
-            className="h-20 md:h-28"
-            style={{ filter: 'brightness(0) invert(1)' }}
-          />
+          <div className="flex items-center gap-4 md:gap-6">
+            <img
+              src="/images/Aram_Ventures.png"
+              alt="Aram Ventures"
+              className="h-16 md:h-24"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
+            <div className="w-px h-10 md:h-14 bg-white/30" />
+            <img
+              src="/images/Untitled design-6.png"
+              alt="True Potential"
+              className="h-14 md:h-20"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
+          </div>
         </motion.div>
         <motion.h1
           className="font-display text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
@@ -280,172 +290,333 @@ function HowItWorks() {
   );
 }
 
-/* ─── Light-Themed Embedded Portal (original structure) ──────────────────── */
-function EmbeddedPortalPreview() {
+/* ─── District highlights for map views ──────────────────────────────────── */
+const portfolioHighlights = {};
+for (const company of portfolioCompanies) {
+  const sector = ventureSectors.find(s => s.id === company.sector);
+  portfolioHighlights[company.districtCode] = {
+    color: sector?.color || '#6D4A9E',
+    label: `Portfolio: ${company.name}`,
+  };
+}
+const portfolioLegend = [
+  { color: '#6D4A9E', label: 'Portfolio venture' },
+  { color: '#E5E5E0', label: 'No ventures' },
+];
+
+const opportunityHighlights = {};
+for (const venture of emergingVentures) {
+  const sector = ventureSectors.find(s => s.id === venture.sector);
+  opportunityHighlights[venture.districtCode] = {
+    color: sector?.color || '#C9A84C',
+    label: `Opportunity: ${venture.name}`,
+  };
+}
+const opportunityLegend = [
+  { color: '#C9A84C', label: 'Opportunity' },
+  { color: '#E5E5E0', label: 'No opportunities' },
+];
+
+/* ─── Full Inline Portal ─────────────────────────────────────────────────── */
+function InlinePortal() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('portfolio');
+  const [isCards, setIsCards] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sectorFilter, setSectorFilter] = useState(null);
+  const [regionFilter, setRegionFilter] = useState('all');
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedRegion, setSelectedRegion] = useState(null);
 
   const tabs = [
-    { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
+    { id: 'portfolio', label: 'Your Portfolio', icon: Briefcase },
     { id: 'opportunities', label: 'Opportunities', icon: TrendingUp },
     { id: 'insights', label: 'Insights', icon: BookOpen },
   ];
 
-  const filteredPortfolio = portfolioCompanies.filter(c => {
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return c.name.toLowerCase().includes(q) || c.tagline.toLowerCase().includes(q);
-  });
+  const resetFilters = () => {
+    setSearchQuery('');
+    setSectorFilter(null);
+    setRegionFilter('all');
+    setSelectedItem(null);
+    setSelectedDistrict(null);
+    setSelectedRegion(null);
+    setIsCards(true);
+  };
 
-  const filteredEmerging = emergingVentures.filter(v => {
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return v.name.toLowerCase().includes(q) || v.tagline.toLowerCase().includes(q);
-  });
+  const filteredPortfolio = useMemo(() => {
+    let result = portfolioCompanies;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(c => c.name.toLowerCase().includes(q) || c.tagline.toLowerCase().includes(q) || c.region.toLowerCase().includes(q));
+    }
+    if (sectorFilter) result = result.filter(c => c.sector === sectorFilter);
+    return result;
+  }, [searchQuery, sectorFilter]);
 
-  const filteredInsights = ventureInsights.filter(i => {
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q);
-  });
+  const filteredEmerging = useMemo(() => {
+    let result = emergingVentures;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(v => v.name.toLowerCase().includes(q) || v.tagline.toLowerCase().includes(q) || v.region.toLowerCase().includes(q));
+    }
+    if (sectorFilter) result = result.filter(v => v.sector === sectorFilter);
+    return result;
+  }, [searchQuery, sectorFilter]);
+
+  const featuredInsight = ventureInsights.find(i => i.featured);
+  const sectorInsights = ventureInsights.filter(i => !i.featured);
+  const filteredInsights = useMemo(() => {
+    let result = sectorInsights;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(i => i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q));
+    }
+    if (sectorFilter) result = result.filter(i => i.sectors.includes(sectorFilter));
+    if (regionFilter !== 'all') result = result.filter(i => i.region === regionFilter);
+    return result;
+  }, [searchQuery, sectorFilter, regionFilter, sectorInsights]);
+  const showFeatured = !searchQuery && !sectorFilter && regionFilter === 'all';
+
+  const activeSectors = activeTab === 'portfolio'
+    ? ventureSectors.filter(s => portfolioCompanies.some(c => c.sector === s.id))
+    : activeTab === 'opportunities'
+      ? ventureSectors.filter(s => emergingVentures.some(v => v.sector === s.id))
+      : ventureSectors.filter(s => sectorInsights.some(i => i.sectors.includes(s.id)));
+
+  const handleDistrictSelect = (code) => {
+    setSelectedDistrict(code);
+    if (code) {
+      const data = getVenturesByDistrict(code);
+      const items = activeTab === 'portfolio' ? data.portfolio : data.emerging;
+      setSelectedItem(items.length > 0 ? items[0] : null);
+    } else {
+      setSelectedItem(null);
+    }
+  };
+
+  const truePotentialCount = portfolioCompanies.filter(c => c.truePotential).length;
 
   return (
-    <section id="platform-preview" className="bg-[#F8F9FB] py-16 px-4 md:px-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Light card container */}
-        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-          {/* Portal header */}
-          <div className="px-4 md:px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/Untitled design-6.png"
-                alt="Aram Ventures - True Potential"
-                className="h-8"
-              />
-            </div>
+    <section id="platform-preview" className="bg-[#FAFAFA]">
+      {/* ── Portal Navbar ─────────────────────────────────────── */}
+      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src="/images/Aram_Ventures.png" alt="Aram Ventures" className="h-10" />
           </div>
-
-          {/* Tab toggles */}
-          <div className="px-4 md:px-6 py-3 border-b border-gray-200">
-            <div className="flex bg-gray-100 rounded-xl p-1 max-w-md mx-auto">
-              {tabs.map(tab => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => { setActiveTab(tab.id); setSearchQuery(''); setSelectedItem(null); }}
-                    className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex-1 ${
-                      isActive
-                        ? 'bg-[#6D4A9E] text-white shadow-sm'
-                        : 'text-gray-500 hover:text-gray-900'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+          <div className="flex bg-gray-100 rounded-xl p-1 max-w-md">
+            {tabs.map(tab => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => { setActiveTab(tab.id); resetFilters(); }}
+                  className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    isActive ? 'bg-[#6D4A9E] text-white shadow-sm' : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
+          <div className="w-10" />
+        </div>
+      </div>
 
-          {/* Tab content */}
-          <div className="p-4 md:p-6 bg-[#F8F9FB]">
-            {/* Search */}
-            <div className="relative max-w-sm mb-6">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder={`Search ${activeTab}...`}
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] focus:ring-1 focus:ring-[#6D4A9E]/20 transition-colors"
-              />
+      {/* ── Filter Bar ────────────────────────────────────────── */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex flex-wrap items-center gap-3">
+          <div className="relative flex-1 min-w-[200px] max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder={`Search ${activeTab}...`}
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] transition-colors"
+            />
+          </div>
+          <div className="flex gap-1.5 flex-wrap">
+            {activeSectors.map(s => (
+              <button
+                key={s.id}
+                onClick={() => setSectorFilter(sectorFilter === s.id ? null : s.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
+                  sectorFilter === s.id
+                    ? 'border-[#6D4A9E] text-[#6D4A9E] bg-[#6D4A9E]/10'
+                    : 'border-gray-200 text-gray-500 hover:border-[#6D4A9E]/50'
+                }`}
+              >
+                {s.name}
+              </button>
+            ))}
+          </div>
+          {activeTab === 'insights' && (
+            <div className="relative ml-auto">
+              <select
+                value={regionFilter}
+                onChange={e => setRegionFilter(e.target.value)}
+                className="appearance-none pl-3 pr-8 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-[#6D4A9E] transition-colors"
+              >
+                {ventureRegions.map(r => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             </div>
+          )}
+          {activeTab !== 'insights' && (
+            <div className="ml-auto">
+              <ViewToggle isCards={isCards} onChange={setIsCards} />
+            </div>
+          )}
+        </div>
+      </div>
 
-            {/* Portfolio tab */}
-            {activeTab === 'portfolio' && (
-              <div>
-                {/* Summary bar */}
-                <div className="grid grid-cols-3 gap-3 mb-6">
-                  <div className="bg-white border border-gray-200 rounded-xl p-4">
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500 mb-1">Active Ventures</p>
-                    <p className="text-xl font-bold text-gray-900">{portfolioCompanies.length}</p>
-                  </div>
-                  <div className="bg-white border border-gray-200 rounded-xl p-4">
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500 mb-1">Total Seeking</p>
-                    <p className="text-xl font-bold text-gray-900">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
-                  </div>
-                  <div className="bg-white border border-gray-200 rounded-xl p-4">
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500 mb-1">True Potential Backed</p>
-                    <p className="text-xl font-bold text-gray-900">{portfolioCompanies.filter(c => c.truePotential).length}</p>
-                  </div>
+      {/* ── Portfolio Summary Bar ─────────────────────────────── */}
+      {activeTab === 'portfolio' && (
+        <div className="bg-white border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                <div className="flex items-center gap-2 mb-1">
+                  <Briefcase className="w-4 h-4 text-[#6D4A9E]" />
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500">Active Ventures</p>
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredPortfolio.map(company => (
-                    <div key={company.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-[#6D4A9E] hover:shadow-md transition-all duration-200 cursor-pointer" onClick={() => setSelectedItem({ ...company, _type: 'portfolio' })}>
-                      <div className="flex items-center gap-2 mb-3 flex-wrap">
-                        {company.truePotential && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#6D4A9E]/10 border border-[#6D4A9E]/20 text-[#6D4A9E] text-[11px] font-medium">
-                            ✦ True Potential
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="font-display text-lg font-semibold text-gray-900 mb-1">{company.name}</h3>
-                      <p className="text-sm text-gray-500 mb-3 line-clamp-2">{company.tagline}</p>
-                      <div className="flex items-center gap-3 text-xs text-gray-500">
-                        <span className="font-mono">{company.region}</span>
-                        <span className="text-gray-300">·</span>
-                        <span className="font-mono text-[#6D4A9E]">Seeking £{(company.seeking / 1000).toFixed(0)}k</span>
-                      </div>
-                    </div>
-                  ))}
+                <p className="text-xl font-bold text-gray-900">{portfolioCompanies.length}</p>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                <div className="flex items-center gap-2 mb-1">
+                  <DollarSign className="w-4 h-4 text-[#6D4A9E]" />
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500">Total Seeking</p>
                 </div>
+                <p className="text-xl font-bold text-gray-900">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
               </div>
-            )}
-
-            {/* Opportunities tab */}
-            {activeTab === 'opportunities' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredEmerging.map(venture => (
-                  <div key={venture.id} className="bg-white border border-dashed border-gray-300 rounded-xl p-5 hover:border-[#6D4A9E]/50 transition-all duration-200 cursor-pointer" onClick={() => setSelectedItem({ ...venture, _type: 'emerging' })}>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#6D4A9E]/10 border border-[#6D4A9E]/20 text-[#6D4A9E]">
-                        Opportunity
-                      </span>
-                    </div>
-                    <h3 className="font-display text-lg font-semibold text-gray-900 mb-1">{venture.name}</h3>
-                    <p className="text-sm text-gray-500 mb-3 line-clamp-2">{venture.tagline}</p>
-                    <div className="flex items-center gap-3 text-xs text-gray-500">
-                      <span className="font-mono">{venture.region}</span>
-                      <span className="text-gray-300">·</span>
-                      <span className="font-mono text-[#6D4A9E]">Est. {venture.estimateRange}</span>
-                    </div>
-                  </div>
-                ))}
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                <div className="flex items-center gap-2 mb-1">
+                  <Star className="w-4 h-4 text-[#C9A84C]" />
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500">True Potential Backed</p>
+                </div>
+                <p className="text-xl font-bold text-gray-900">{truePotentialCount}</p>
               </div>
-            )}
-
-            {/* Insights tab */}
-            {activeTab === 'insights' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredInsights.map(insight => (
-                  <div key={insight.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-[#6D4A9E] hover:shadow-md transition-all duration-200">
-                    <h3 className="font-display text-base font-semibold text-gray-900 mb-2 leading-snug">{insight.title}</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed mb-3 line-clamp-2">{insight.summary}</p>
-                    <div className="flex items-center gap-3 text-xs text-gray-500">
-                      <span className="font-mono">{insight.region}</span>
-                      <span className="text-gray-300">·</span>
-                      <span>{insight.readTime} min read</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            </div>
           </div>
         </div>
+      )}
+
+      {/* ── Tab Content ───────────────────────────────────────── */}
+      <div className="max-w-7xl mx-auto" style={{ minHeight: '600px' }}>
+        {/* ── Portfolio Tab ──────────────────────────────────── */}
+        {activeTab === 'portfolio' && (
+          isCards ? (
+            <div className="p-4 md:p-6">
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredPortfolio.map(company => (
+                  <StaggerItem key={company.id}>
+                    <PortfolioCard company={company} onClick={setSelectedItem} />
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+              {filteredPortfolio.length === 0 && (
+                <div className="text-center py-20"><p className="text-gray-400">No ventures match your filters</p></div>
+              )}
+            </div>
+          ) : (
+            <div className="h-[600px] relative">
+              <SriLankaMap
+                selectedRegion={selectedRegion}
+                onSelectRegion={setSelectedRegion}
+                selectedDistrict={selectedDistrict}
+                onSelectDistrict={handleDistrictSelect}
+                hasSidebar={!!selectedItem}
+                districtHighlights={portfolioHighlights}
+                legendItems={portfolioLegend}
+              />
+            </div>
+          )
+        )}
+
+        {/* ── Opportunities Tab ─────────────────────────────── */}
+        {activeTab === 'opportunities' && (
+          isCards ? (
+            <div className="p-4 md:p-6">
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredEmerging.map(venture => (
+                  <StaggerItem key={venture.id}>
+                    <EmergingCard venture={venture} onClick={setSelectedItem} />
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+              {filteredEmerging.length === 0 && (
+                <div className="text-center py-20"><p className="text-gray-400">No opportunities match your filters</p></div>
+              )}
+            </div>
+          ) : (
+            <div className="h-[600px] relative">
+              <SriLankaMap
+                selectedRegion={selectedRegion}
+                onSelectRegion={setSelectedRegion}
+                selectedDistrict={selectedDistrict}
+                onSelectDistrict={handleDistrictSelect}
+                hasSidebar={!!selectedItem}
+                districtHighlights={opportunityHighlights}
+                legendItems={opportunityLegend}
+              />
+            </div>
+          )
+        )}
+
+        {/* ── Insights Tab ──────────────────────────────────── */}
+        {activeTab === 'insights' && (
+          <div className="p-4 md:p-6">
+            {showFeatured && featuredInsight && (
+              <Reveal>
+                <button
+                  onClick={() => router.push(`/ventures/portal/insights/${featuredInsight.insightPageSlug}`)}
+                  className="w-full text-left mb-6 bg-gradient-to-br from-white to-gray-50 border border-[#6D4A9E]/20 rounded-xl p-6 md:p-8 transition-all duration-200 hover:border-[#6D4A9E]/40 hover:shadow-xl hover:shadow-[#6D4A9E]/5 group"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#6D4A9E]/10 text-[#6D4A9E] border border-[#6D4A9E]/20">
+                      Macro Overview
+                    </span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono text-[#C9A84C] bg-[#C9A84C]/10 border border-[#C9A84C]/15">
+                      Start Here
+                    </span>
+                  </div>
+                  <h2 className="font-display text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-[#6D4A9E] transition-colors">
+                    Why Sri Lanka&apos;s Tamil-majority regions, why now, and why diaspora capital
+                  </h2>
+                  <p className="text-sm text-gray-500 leading-relaxed mb-4 max-w-3xl">{featuredInsight.summary}</p>
+                  <div className="flex items-center gap-2 text-xs text-[#6D4A9E] font-medium group-hover:gap-3 transition-all">
+                    Read the macro thesis <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </button>
+              </Reveal>
+            )}
+            {showFeatured && (
+              <div className="flex items-center gap-3 mb-4">
+                <h3 className="text-xs font-mono uppercase tracking-widest text-gray-400">Sector Deep Dives</h3>
+                <div className="flex-1 h-px bg-gray-200" />
+                <span className="text-xs text-gray-400 font-mono">{sectorInsights.length} sectors</span>
+              </div>
+            )}
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredInsights.map(insight => (
+                <StaggerItem key={insight.id}>
+                  <VentureInsightCard insight={insight} />
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+            {filteredInsights.length === 0 && (
+              <div className="text-center py-20"><p className="text-gray-400">No insights match your filters</p></div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Slide-out panel */}
@@ -453,7 +624,7 @@ function EmbeddedPortalPreview() {
         {selectedItem && (
           <SlidePanel
             item={selectedItem}
-            type={selectedItem._type || 'portfolio'}
+            type={activeTab === 'opportunities' ? 'emerging' : 'portfolio'}
             onClose={() => setSelectedItem(null)}
           />
         )}
@@ -478,7 +649,7 @@ export default function VenturesLanding() {
       <HowItWorks />
 
       {/* ── Embedded Portal (light theme) ─────────────────────── */}
-      <EmbeddedPortalPreview />
+      <InlinePortal />
 
       {/* ── Waitlist ──────────────────────────────────────────── */}
       <section id="waitlist" className="py-24 px-6 border-t border-gray-200 bg-white">
@@ -500,8 +671,8 @@ export default function VenturesLanding() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             <img
-              src="/images/Untitled design-6.png"
-              alt="Aram Ventures - True Potential"
+              src="/images/Aram_Ventures.png"
+              alt="Aram Ventures"
               className="h-8"
             />
             <span className="text-sm text-gray-500">Aram Ventures © 2026</span>
