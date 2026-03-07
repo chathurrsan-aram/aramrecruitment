@@ -73,7 +73,7 @@ export default function InitiativesPage() {
         <AnimatedSection className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-3">Want to Support an Initiative?</h2>
           <p className="text-gray-600 mb-6 leading-relaxed">
-            Whether you want to lead, volunteer, or contribute expertise — every initiative needs people. Join the team and help us scale what works.
+            Whether you want to lead, volunteer, or contribute expertise, every initiative needs people. Join the team and help us scale what works.
           </p>
           <a
             href="/join"

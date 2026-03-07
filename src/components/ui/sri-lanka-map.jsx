@@ -436,7 +436,7 @@ function DistrictTooltip({ code, geoData, districtHighlights }) {
           <>
             {project?.status === 'active' && (
               <p className="text-[#6D4A9E] text-xs mt-1 font-medium">
-                Active — {project.projects.length} {project.projects.length === 1 ? 'project' : 'projects'}
+                Active: {project.projects.length} {project.projects.length === 1 ? 'project' : 'projects'}
               </p>
             )}
             {project?.status === 'planned' && (

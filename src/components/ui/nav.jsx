@@ -22,6 +22,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const hasHero = ['/', '/research'].includes(pathname);
+  const isVenturesLanding = pathname === '/ventures';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -30,8 +31,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  /* Listen for data-immersive attribute set by the research page.
-     Uses MutationObserver so the navbar hides when the map is in view. */
+  /* Listen for data-immersive attribute set by the research page. */
   useEffect(() => {
     const html = document.documentElement;
     const check = () => setImmersive(html.getAttribute('data-immersive') === 'true');
@@ -40,6 +40,64 @@ export default function Navbar() {
     observer.observe(html, { attributes: true, attributeFilter: ['data-immersive'] });
     return () => observer.disconnect();
   }, []);
+
+  // Ventures landing: transparent navbar, transitions to dark on scroll
+  if (isVenturesLanding) {
+    const venturesSolid = scrolled;
+    const venturesBg = venturesSolid ? 'bg-[#0D0D14] backdrop-blur-md' : 'bg-transparent';
+
+    return (
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${venturesBg}`}>
+        <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
+          <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-3">
+            <img src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png" alt="Aram" className="h-[72px] transition-all duration-300 brightness-0 invert" />
+          </Link>
+
+          <nav className="hidden md:flex items-center gap-7">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors text-white hover:text-[#9B72CF] ${
+                  pathname === link.href ? 'text-[#9B72CF]' : ''
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="md:hidden p-2 text-white min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+
+        {mobileOpen && (
+          <div className="md:hidden border-t border-[#2A2A40] bg-[#0D0D14]">
+            <nav className="flex flex-col px-6 py-4 gap-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`text-sm font-medium py-3 border-b border-[#2A2A40] transition-colors ${
+                    pathname === link.href ? 'text-[#9B72CF]' : 'text-white hover:text-[#9B72CF]'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
+      </header>
+    );
+  }
 
   const solid = scrolled || !hasHero;
   const bg = solid ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent';

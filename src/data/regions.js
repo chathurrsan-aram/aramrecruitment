@@ -2,7 +2,7 @@ export const regions = [
   {
     id: "hill-country",
     name: "Hill Country",
-    description: "The upcountry tea estate regions — home to plantation communities facing healthcare, education, and economic challenges amidst Sri Lanka's central highlands.",
+    description: "The upcountry tea estate regions, home to plantation communities facing healthcare, education, and economic challenges amidst Sri Lanka's central highlands.",
     center: [80.68, 6.83],
     zoom: 8,
     gradient: "from-emerald-800 to-emerald-950",
@@ -29,7 +29,7 @@ export const regions = [
   {
     id: "northern",
     name: "Northern Province",
-    description: "The northern tip and inland regions — communities with immense potential, working to overcome decades of conflict through education and enterprise.",
+    description: "The northern tip and inland regions, communities with immense potential, working to overcome decades of conflict through education and enterprise.",
     center: [80.30, 9.20],
     zoom: 7,
     gradient: "from-amber-800 to-amber-950",
@@ -43,7 +43,7 @@ export const regions = [
   {
     id: "western",
     name: "Western Province",
-    description: "Sri Lanka's innovation hub — where diaspora connections meet local entrepreneurship and tech-driven social enterprise.",
+    description: "Sri Lanka's innovation hub, where diaspora connections meet local entrepreneurship and tech-driven social enterprise.",
     center: [79.90, 6.93],
     zoom: 9,
     gradient: "from-purple-800 to-purple-950",

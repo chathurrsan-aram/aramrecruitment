@@ -15,8 +15,8 @@ const roles = [
     priority: true,
     shortDesc: "Tell Aram's story to build trust, recruit volunteers, and change perceptions of Sri Lanka.",
     aboutRole: [
-      "As Media Director, you'll be the voice and face of Aram to the outside world. You'll craft narratives that inspire young Tamils to join our mission and show the broader community the real Sri Lanka — not the headlines, but the people, the potential, and the progress.",
-      "This is a strategic leadership role. You won't just be posting content — you'll be building a media function from the ground up, recruiting and mentoring a team, and developing campaigns that drive real action. You'll work closely with every part of the organisation to tell stories that matter.",
+      "As Media Director, you'll be the voice and face of Aram to the outside world. You'll craft narratives that inspire young Tamils to join our mission and show the broader community the real Sri Lanka: not the headlines, but the people, the potential, and the progress.",
+      "This is a strategic leadership role. You won't just be posting content. You'll be building a media function from the ground up, recruiting and mentoring a team, and developing campaigns that drive real action. You'll work closely with every part of the organisation to tell stories that matter.",
       "The ideal candidate combines creative vision with execution ability. You understand what makes content resonate on different platforms, and you can rally others to help produce it consistently."
     ],
     responsibilities: [
@@ -52,7 +52,7 @@ const roles = [
     priority: true,
     shortDesc: 'Keep Aram financially sustainable and transparent through proper budgeting, fundraising, and reporting.',
     aboutRole: [
-      "As Finance Director, you'll be the steward of Aram's resources. Every initiative we run — from healthcare camps to education programs — depends on sound financial management. You'll ensure we have the funds to operate, the systems to track spending, and the transparency to maintain trust with donors.",
+      "As Finance Director, you'll be the steward of Aram's resources. Every initiative we run, from healthcare camps to education programs, depends on sound financial management. You'll ensure we have the funds to operate, the systems to track spending, and the transparency to maintain trust with donors.",
       "This role goes beyond bookkeeping. You'll help shape our fundraising strategy, build relationships with donors, and create financial processes that can scale as we grow. You'll work with every team to understand their needs and ensure resources are allocated effectively.",
       "We're looking for someone who's comfortable with numbers but can also communicate financial concepts clearly to non-finance colleagues. Attention to detail and integrity are essential."
     ],
@@ -89,7 +89,7 @@ const roles = [
     priority: true,
     shortDesc: 'Deliver a safe, impactful annual trip and develop systems so future organisers can run it.',
     aboutRole: [
-      "As Trip Director, you'll lead the planning and execution of Aram's flagship annual trip to Sri Lanka. This is where everything comes together — 40+ volunteers travelling to deliver healthcare, education, and community development initiatives across multiple locations.",
+      "As Trip Director, you'll lead the planning and execution of Aram's flagship annual trip to Sri Lanka. This is where everything comes together: 40+ volunteers travelling to deliver healthcare, education, and community development initiatives across multiple locations.",
       "You'll coordinate with our Sri Lanka partners to design an itinerary that maximises impact while ensuring volunteer safety. You'll manage logistics from flights to accommodation, recruit and brief volunteers, and handle the inevitable curveballs that come with operating in a developing country.",
       "This role requires someone who thrives under pressure and can hold the big picture while managing countless details. You'll be building on three successful trips while also documenting processes so future Trip Directors can improve on your work."
     ],
@@ -127,7 +127,7 @@ const roles = [
     shortDesc: 'Own healthcare initiatives end-to-end, from health camps to nutrition programs to mental health awareness.',
     aboutRole: [
       "As Healthcare Sector Lead, you'll own Aram's entire healthcare portfolio. From organising health screening camps during the trip to developing year-round nutrition and mental health programs, you'll set the strategy and drive execution.",
-      "You'll work with healthcare professionals in our volunteer base and build relationships with partners in Sri Lanka. You'll identify the most pressing health needs in our target communities and design interventions that create lasting impact — not just one-off treatments.",
+      "You'll work with healthcare professionals in our volunteer base and build relationships with partners in Sri Lanka. You'll identify the most pressing health needs in our target communities and design interventions that create lasting impact, not just one-off treatments.",
       "This role suits someone with healthcare knowledge (professional or personal) who's passionate about making quality healthcare accessible. You don't need to be a doctor, but you need to understand the sector well enough to make smart decisions about where we can add value."
     ],
     responsibilities: [
@@ -164,7 +164,7 @@ const roles = [
     shortDesc: 'Own special educational needs initiatives, supporting children with disabilities and their families.',
     aboutRole: [
       "As SEN Sector Lead, you'll champion Aram's work supporting children with disabilities and their families. In Sri Lanka, children with special educational needs often face stigma and lack access to proper support. You'll help change that.",
-      "You'll partner with organisations like SPARKS and local disability centres to deliver meaningful programs — from sensory equipment donations to parent support workshops. You'll also develop our volunteers' understanding of SEN so they can engage appropriately during trips.",
+      "You'll partner with organisations like SPARKS and local disability centres to deliver meaningful programs, from sensory equipment donations to parent support workshops. You'll also develop our volunteers' understanding of SEN so they can engage appropriately during trips.",
       "This role requires deep empathy and sensitivity, combined with the practical skills to turn good intentions into effective programs. Experience with SEN isn't required, but genuine passion and willingness to learn is essential."
     ],
     responsibilities: [
@@ -202,7 +202,7 @@ const roles = [
     aboutRole: [
       "As Education Sector Lead, you'll shape how Aram supports learning and opportunity in Sri Lanka. Education is the foundation for long-term change, and you'll design programs that open doors for young people who might otherwise not see a path forward.",
       "You'll work with schools like Varany Central College and partners like Tea Leaf Trust to deliver career workshops, mentoring programs, and curriculum improvements. You might organise mock interviews, connect students with professionals in the diaspora, or help teachers access new teaching resources.",
-      "We're looking for someone who understands education — whether through teaching, tutoring, or other experience — and can design interventions that genuinely help rather than just look good on paper."
+      "We're looking for someone who understands education, whether through teaching, tutoring, or other experience, and can design interventions that genuinely help rather than just look good on paper."
     ],
     responsibilities: [
       'Set vision and targets for education impact in 2026',
@@ -239,7 +239,7 @@ const roles = [
     aboutRole: [
       "As Technology Sector Lead, you'll connect Sri Lankan communities to the opportunities of the digital age. Technology can be a great equaliser, and you'll design programs that give people the skills and tools to participate in the modern economy.",
       "You'll partner with organisations like Dreamspace to deliver digital literacy training, coding workshops, and IT infrastructure improvements. You might help a school get reliable internet, train teachers to use educational software, or run career sessions showing young people paths into tech.",
-      "This role suits someone with tech industry knowledge who wants to use it for good. You don't need to be a developer — understanding the landscape and what skills matter is more important than coding ability."
+      "This role suits someone with tech industry knowledge who wants to use it for good. You don't need to be a developer. Understanding the landscape and what skills matter is more important than coding ability."
     ],
     responsibilities: [
       'Set vision and targets for technology impact in 2026',
@@ -312,7 +312,7 @@ const roles = [
     shortDesc: 'Own economic initiatives from livelihoods to entrepreneurship to cooperative development.',
     aboutRole: [
       "As Economic Development Lead, you'll tackle the root cause of many challenges: poverty. You'll design programs that help families build sustainable incomes, whether through livelihood training, entrepreneurship support, or cooperative development.",
-      "You'll work with initiatives like the Kullu cooperatives to support self-sufficiency projects, help local entrepreneurs access markets, and connect communities with economic opportunities. Your focus is on sustainable change — teaching people to fish, not giving them fish.",
+      "You'll work with initiatives like the Kullu cooperatives to support self-sufficiency projects, help local entrepreneurs access markets, and connect communities with economic opportunities. Your focus is on sustainable change: teaching people to fish, not giving them fish.",
       "This role suits someone with business or economics knowledge who wants to apply it to community development. Understanding how small businesses work, what makes cooperatives succeed, and how to create real economic value is more important than formal qualifications."
     ],
     responsibilities: [
@@ -350,7 +350,7 @@ const roles = [
     aboutRole: [
       "As Research Lead, you'll ensure Aram's work is grounded in evidence and our learnings benefit others. You'll manage research projects that emerge from our trips, coordinate with academics and experts, and create publications that share what we've learned.",
       "You might analyse data from our health camps to identify trends, document case studies of successful initiatives, or collaborate with universities on research papers. Your work helps us make better decisions and contributes to the broader development sector's knowledge.",
-      "This role suits someone with research and analysis skills who enjoys turning insights into actionable knowledge. Academic experience is valuable but not essential — what matters is rigorous thinking and clear communication."
+      "This role suits someone with research and analysis skills who enjoys turning insights into actionable knowledge. Academic experience is valuable but not essential. What matters is rigorous thinking and clear communication."
     ],
     responsibilities: [
       'Manage research pieces from trip insights',
@@ -384,7 +384,7 @@ const roles = [
     priority: false,
     shortDesc: 'Own our social media presence day-to-day, growing our community and engagement.',
     aboutRole: [
-      "As Head of Socials, you'll be the day-to-day voice of Aram online. While the Media Director sets strategy, you'll execute — creating content, engaging with our community, and keeping our social presence active and growing.",
+      "As Head of Socials, you'll be the day-to-day voice of Aram online. While the Media Director sets strategy, you'll execute: creating content, engaging with our community, and keeping our social presence active and growing.",
       "You'll manage our Instagram and other platforms, track what's working through analytics, and constantly experiment to improve engagement. You'll respond to comments and messages, build relationships with our followers, and support larger campaigns when they launch.",
       "This role suits someone who lives on social media and understands what makes content perform. You should be comfortable creating content quickly and consistently, and enjoy the community-building side of social media, not just the posting."
     ],
@@ -421,7 +421,7 @@ const roles = [
     shortDesc: 'Plan and execute UK-based events that build community and raise funds.',
     aboutRole: [
       "As Events Lead, you'll create experiences that bring our community together and generate resources for our mission. From fundraising dinners to community meetups, you'll plan and execute events that strengthen Aram's presence in the UK.",
-      "You'll handle everything from venue selection to volunteer coordination, sponsorship outreach to on-the-day logistics. You'll build relationships with venues, vendors, and sponsors, and create events that people genuinely enjoy — not just tolerate because it's for a good cause.",
+      "You'll handle everything from venue selection to volunteer coordination, sponsorship outreach to on-the-day logistics. You'll build relationships with venues, vendors, and sponsors, and create events that people genuinely enjoy, not just tolerate because it's for a good cause.",
       "This role suits someone who loves event planning and has experience making things happen. You should be comfortable managing logistics, working with vendors, and rallying volunteers to help execute your vision."
     ],
     responsibilities: [
@@ -456,7 +456,7 @@ const faqs = [
   },
   {
     q: "I'm interested but not sure which role fits me.",
-    a: "Apply anyway and tell us about your skills — we'll help find the right fit during our conversation.",
+    a: "Apply anyway and tell us about your skills. We'll help find the right fit during our conversation.",
   },
   {
     q: 'What if my availability changes during the year?',
@@ -464,7 +464,7 @@ const faqs = [
   },
   {
     q: 'Is this paid?',
-    a: "No — Aram is entirely volunteer-run. What you get is experience, community, and the chance to create real impact.",
+    a: "No. Aram is entirely volunteer-run. What you get is experience, community, and the chance to create real impact.",
   },
   {
     q: 'When does the role start?',
@@ -651,7 +651,7 @@ const CultureMemoModal = ({ onClose }) => {
           </p>
 
           <p className="leading-relaxed font-medium">
-            — The Aram Team
+            - The Aram Team
           </p>
         </div>
       </div>
@@ -1529,7 +1529,7 @@ function RecruitmentPage() {
             <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-200">
               <span className="status-dot status-dot-urgent"><span className="circle"></span><span className="ringring"></span></span>
               <h3 className="text-xl font-bold text-gray-900">Priority Roles</h3>
-              <span className="text-sm text-gray-500 font-medium">— We're actively recruiting for these roles</span>
+              <span className="text-sm text-gray-500 font-medium">Actively recruiting for these roles</span>
             </div>
 
             {/* Sector Leads - Collapsible */}
@@ -1651,7 +1651,7 @@ function RecruitmentPage() {
           <AnimatedSection className="mt-12 text-center" delay={0.3}>
             <div className="bg-gradient-to-r from-aram-purple-100 to-priority-bg/50 rounded-2xl p-8">
               <h3 className="text-xl font-bold text-gray-900 mb-2">Not sure which role fits?</h3>
-              <p className="text-gray-600 mb-5 leading-relaxed">Apply anyway — we'll find the right fit together.</p>
+              <p className="text-gray-600 mb-5 leading-relaxed">Apply anyway. We'll find the right fit together.</p>
               <button onClick={() => { setSelectedRoleForForm(null); setShowForm(true); }} className="bg-aram-purple hover:bg-aram-purple-dark text-white font-bold py-3 px-8 rounded-full transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 min-h-[48px]">Start General Application</button>
             </div>
           </AnimatedSection>

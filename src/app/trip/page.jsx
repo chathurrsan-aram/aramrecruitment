@@ -27,7 +27,7 @@ function TripHero() {
         </Reveal>
         <Reveal delay={0.15}>
           <p className="text-lg text-aram-warm-500 leading-relaxed max-w-xl mx-auto">
-            The cornerstone of our mission — a yearly trip to Sri Lanka where our team connects directly with communities.
+            The cornerstone of our mission: a yearly trip to Sri Lanka where our team connects directly with communities.
           </p>
         </Reveal>
       </div>
@@ -148,7 +148,7 @@ function PastTrips() {
 
   const trips = {
     '2024': {
-      summary: 'Our largest trip yet — 30 volunteers deployed across three provinces, delivering healthcare camps, career guidance sessions, mentoring pilots, and technology workshops to 12+ communities.',
+      summary: 'Our largest trip yet: 30 volunteers deployed across three provinces, delivering healthcare camps, career guidance sessions, mentoring pilots, and technology workshops to 12+ communities.',
       stats: [
         { target: 30, suffix: '', label: 'Volunteers' },
         { target: 4, suffix: '', label: 'Provinces' },
@@ -157,7 +157,7 @@ function PastTrips() {
       reportUrl: 'https://aram.org.uk/wp-content/uploads/2024/12/aram-2024-trip-report-1.pdf',
     },
     '2023': {
-      summary: 'The inaugural Aram Trip — 20 volunteers partnered with Tamil Aid for two weeks of workshops, infrastructure projects, and community engagement across Sri Lanka.',
+      summary: 'The inaugural Aram Trip: 20 volunteers partnered with Tamil Aid for two weeks of workshops, infrastructure projects, and community engagement across Sri Lanka.',
       stats: [
         { target: 20, suffix: '', label: 'Volunteers' },
         { target: 2, suffix: '', label: 'Provinces' },
@@ -266,7 +266,7 @@ function Testimonials() {
       author: 'Volunteer, 2024',
     },
     {
-      text: "The connections we made weren't just for two weeks — they're lasting partnerships.",
+      text: "The connections we made weren't just for two weeks. They're lasting partnerships.",
       author: 'Volunteer, 2023',
     },
   ];
@@ -282,7 +282,7 @@ function Testimonials() {
                 <p className="font-display text-lg text-aram-green-900 leading-relaxed mb-4 italic">
                   &ldquo;{q.text}&rdquo;
                 </p>
-                <p className="font-mono text-xs text-aram-warm-400">— {q.author}</p>
+                <p className="font-mono text-xs text-aram-warm-400">- {q.author}</p>
               </div>
             </StaggerItem>
           ))}

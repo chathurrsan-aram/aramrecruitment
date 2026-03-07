@@ -59,7 +59,8 @@ export function PortfolioCard({ company, onClick }) {
   return (
     <button
       onClick={() => onClick(company)}
-      className="w-full text-left bg-white border border-gray-200 rounded-xl p-5 transition-all duration-200 hover:border-[#6D4A9E] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#6D4A9E]/5 group"
+      className="w-full text-left bg-white border border-[#2A2A40]/20 rounded-xl p-5 transition-all duration-200 hover:border-[#6D4A9E] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#6D4A9E]/10 group"
+      style={{ transition: 'border-color 0.2s, box-shadow 0.2s, transform 0.2s' }}
     >
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <SectorPill sectorId={company.sector} />

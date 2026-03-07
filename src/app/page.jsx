@@ -193,7 +193,7 @@ function ThreePillarModel() {
   const pillars = [
     { icon: '🔍', title: 'Discovery', color: '#40916C', label: 'PILLAR 01', desc: 'Annual volunteering trips to Sri Lanka. On-the-ground observations, community engagement, and needs assessment.', link: '/trip', cta: 'Read our trip reports' },
     { icon: '🔬', title: 'Research', color: '#6D4A9E', label: 'PILLAR 02', desc: 'Translating field observations into actionable insights, thought pieces, and data-driven recommendations.', link: '/research', cta: 'Explore our insights' },
-    { icon: '🚀', title: 'Initiatives', color: '#C85C5C', label: 'PILLAR 03', desc: 'Long-term projects addressing systemic challenges — mentoring, microcredit, and sustainable partnerships.', link: '/initiatives', cta: 'See our active projects' },
+    { icon: '🚀', title: 'Initiatives', color: '#C85C5C', label: 'PILLAR 03', desc: 'Long-term projects addressing systemic challenges: mentoring, microcredit, and sustainable partnerships.', link: '/initiatives', cta: 'See our active projects' },
   ];
 
   return (

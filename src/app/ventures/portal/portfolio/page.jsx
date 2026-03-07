@@ -7,7 +7,7 @@ import { ViewToggle } from '@/components/ventures/portal-shell';
 import { PortfolioCard } from '@/components/ventures/venture-card';
 import SlidePanel from '@/components/ventures/slide-panel';
 import { portfolioCompanies, ventureSectors, ventureRegions, getVenturesByDistrict, investorPositions } from '@/data/venturesData';
-import { Search, Filter, TrendingUp, DollarSign, PieChart } from 'lucide-react';
+import { Search, Filter, TrendingUp, DollarSign, PieChart, Briefcase, Star } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
@@ -28,7 +28,7 @@ for (const company of portfolioCompanies) {
   const sector = ventureSectors.find(s => s.id === company.sector);
   portfolioHighlights[company.districtCode] = {
     color: sector?.color || '#6D4A9E',
-    label: `Portfolio — ${company.name}`,
+    label: `Portfolio: ${company.name}`,
   };
 }
 
@@ -79,6 +79,8 @@ export default function PortfolioTab() {
     portfolioCompanies.some(c => c.sector === s.id)
   );
 
+  const truePotentialCount = portfolioCompanies.filter(c => c.truePotential).length;
+
   return (
     <div className="flex flex-col h-[calc(100vh-110px)]">
       {/* Filter bar */}
@@ -117,42 +119,29 @@ export default function PortfolioTab() {
         </div>
       </div>
 
-      {/* Portfolio Position Summary */}
+      {/* Portfolio Summary Bar */}
       <div className="px-4 md:px-6 py-4 bg-white border-b border-gray-200">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+        <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
+          <div className="bg-[#0D0D14] rounded-xl p-4 border border-[#2A2A40]">
             <div className="flex items-center gap-2 mb-1">
-              <DollarSign className="w-4 h-4 text-[#6D4A9E]" />
-              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Total Invested</p>
+              <Briefcase className="w-4 h-4 text-[#9B72CF]" />
+              <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">Active Ventures</p>
             </div>
-            <p className="text-xl font-bold text-gray-900">
-              £{Object.values(investorPositions).reduce((sum, p) => sum + p.invested, 0).toLocaleString()}
-            </p>
+            <p className="text-xl font-bold text-white">{portfolioCompanies.length}</p>
           </div>
-          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+          <div className="bg-[#0D0D14] rounded-xl p-4 border border-[#2A2A40]">
             <div className="flex items-center gap-2 mb-1">
-              <TrendingUp className="w-4 h-4 text-emerald-600" />
-              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Current Value</p>
+              <DollarSign className="w-4 h-4 text-[#9B72CF]" />
+              <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">Total Seeking</p>
             </div>
-            <p className="text-xl font-bold text-gray-900">
-              £{Object.values(investorPositions).reduce((sum, p) => sum + p.positionValue, 0).toLocaleString()}
-            </p>
+            <p className="text-xl font-bold text-white">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
           </div>
-          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+          <div className="bg-[#0D0D14] rounded-xl p-4 border border-[#2A2A40]">
             <div className="flex items-center gap-2 mb-1">
-              <PieChart className="w-4 h-4 text-[#C9A84C]" />
-              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Active Positions</p>
+              <Star className="w-4 h-4 text-[#C9A84C]" />
+              <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">True Potential Backed</p>
             </div>
-            <p className="text-xl font-bold text-gray-900">{Object.keys(investorPositions).length}</p>
-          </div>
-          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-            <div className="flex items-center gap-2 mb-1">
-              <TrendingUp className="w-4 h-4 text-[#6D4A9E]" />
-              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Avg. Multiple</p>
-            </div>
-            <p className="text-xl font-bold text-gray-900">
-              {(Object.values(investorPositions).reduce((sum, p) => sum + p.returnMultiple, 0) / Object.keys(investorPositions).length).toFixed(2)}x
-            </p>
+            <p className="text-xl font-bold text-white">{truePotentialCount}</p>
           </div>
         </div>
       </div>

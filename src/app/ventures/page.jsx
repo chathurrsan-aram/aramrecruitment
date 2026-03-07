@@ -2,11 +2,28 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter } from '@/components/ui/motion';
-import { ArrowRight, Briefcase, TrendingUp, BookOpen, ChevronDown, X } from 'lucide-react';
+import { ArrowRight, Briefcase, TrendingUp, BookOpen, ChevronDown, X, Search, Filter, DollarSign, PieChart, Map, LayoutGrid } from 'lucide-react';
 import { useFounderModal } from '@/components/ventures/founder-modal';
 import { videos } from '@/lib/cloudinary';
+import { portfolioCompanies, emergingVentures, ventureInsights, ventureSectors, investorPositions, getVenturesByDistrict } from '@/data/venturesData';
+import { PortfolioCard, EmergingCard, VentureInsightCard } from '@/components/ventures/venture-card';
+import SlidePanel from '@/components/ventures/slide-panel';
+import dynamic from 'next/dynamic';
+
+const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[500px] flex items-center justify-center bg-[#13131F]">
+      <div className="text-center">
+        <div className="w-8 h-8 border-2 border-[#2A2A40] border-t-[#6D4A9E] rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-[#7A7A9A] text-sm">Loading map...</p>
+      </div>
+    </div>
+  ),
+});
 
 /* ─── Venture Opportunity Popout ─────────────────────────────────────────── */
 function OpportunityPopout({ isOpen, onClose }) {
@@ -44,7 +61,7 @@ function OpportunityPopout({ isOpen, onClose }) {
                 Sri Lanka&apos;s diaspora capital moment
               </h2>
               <p className="text-[#A0A0B8] leading-relaxed mb-8">
-                The UK Sri Lankan Tamil diaspora represents one of the most economically engaged diasporas in Europe — yet capital flows remain almost entirely informal. Aram Ventures is building the infrastructure to channel diaspora investment into vetted, high-potential ventures across Tamil Sri Lanka.
+                The UK Sri Lankan Tamil diaspora represents one of the most economically engaged diasporas in Europe, yet capital flows remain almost entirely informal. Aram Ventures is building the infrastructure to channel diaspora investment into vetted, high-potential ventures across Tamil Sri Lanka.
               </p>
 
               {/* Stats */}
@@ -66,9 +83,9 @@ function OpportunityPopout({ isOpen, onClose }) {
               <h3 className="font-display text-lg font-semibold text-white mb-4">Why now?</h3>
               <ul className="space-y-3 mb-8">
                 {[
-                  'Post-war land resettlement complete — agricultural and commercial recovery underway',
+                  'Post-war land resettlement complete: agricultural and commercial recovery underway',
                   'IMF recovery programme prioritising SME development and foreign investment',
-                  'Diaspora trust in formal investment channels at historic low — creating space for community-backed platforms',
+                  'Diaspora trust in formal investment channels at historic low, creating space for community-backed platforms',
                   'First generation of diaspora-founded ventures reaching investable stage',
                 ].map((point, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm text-[#A0A0B8]">
@@ -82,9 +99,9 @@ function OpportunityPopout({ isOpen, onClose }) {
               <h3 className="font-display text-lg font-semibold text-white mb-4">What&apos;s inside the platform</h3>
               <div className="space-y-3 mb-6">
                 {[
-                  { icon: Briefcase, title: 'Your Portfolio', desc: 'Track active ventures — financials, thesis, growth plans, founder profiles.' },
-                  { icon: TrendingUp, title: 'Opportunities', desc: 'Pre-investment pipeline mapped across Sri Lanka — sector by sector, district by district.' },
-                  { icon: BookOpen, title: 'Insights', desc: "Aram's proprietary research layer — district-level intelligence for informed capital." },
+                  { icon: Briefcase, title: 'Your Portfolio', desc: 'Track active ventures: financials, thesis, growth plans, founder profiles.' },
+                  { icon: TrendingUp, title: 'Opportunities', desc: 'Pre-investment pipeline mapped across Sri Lanka, sector by sector, district by district.' },
+                  { icon: BookOpen, title: 'Insights', desc: "Aram's proprietary research layer: district-level intelligence for informed capital." },
                 ].map(item => (
                   <div key={item.title} className="flex items-start gap-3 p-4 rounded-xl bg-[#13131F] border border-[#2A2A40]">
                     <div className="w-10 h-10 rounded-lg bg-[#6D4A9E]/15 flex items-center justify-center flex-shrink-0">
@@ -123,6 +140,11 @@ function VenturesHero({ onOpenOpportunity }) {
   const { open: openFounderModal } = useFounderModal();
 
   useEffect(() => { requestAnimationFrame(() => setLoaded(true)); }, []);
+
+  const scrollToDemo = (e) => {
+    e.preventDefault();
+    document.getElementById('platform-preview')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -169,6 +191,7 @@ function VenturesHero({ onOpenOpportunity }) {
             src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
             alt="Aram Ventures"
             className="h-20 md:h-28"
+            style={{ mixBlendMode: 'lighten' }}
           />
         </motion.div>
         <motion.h1
@@ -186,32 +209,34 @@ function VenturesHero({ onOpenOpportunity }) {
           animate={loaded ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          Connecting UK diaspora capital with vetted, high-potential ventures across Tamil Sri Lanka — backed by four years of on-the-ground research.
+          Connecting UK diaspora capital with vetted, high-potential ventures across Tamil Sri Lanka, backed by four years of on-the-ground research.
         </motion.p>
         <motion.div
-          className="flex flex-col sm:flex-row gap-3 justify-center"
+          className="flex flex-col items-center"
           initial={{ opacity: 0, y: 20 }}
           animate={loaded ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
+          <div className="flex flex-row gap-3 justify-center">
+            <button
+              onClick={onOpenOpportunity}
+              className="inline-flex items-center justify-center px-8 py-3.5 bg-[#6D4A9E] text-white rounded-xl font-semibold hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(109,74,158,0.3)] transition-all min-h-[48px]"
+            >
+              Explore the Platform
+            </button>
+            <button
+              onClick={openFounderModal}
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-[#C9A84C] text-[#C9A84C] rounded-xl font-semibold hover:bg-[#C9A84C]/10 hover:-translate-y-0.5 transition-all min-h-[48px] bg-transparent"
+            >
+              + True Potential
+            </button>
+          </div>
           <button
-            onClick={onOpenOpportunity}
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#6D4A9E] text-white rounded-xl font-semibold hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(109,74,158,0.3)] transition-all min-h-[48px]"
+            onClick={scrollToDemo}
+            className="mt-6 text-white/50 hover:text-white/80 transition-colors text-sm font-medium inline-flex items-center gap-1.5 cursor-pointer bg-transparent border-none"
           >
-            The Venture Opportunity <ArrowRight className="w-4 h-4" />
+            Explore the demo <ChevronDown className="w-4 h-4" />
           </button>
-          <button
-            onClick={openFounderModal}
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 border border-[#C9A84C]/40 text-[#C9A84C] rounded-xl font-semibold hover:bg-[#C9A84C]/10 hover:-translate-y-0.5 transition-all min-h-[48px]"
-          >
-            ✦ True Potential
-          </button>
-          <a
-            href="#demo"
-            className="border border-white/20 text-white px-8 py-3.5 rounded-xl hover:border-white/40 hover:bg-white/5 transition-all min-h-[48px] flex items-center justify-center gap-2"
-          >
-            Explore the Demo <ChevronDown className="w-4 h-4" />
-          </a>
         </motion.div>
       </motion.div>
 
@@ -222,6 +247,210 @@ function VenturesHero({ onOpenOpportunity }) {
           <div className="w-1.5 h-1.5 rounded-full bg-[#6D4A9E] absolute left-1/2 -translate-x-1/2 animate-bounce-dot" />
         </div>
       </div>
+    </section>
+  );
+}
+
+/* ─── Embedded Portal Preview ────────────────────────────────────────────── */
+function EmbeddedPortalPreview() {
+  const [activeTab, setActiveTab] = useState('portfolio');
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isCards, setIsCards] = useState(true);
+
+  const tabs = [
+    { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
+    { id: 'opportunities', label: 'Opportunities', icon: TrendingUp },
+    { id: 'insights', label: 'Insights', icon: BookOpen },
+  ];
+
+  const filteredPortfolio = portfolioCompanies.filter(c => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return c.name.toLowerCase().includes(q) || c.tagline.toLowerCase().includes(q);
+  });
+
+  const filteredEmerging = emergingVentures.filter(v => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return v.name.toLowerCase().includes(q) || v.tagline.toLowerCase().includes(q);
+  });
+
+  const filteredInsights = ventureInsights.filter(i => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q);
+  });
+
+  return (
+    <section id="platform-preview" className="bg-[#0D0D14] py-16 px-4 md:px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Section label */}
+        <p className="font-mono text-xs tracking-[0.25em] text-[#7A7A9A] uppercase text-center mb-8">
+          Platform Preview
+        </p>
+
+        {/* Dark card container */}
+        <div className="bg-[#13131F] border border-[#2A2A40] rounded-2xl overflow-hidden">
+          {/* Portal header */}
+          <div className="px-4 md:px-6 py-4 border-b border-[#2A2A40] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img
+                src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
+                alt="Aram Ventures"
+                className="h-8"
+                style={{ mixBlendMode: 'lighten' }}
+              />
+              <span className="px-2.5 py-1 rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C] text-[10px] font-mono tracking-wider uppercase">
+                Demo
+              </span>
+            </div>
+          </div>
+
+          {/* Tab toggles */}
+          <div className="px-4 md:px-6 py-3 border-b border-[#2A2A40]">
+            <div className="flex bg-[#1A1A2E] rounded-xl p-1 max-w-md mx-auto">
+              {tabs.map(tab => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => { setActiveTab(tab.id); setSearchQuery(''); setSelectedItem(null); }}
+                    className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex-1 ${
+                      isActive
+                        ? tab.id === 'portfolio'
+                          ? 'bg-[#6D4A9E] text-white'
+                          : 'bg-[#6D4A9E]/20 text-[#9B72CF]'
+                        : 'text-[#7A7A9A] hover:text-white'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Tab content */}
+          <div className="p-4 md:p-6">
+            {/* Search */}
+            <div className="relative max-w-sm mb-6">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A7A9A]" />
+              <input
+                type="text"
+                placeholder={`Search ${activeTab}...`}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#1A1A2E] border border-[#2A2A40] text-sm text-white placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E] transition-colors"
+              />
+            </div>
+
+            {/* Portfolio tab */}
+            {activeTab === 'portfolio' && (
+              <div>
+                {/* Summary bar */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="bg-[#1A1A2E] border border-[#2A2A40] rounded-xl p-4">
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A] mb-1">Active Ventures</p>
+                    <p className="text-xl font-bold text-white">{portfolioCompanies.length}</p>
+                  </div>
+                  <div className="bg-[#1A1A2E] border border-[#2A2A40] rounded-xl p-4">
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A] mb-1">Total Seeking</p>
+                    <p className="text-xl font-bold text-white">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
+                  </div>
+                  <div className="bg-[#1A1A2E] border border-[#2A2A40] rounded-xl p-4">
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A] mb-1">True Potential Backed</p>
+                    <p className="text-xl font-bold text-white">{portfolioCompanies.filter(c => c.truePotential).length}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredPortfolio.map(company => (
+                    <div key={company.id} className="bg-[#1A1A2E] border border-[#2A2A40] rounded-xl p-5 hover:border-[#6D4A9E] hover:shadow-[0_0_12px_rgba(109,74,158,0.15)] transition-all duration-200 cursor-pointer" onClick={() => setSelectedItem({ ...company, _type: 'portfolio' })}>
+                      <div className="flex items-center gap-2 mb-3 flex-wrap">
+                        {company.truePotential && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C] text-[11px] font-medium">
+                            ✦ True Potential
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-display text-lg font-semibold text-white mb-1">{company.name}</h3>
+                      <p className="text-sm text-[#7A7A9A] mb-3 line-clamp-2">{company.tagline}</p>
+                      <div className="flex items-center gap-3 text-xs text-[#7A7A9A]">
+                        <span className="font-mono">{company.region}</span>
+                        <span className="text-[#2A2A40]">·</span>
+                        <span className="font-mono text-[#9B72CF]">Seeking £{(company.seeking / 1000).toFixed(0)}k</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Opportunities tab */}
+            {activeTab === 'opportunities' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredEmerging.map(venture => (
+                  <div key={venture.id} className="bg-[#1A1A2E] border border-dashed border-[#2A2A40] rounded-xl p-5 hover:border-[#C9A84C]/50 transition-all duration-200 cursor-pointer" onClick={() => setSelectedItem({ ...venture, _type: 'emerging' })}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C]">
+                        Opportunity
+                      </span>
+                    </div>
+                    <h3 className="font-display text-lg font-semibold text-white mb-1">{venture.name}</h3>
+                    <p className="text-sm text-[#7A7A9A] mb-3 line-clamp-2">{venture.tagline}</p>
+                    <div className="flex items-center gap-3 text-xs text-[#7A7A9A]">
+                      <span className="font-mono">{venture.region}</span>
+                      <span className="text-[#2A2A40]">·</span>
+                      <span className="font-mono text-[#C9A84C]">Est. {venture.estimateRange}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Insights tab */}
+            {activeTab === 'insights' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredInsights.map(insight => (
+                  <div key={insight.id} className="bg-[#1A1A2E] border border-[#2A2A40] rounded-xl p-5 hover:border-[#6D4A9E] transition-all duration-200">
+                    <h3 className="font-display text-base font-semibold text-white mb-2 leading-snug">{insight.title}</h3>
+                    <p className="text-sm text-[#7A7A9A] leading-relaxed mb-3 line-clamp-2">{insight.summary}</p>
+                    <div className="flex items-center gap-3 text-xs text-[#7A7A9A]">
+                      <span className="font-mono">{insight.region}</span>
+                      <span className="text-[#2A2A40]">·</span>
+                      <span>{insight.readTime} min read</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Open full portal link */}
+          <div className="px-4 md:px-6 py-4 border-t border-[#2A2A40] text-center">
+            <Link
+              href="/ventures/portal/portfolio"
+              className="inline-flex items-center gap-2 text-sm text-[#9B72CF] hover:text-white transition-colors font-medium"
+            >
+              Open full portal <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Slide-out panel */}
+      <AnimatePresence>
+        {selectedItem && (
+          <SlidePanel
+            item={selectedItem}
+            type={selectedItem._type || 'portfolio'}
+            onClose={() => setSelectedItem(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
@@ -238,84 +467,8 @@ export default function VenturesLanding() {
       {/* ── Venture Opportunity Popout ──────────────────────────── */}
       <OpportunityPopout isOpen={showOpportunity} onClose={() => setShowOpportunity(false)} />
 
-      {/* ── Demo Section (inline scroll-down) ──────────────────── */}
-      <section id="demo" className="bg-[#FAFAFA] text-gray-900">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-6">
-          {/* Demo header */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <img
-                src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
-                alt="Aram Ventures"
-                className="h-8"
-              />
-              <span className="px-2.5 py-1 rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C] text-[10px] font-mono tracking-wider uppercase">
-                Demo
-              </span>
-            </div>
-            <div className="flex gap-2">
-              <Link
-                href="/ventures/portal/portfolio"
-                className="px-4 py-2 rounded-lg bg-[#6D4A9E] text-white text-sm font-medium hover:bg-[#5A3D82] transition-colors flex items-center gap-1.5"
-              >
-                <Briefcase className="w-3.5 h-3.5" /> Portfolio
-              </Link>
-              <Link
-                href="/ventures/portal/emerging"
-                className="px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 text-sm font-medium hover:border-[#6D4A9E] transition-colors flex items-center gap-1.5"
-              >
-                <TrendingUp className="w-3.5 h-3.5" /> Opportunities
-              </Link>
-              <Link
-                href="/ventures/portal/insights"
-                className="px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 text-sm font-medium hover:border-[#6D4A9E] transition-colors flex items-center gap-1.5"
-              >
-                <BookOpen className="w-3.5 h-3.5" /> Insights
-              </Link>
-            </div>
-          </div>
-
-          {/* Preview cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Link href="/ventures/portal/portfolio" className="group block">
-              <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:border-[#6D4A9E] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 h-full">
-                <div className="w-12 h-12 rounded-xl bg-[#6D4A9E]/10 flex items-center justify-center mb-5">
-                  <Briefcase className="w-6 h-6 text-[#6D4A9E]" />
-                </div>
-                <h3 className="font-display text-lg font-semibold mb-2 group-hover:text-[#6D4A9E] transition-colors">Your Portfolio</h3>
-                <p className="text-gray-500 text-sm leading-relaxed mb-4">Track active ventures backed by True Potential — financials, thesis, growth plans.</p>
-                <span className="text-[#6D4A9E] text-sm font-medium inline-flex items-center gap-1">
-                  View portfolio <ArrowRight className="w-3.5 h-3.5" />
-                </span>
-              </div>
-            </Link>
-            <Link href="/ventures/portal/emerging" className="group block">
-              <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:border-[#C9A84C] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 h-full">
-                <div className="w-12 h-12 rounded-xl bg-[#C9A84C]/10 flex items-center justify-center mb-5">
-                  <TrendingUp className="w-6 h-6 text-[#C9A84C]" />
-                </div>
-                <h3 className="font-display text-lg font-semibold mb-2 group-hover:text-[#C9A84C] transition-colors">Opportunities</h3>
-                <p className="text-gray-500 text-sm leading-relaxed mb-4">Explore the Sri Lanka opportunity map — pre-investment pipeline across sectors.</p>
-                <span className="text-[#C9A84C] text-sm font-medium inline-flex items-center gap-1">
-                  View opportunities <ArrowRight className="w-3.5 h-3.5" />
-                </span>
-              </div>
-            </Link>
-            <Link href="/ventures/portal/insights" className="group block">
-              <div className="bg-white border border-gray-200 rounded-2xl p-6 hover:border-[#6D4A9E] hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 h-full">
-                <div className="w-12 h-12 rounded-xl bg-[#6D4A9E]/10 flex items-center justify-center mb-5">
-                  <BookOpen className="w-6 h-6 text-[#6D4A9E]" />
-                </div>
-                <h3 className="font-display text-lg font-semibold mb-2 group-hover:text-[#6D4A9E] transition-colors">Insights</h3>
-                <p className="text-gray-500 text-sm leading-relaxed mb-4">Aram&apos;s proprietary research layer — district-level intelligence for informed capital.</p>
-                <span className="text-[#6D4A9E] text-sm font-medium inline-flex items-center gap-1">
-                  View insights <ArrowRight className="w-3.5 h-3.5" />
-                </span>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* ── Embedded Portal Preview ──────────────────────────────── */}
+      <EmbeddedPortalPreview />
 
       {/* ── Waitlist ──────────────────────────────────────────── */}
       <section id="waitlist" className="py-24 px-6 border-t border-[#2A2A40]/50">
@@ -340,6 +493,7 @@ export default function VenturesLanding() {
               src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
               alt="Aram Ventures"
               className="h-8"
+              style={{ mixBlendMode: 'lighten' }}
             />
             <span className="text-sm text-[#7A7A9A]">Aram Ventures © 2026</span>
           </div>
@@ -383,7 +537,7 @@ function WaitlistForm() {
         <h3 className="text-xl font-semibold text-white mb-2">We&apos;ll be in touch shortly</h3>
         <p className="text-[#7A7A9A] mb-6">In the meantime, explore what&apos;s inside.</p>
         <a
-          href="#demo"
+          href="#platform-preview"
           className="inline-flex items-center gap-2 px-6 py-3 bg-[#6D4A9E] text-white rounded-xl font-medium hover:bg-[#5A3D82] transition-colors"
         >
           Explore the Demo <ArrowRight className="w-4 h-4" />
