@@ -1,6 +1,5 @@
 import './globals.css';
-import Navbar from '@/components/ui/nav';
-import Footer from '@/components/ui/footer';
+import LayoutShell from '@/components/ui/layout-shell';
 
 export const metadata = {
   title: {
@@ -29,9 +28,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="bg-aram-warm-50 text-aram-warm-500 antialiased">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );
