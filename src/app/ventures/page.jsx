@@ -188,10 +188,10 @@ function VenturesHero({ onOpenOpportunity }) {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <img
-            src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
-            alt="Aram Ventures"
+            src="/images/Untitled design-6.png"
+            alt="Aram Ventures - True Potential"
             className="h-20 md:h-28"
-            style={{ mixBlendMode: 'lighten' }}
+            style={{ filter: 'brightness(0) invert(1)' }}
           />
         </motion.div>
         <motion.h1
@@ -277,10 +277,11 @@ function LightVenturePortal() {
       <div className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#6D4A9E] flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
-            </div>
-            <span className="font-display font-semibold text-gray-900 text-sm md:text-base">Aram Ventures</span>
+            <img
+              src="/images/Untitled design-6.png"
+              alt="Aram Ventures - True Potential"
+              className="h-8"
+            />
             <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-[#6D4A9E]/10 text-[#6D4A9E] text-[10px] font-mono tracking-wider uppercase font-medium">
               Portal
             </span>
@@ -538,7 +539,7 @@ export default function VenturesLanding() {
   const [showOpportunity, setShowOpportunity] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0D0D14] text-white overflow-hidden">
+    <div className="min-h-screen bg-white text-gray-900 overflow-hidden">
       {/* ── Hero with Video ─────────────────────────────────────── */}
       <VenturesHero onOpenOpportunity={() => setShowOpportunity(true)} />
 
@@ -549,11 +550,11 @@ export default function VenturesLanding() {
       <LightVenturePortal />
 
       {/* ── Waitlist ──────────────────────────────────────────── */}
-      <section id="waitlist" className="py-24 px-6 border-t border-[#2A2A40]/50">
+      <section id="waitlist" className="py-24 px-6 border-t border-gray-200 bg-white">
         <div className="max-w-3xl mx-auto text-center">
           <Reveal>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Join the Investor Waitlist</h2>
-            <p className="text-[#7A7A9A] mb-10">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 text-gray-900">Join the Investor Waitlist</h2>
+            <p className="text-gray-500 mb-10">
               ventures.aram.org.uk is currently in private beta. Request access below.
             </p>
           </Reveal>
@@ -564,18 +565,17 @@ export default function VenturesLanding() {
       </section>
 
       {/* ── Footer ───────────────────────────────────────────────── */}
-      <footer className="border-t border-[#2A2A40]/50 py-8 px-6">
+      <footer className="border-t border-gray-200 py-8 px-6 bg-white">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             <img
-              src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
-              alt="Aram Ventures"
+              src="/images/Untitled design-6.png"
+              alt="Aram Ventures - True Potential"
               className="h-8"
-              style={{ mixBlendMode: 'lighten' }}
             />
-            <span className="text-sm text-[#7A7A9A]">Aram Ventures © 2026</span>
+            <span className="text-sm text-gray-500">Aram Ventures © 2026</span>
           </div>
-          <Link href="/" className="text-sm text-[#7A7A9A] hover:text-white transition-colors">
+          <Link href="/" className="text-sm text-gray-500 hover:text-[#6D4A9E] transition-colors">
             ← Back to aram.org.uk
           </Link>
         </div>
@@ -609,11 +609,11 @@ function WaitlistForm() {
   if (submitted) {
     return (
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-12">
-        <div className="w-16 h-16 rounded-full bg-[#6D4A9E]/20 flex items-center justify-center mx-auto mb-4">
-          <span className="text-2xl">✓</span>
+        <div className="w-16 h-16 rounded-full bg-[#6D4A9E]/10 flex items-center justify-center mx-auto mb-4">
+          <span className="text-2xl text-[#6D4A9E]">✓</span>
         </div>
-        <h3 className="text-xl font-semibold text-white mb-2">We&apos;ll be in touch shortly</h3>
-        <p className="text-[#7A7A9A] mb-6">In the meantime, explore what&apos;s inside.</p>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">We&apos;ll be in touch shortly</h3>
+        <p className="text-gray-500 mb-6">In the meantime, explore what&apos;s inside.</p>
         <a
           href="#platform-preview"
           className="inline-flex items-center gap-2 px-6 py-3 bg-[#6D4A9E] text-white rounded-xl font-medium hover:bg-[#5A3D82] transition-colors"
@@ -632,7 +632,7 @@ function WaitlistForm() {
         required
         value={form.name}
         onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-        className="w-full px-4 py-3 rounded-xl bg-[#1A1A2E] border border-[#2A2A40] text-white placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E] transition-colors"
+        className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] focus:ring-1 focus:ring-[#6D4A9E]/20 transition-colors"
       />
       <input
         type="email"
@@ -640,14 +640,14 @@ function WaitlistForm() {
         required
         value={form.email}
         onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-        className="w-full px-4 py-3 rounded-xl bg-[#1A1A2E] border border-[#2A2A40] text-white placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E] transition-colors"
+        className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] focus:ring-1 focus:ring-[#6D4A9E]/20 transition-colors"
       />
       <div className="relative">
         <select
           required
           value={form.investorType}
           onChange={e => setForm(f => ({ ...f, investorType: e.target.value }))}
-          className="w-full px-4 py-3 rounded-xl bg-[#1A1A2E] border border-[#2A2A40] text-white focus:outline-none focus:border-[#6D4A9E] transition-colors appearance-none"
+          className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:border-[#6D4A9E] focus:ring-1 focus:ring-[#6D4A9E]/20 transition-colors appearance-none"
         >
           <option value="" disabled>Investor Type</option>
           <option>Angel Investor</option>
@@ -656,10 +656,10 @@ function WaitlistForm() {
           <option>Family Office</option>
           <option>Other</option>
         </select>
-        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A7A9A] pointer-events-none" />
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
       </div>
       <div>
-        <p className="text-sm text-[#7A7A9A] mb-2">Primary Interest</p>
+        <p className="text-sm text-gray-500 mb-2">Primary Interest</p>
         <div className="flex flex-wrap gap-2">
           {interestOptions.map(opt => (
             <button
@@ -668,8 +668,8 @@ function WaitlistForm() {
               onClick={() => toggleInterest(opt)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                 form.interests.includes(opt)
-                  ? 'bg-[#6D4A9E]/20 border-[#6D4A9E] text-[#9B72CF]'
-                  : 'bg-transparent border-[#2A2A40] text-[#7A7A9A] hover:border-[#6D4A9E]/50'
+                  ? 'bg-[#6D4A9E]/10 border-[#6D4A9E] text-[#6D4A9E]'
+                  : 'bg-transparent border-gray-200 text-gray-500 hover:border-[#6D4A9E]/50'
               }`}
             >
               {opt}
