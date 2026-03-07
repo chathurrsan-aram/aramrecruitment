@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { ventureSectors } from '@/data/venturesData';
 import { useFounderModal } from './founder-modal';
 
@@ -107,18 +108,37 @@ export function EmergingCard({ venture, onClick }) {
 
 /* ─── Insight Card (light theme) ────────────────────────────────────── */
 export function VentureInsightCard({ insight, onClick }) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (insight.insightPageSlug) {
+      router.push(`/ventures/portal/insights/${insight.insightPageSlug}`);
+    } else if (onClick) {
+      onClick(insight);
+    }
+  };
+
   return (
     <button
-      onClick={() => onClick?.(insight)}
-      className="w-full text-left bg-white border border-gray-200 rounded-xl p-5 transition-all duration-200 hover:border-[#6D4A9E] hover:-translate-y-0.5 hover:shadow-lg group"
+      onClick={handleClick}
+      className={`w-full text-left bg-white border rounded-xl p-5 transition-all duration-200 hover:border-[#6D4A9E] hover:-translate-y-0.5 hover:shadow-lg group ${
+        insight.featured
+          ? 'border-[#6D4A9E]/30 ring-1 ring-[#6D4A9E]/5'
+          : 'border-gray-200'
+      }`}
     >
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         {insight.sectors.map(s => <SectorPill key={s} sectorId={s} />)}
+        {insight.insightPageSlug && (
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono text-[#6D4A9E] bg-[#6D4A9E]/5 border border-[#6D4A9E]/15">
+            Full Report
+          </span>
+        )}
       </div>
       <h3 className="font-display text-base font-semibold text-gray-900 mb-2 leading-snug group-hover:text-[#6D4A9E] transition-colors">
         {insight.title}
       </h3>
-      <p className="text-sm text-gray-500 leading-relaxed mb-3 line-clamp-2">{insight.summary}</p>
+      <p className="text-sm text-gray-500 leading-relaxed mb-3 line-clamp-3">{insight.summary}</p>
       <div className="flex items-center gap-3 text-xs text-gray-400">
         <span className="font-mono">{insight.region}</span>
         <span className="text-gray-200">·</span>
