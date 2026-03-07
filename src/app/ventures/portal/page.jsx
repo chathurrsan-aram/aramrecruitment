@@ -10,8 +10,8 @@ export default function PortalIndex() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#0D0D14] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-[#2A2A40] border-t-[#6D4A9E] rounded-full animate-spin" />
+    <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-gray-200 border-t-[#6D4A9E] rounded-full animate-spin" />
     </div>
   );
 }

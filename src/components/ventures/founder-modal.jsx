@@ -55,11 +55,11 @@ export function FounderModalProvider({ children }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="fixed inset-x-4 top-[8%] md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-[580px] max-h-[84vh] overflow-y-auto z-[60] rounded-2xl bg-[#0D0D14] border border-[#2A2A40]"
+              className="fixed inset-x-4 top-[8%] md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-[580px] max-h-[84vh] overflow-y-auto z-[60] rounded-2xl bg-white border border-gray-200 shadow-2xl"
             >
               <button
                 onClick={close}
-                className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors z-10"
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors z-10"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -78,12 +78,12 @@ export function FounderModalProvider({ children }) {
                 </div>
 
                 {/* Headline */}
-                <h2 className="font-display text-2xl font-bold text-white text-center mb-4">
+                <h2 className="font-display text-2xl font-bold text-gray-900 text-center mb-4">
                   What True Potential backing means
                 </h2>
 
                 {/* Description */}
-                <p className="text-[#A0A0B8] text-sm text-center leading-relaxed mb-8">
+                <p className="text-gray-500 text-sm text-center leading-relaxed mb-8">
                   True Potential is the execution layer behind select Aram Ventures portfolio companies. Backed ventures receive direct support across strategy, technology and delivery from a founder with a background in PE-grade strategy consulting and hands-on technical build.
                 </p>
 
@@ -92,13 +92,13 @@ export function FounderModalProvider({ children }) {
                   {blocks.map(block => {
                     const Icon = block.icon;
                     return (
-                      <div key={block.title} className="flex items-start gap-4 p-4 rounded-xl bg-[#13131F] border border-[#2A2A40]">
+                      <div key={block.title} className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-200">
                         <div className="w-10 h-10 rounded-lg bg-[#C9A84C]/15 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <Icon className="w-5 h-5 text-[#C9A84C]" />
                         </div>
                         <div>
-                          <p className="font-semibold text-white text-sm mb-1">{block.title}</p>
-                          <p className="text-xs text-[#A0A0B8] leading-relaxed">{block.desc}</p>
+                          <p className="font-semibold text-gray-900 text-sm mb-1">{block.title}</p>
+                          <p className="text-xs text-gray-500 leading-relaxed">{block.desc}</p>
                         </div>
                       </div>
                     );
@@ -109,7 +109,7 @@ export function FounderModalProvider({ children }) {
                 <div className="h-px bg-[#C9A84C]/30 mb-6" />
 
                 {/* Bottom line */}
-                <p className="text-center text-xs text-[#7A7A9A]">
+                <p className="text-center text-xs text-gray-400">
                   Built by Chathurrsan T, strategy consultant and founder of the Aram Initiative.
                 </p>
               </div>

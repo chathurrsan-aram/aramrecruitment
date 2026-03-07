@@ -12,10 +12,10 @@ import dynamic from 'next/dynamic';
 const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full flex items-center justify-center bg-[#13151F]">
+    <div className="w-full h-full flex items-center justify-center bg-[#FAFAFA]">
       <div className="text-center">
-        <div className="w-8 h-8 border-2 border-[#2A2D3E] border-t-[#6D4A9E] rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-[#7A7A9A] text-sm">Loading map...</p>
+        <div className="w-8 h-8 border-2 border-gray-200 border-t-[#6D4A9E] rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-gray-400 text-sm">Loading map...</p>
       </div>
     </div>
   ),
@@ -83,16 +83,16 @@ export default function PortfolioTab() {
   return (
     <div className="flex flex-col h-[calc(100vh-110px)]">
       {/* Filter bar */}
-      <div className="px-4 md:px-6 py-4 border-b border-[#2A2D3E] bg-[#181B24] flex flex-wrap items-center gap-3">
+      <div className="px-4 md:px-6 py-4 border-b border-gray-200 bg-white flex flex-wrap items-center gap-3">
         {/* Search */}
         <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A7A9A]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search portfolio..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#13151F] border border-[#2A2D3E] text-sm text-white placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E] transition-colors"
+            className="w-full pl-9 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] transition-colors"
           />
         </div>
 
@@ -104,8 +104,8 @@ export default function PortfolioTab() {
               onClick={() => setSectorFilter(sectorFilter === s.id ? null : s.id)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
                 sectorFilter === s.id
-                  ? 'border-[#6D4A9E] text-[#9B72CF] bg-[#6D4A9E]/10'
-                  : 'border-[#2A2D3E] text-[#7A7A9A] hover:border-[#6D4A9E]/50'
+                  ? 'border-[#6D4A9E] text-[#6D4A9E] bg-[#6D4A9E]/10'
+                  : 'border-gray-200 text-gray-400 hover:border-[#6D4A9E]/50'
               }`}
             >
               {s.name}
@@ -119,26 +119,26 @@ export default function PortfolioTab() {
       </div>
 
       {/* Portfolio Summary Bar */}
-      <div className="px-4 md:px-6 py-5 bg-gradient-to-r from-[#181B24] via-[#1A1D2A] to-[#181B24] border-b border-[#2A2D3E]">
+      <div className="px-4 md:px-6 py-5 bg-white border-b border-gray-200">
         <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
-          <div className="bg-[#1E2130] rounded-xl p-4 border border-[#2A2D3E] border-l-[3px] border-l-[#6D4A9E]">
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 border-l-[3px] border-l-[#6D4A9E]">
             <div className="flex items-center gap-2 mb-1">
-              <Briefcase className="w-4 h-4 text-[#9B72CF]" />
-              <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">Active Ventures</p>
+              <Briefcase className="w-4 h-4 text-[#6D4A9E]" />
+              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Active Ventures</p>
             </div>
-            <p className="text-2xl font-bold text-white">{portfolioCompanies.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{portfolioCompanies.length}</p>
           </div>
-          <div className="bg-[#1E2130] rounded-xl p-4 border border-[#2A2D3E] border-l-[3px] border-l-[#6D4A9E]">
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 border-l-[3px] border-l-[#6D4A9E]">
             <div className="flex items-center gap-2 mb-1">
-              <DollarSign className="w-4 h-4 text-[#9B72CF]" />
-              <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">Total Seeking</p>
+              <DollarSign className="w-4 h-4 text-[#6D4A9E]" />
+              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Total Seeking</p>
             </div>
-            <p className="text-2xl font-bold text-white">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
+            <p className="text-2xl font-bold text-gray-900">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
           </div>
-          <div className="bg-[#1E2130] rounded-xl p-4 border border-[#2A2D3E] border-l-[3px] border-l-[#C9A84C]">
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 border-l-[3px] border-l-[#C9A84C]">
             <div className="flex items-center gap-2 mb-1">
               <Star className="w-4 h-4 text-[#C9A84C]" />
-              <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">True Potential Backed</p>
+              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">True Potential Backed</p>
             </div>
             <p className="text-2xl font-bold text-[#C9A84C]">{truePotentialCount}</p>
           </div>
@@ -158,7 +158,7 @@ export default function PortfolioTab() {
             </StaggerContainer>
             {filteredCompanies.length === 0 && (
               <div className="text-center py-20">
-                <p className="text-[#7A7A9A]">No ventures match your filters</p>
+                <p className="text-gray-400">No ventures match your filters</p>
               </div>
             )}
           </div>
