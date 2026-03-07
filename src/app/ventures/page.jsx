@@ -189,21 +189,12 @@ function VenturesHero({ onOpenOpportunity }) {
           animate={loaded ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="flex items-center gap-4 md:gap-6">
-            <img
-              src="/images/Aram_Ventures.png"
-              alt="Aram Ventures"
-              className="h-16 md:h-24"
-              style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }}
-            />
-            <div className="w-px h-10 md:h-14 bg-white/30" />
-            <img
-              src="/images/Untitled design-6.png"
-              alt="True Potential"
-              className="h-14 md:h-20"
-              style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }}
-            />
-          </div>
+          <img
+            src="/images/Untitled design-6.png"
+            alt="True Potential"
+            className="h-16 md:h-24"
+            style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }}
+          />
         </motion.div>
         <motion.p
           className="font-mono text-[10px] tracking-[0.25em] text-[#9B72CF] uppercase mb-4"
@@ -336,7 +327,7 @@ function InlineInsightDetail({ insight, onBack }) {
       <Reveal>
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-gray-400 hover:text-gray-900 transition-colors text-sm mb-6 group"
+          className="flex items-center gap-2 text-sm font-medium text-[#9B72CF] hover:text-white transition-colors mb-6 bg-[#6D4A9E]/10 px-4 py-2 rounded-lg group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to Insights
@@ -355,16 +346,16 @@ function InlineInsightDetail({ insight, onBack }) {
               </span>
             );
           })}
-          <span className="text-gray-400 text-xs font-mono">{page.region}</span>
-          <span className="text-gray-200">|</span>
-          <span className="flex items-center gap-1 text-gray-400 text-xs">
+          <span className="text-[#7A7A9A] text-xs font-mono">{page.region}</span>
+          <span className="text-[#2A2D3E]">|</span>
+          <span className="flex items-center gap-1 text-[#7A7A9A] text-xs">
             <Clock className="w-3 h-3" /> {page.readTime} min read
           </span>
         </div>
       </Reveal>
 
       <Reveal delay={0.1}>
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-6 tracking-tight">
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-white leading-tight mb-6 tracking-tight">
           {page.topLine}
         </h1>
       </Reveal>
@@ -373,27 +364,27 @@ function InlineInsightDetail({ insight, onBack }) {
 
       <Reveal delay={0.15}>
         <section className="mb-8">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-3 flex items-center gap-2">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#9B72CF] mb-3 flex items-center gap-2">
             <BarChart3 className="w-3.5 h-3.5" /> Observation
           </h2>
-          <p className="text-[15px] leading-relaxed text-gray-600">{page.observation}</p>
+          <p className="text-[15px] leading-relaxed text-[#A0A0B8]">{page.observation}</p>
         </section>
       </Reveal>
 
-      <div className="h-px bg-gray-200 mb-8" />
+      <div className="h-px bg-[#2A2D3E] mb-8" />
 
       <Reveal delay={0.2}>
         <section className="mb-8">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-4 flex items-center gap-2">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#9B72CF] mb-4 flex items-center gap-2">
             <TrendingUp className="w-3.5 h-3.5" /> Key Metrics
           </h2>
           <StaggerContainer staggerDelay={0.07} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {page.keyMetrics.map((metric, i) => (
               <StaggerItem key={i}>
-                <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[#6D4A9E]/30 transition-colors shadow-sm">
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">{metric.label}</p>
-                  <p className="text-xl font-bold text-gray-900 font-mono mb-1">{metric.value}</p>
-                  <p className="text-xs text-gray-500 leading-snug">{metric.context}</p>
+                <div className="bg-[#1E2130] border border-[#2A2D3E] rounded-lg p-4 hover:border-[#6D4A9E]/30 transition-colors">
+                  <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A] mb-1">{metric.label}</p>
+                  <p className="text-xl font-bold text-white font-mono mb-1">{metric.value}</p>
+                  <p className="text-xs text-[#A0A0B8] leading-snug">{metric.context}</p>
                 </div>
               </StaggerItem>
             ))}
@@ -401,56 +392,56 @@ function InlineInsightDetail({ insight, onBack }) {
         </section>
       </Reveal>
 
-      <div className="h-px bg-gray-200 mb-8" />
+      <div className="h-px bg-[#2A2D3E] mb-8" />
 
       <Reveal delay={0.25}>
         <section className="mb-8">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-4 flex items-center gap-2">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#9B72CF] mb-4 flex items-center gap-2">
             <Zap className="w-3.5 h-3.5" /> Why Now
           </h2>
           <div className="space-y-3">
             {page.whyNow.map((item, i) => (
-              <div key={i} className="flex gap-3 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+              <div key={i} className="flex gap-3 bg-[#1E2130] border border-[#2A2D3E] rounded-lg p-4">
                 <div className="flex-shrink-0 mt-0.5">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-[#6D4A9E]/10 text-[#6D4A9E] border border-[#6D4A9E]/15">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-[#6D4A9E]/10 text-[#9B72CF] border border-[#6D4A9E]/15">
                     {item.catalyst}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed">{item.detail}</p>
+                <p className="text-sm text-[#A0A0B8] leading-relaxed">{item.detail}</p>
               </div>
             ))}
           </div>
         </section>
       </Reveal>
 
-      <div className="h-px bg-gray-200 mb-8" />
+      <div className="h-px bg-[#2A2D3E] mb-8" />
 
       <Reveal delay={0.3}>
         <section className="mb-8">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-4 flex items-center gap-2">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#9B72CF] mb-4 flex items-center gap-2">
             <AlertTriangle className="w-3.5 h-3.5" /> Investment Parameters
           </h2>
-          <div className="bg-white border border-gray-200 rounded-lg p-5 space-y-3 shadow-sm">
+          <div className="bg-[#1E2130] border border-[#2A2D3E] rounded-lg p-5 space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-0.5">Market Opportunity</p>
-                <p className="text-base font-semibold text-gray-900">{page.investmentParameters.marketOpportunity}</p>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A] mb-0.5">Market Opportunity</p>
+                <p className="text-base font-semibold text-white">{page.investmentParameters.marketOpportunity}</p>
               </div>
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-0.5">Timeline</p>
-                <p className="text-base font-semibold text-gray-900">{page.investmentParameters.timeline}</p>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A] mb-0.5">Timeline</p>
+                <p className="text-base font-semibold text-white">{page.investmentParameters.timeline}</p>
               </div>
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-0.5">Ticket Size</p>
-                <p className="text-sm text-gray-900">
-                  <span className="text-[#6D4A9E]">Angel/HNW:</span> {page.investmentParameters.ticketSize.angel}
+                <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A] mb-0.5">Ticket Size</p>
+                <p className="text-sm text-white">
+                  <span className="text-[#9B72CF]">Angel/HNW:</span> {page.investmentParameters.ticketSize.angel}
                   {page.investmentParameters.ticketSize.institutional && (
-                    <span className="ml-3"><span className="text-[#6D4A9E]">Institutional:</span> {page.investmentParameters.ticketSize.institutional}</span>
+                    <span className="ml-3"><span className="text-[#9B72CF]">Institutional:</span> {page.investmentParameters.ticketSize.institutional}</span>
                   )}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-0.5">Risk Level</p>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A] mb-0.5">Risk Level</p>
                 <p className="text-base font-semibold">
                   <span className={
                     page.investmentParameters.riskLevel === 'High' ? 'text-[#C85C5C]' :
@@ -462,30 +453,30 @@ function InlineInsightDetail({ insight, onBack }) {
                 </p>
               </div>
             </div>
-            <div className="pt-3 border-t border-gray-100">
-              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">Key Risk</p>
-              <p className="text-sm text-gray-600 leading-relaxed">{page.investmentParameters.keyRisk}</p>
+            <div className="pt-3 border-t border-[#2A2D3E]">
+              <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A] mb-1">Key Risk</p>
+              <p className="text-sm text-[#A0A0B8] leading-relaxed">{page.investmentParameters.keyRisk}</p>
             </div>
           </div>
         </section>
       </Reveal>
 
-      <div className="h-px bg-gray-200 mb-8" />
+      <div className="h-px bg-[#2A2D3E] mb-8" />
 
       <Reveal delay={0.35}>
         <section className="mb-8">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-[#6D4A9E] mb-4 flex items-center gap-2">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-[#9B72CF] mb-4 flex items-center gap-2">
             <Users className="w-3.5 h-3.5" /> Named Players
           </h2>
           <StaggerContainer staggerDelay={0.06} className="space-y-2">
             {page.namedPlayers.map((player, i) => (
               <StaggerItem key={i}>
-                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3 bg-white border border-gray-200 rounded-lg p-4 hover:border-[#6D4A9E]/20 transition-colors shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3 bg-[#1E2130] border border-[#2A2D3E] rounded-lg p-4 hover:border-[#6D4A9E]/20 transition-colors">
                   <div className="flex-shrink-0">
-                    <p className="text-sm font-semibold text-gray-900">{player.name}</p>
+                    <p className="text-sm font-semibold text-white">{player.name}</p>
                   </div>
-                  <p className="text-xs text-gray-500 leading-relaxed sm:border-l sm:border-gray-200 sm:pl-3">
-                    {player.description} - <span className="text-gray-700">{player.relevance}</span>
+                  <p className="text-xs text-[#A0A0B8] leading-relaxed sm:border-l sm:border-[#2A2D3E] sm:pl-3">
+                    {player.description} - <span className="text-white/80">{player.relevance}</span>
                   </p>
                 </div>
               </StaggerItem>
@@ -580,7 +571,7 @@ function InlinePortal() {
   const truePotentialCount = portfolioCompanies.filter(c => c.truePotential).length;
 
   return (
-    <section id="platform-preview" className="bg-[#FAFAFA]">
+    <section id="platform-preview" className="bg-[#13151F]">
       {/* ── Portal Navbar ─────────────────────────────────────── */}
       <div className="sticky top-0 z-30 bg-[#1B3A4B] border-b border-[#1B3A4B] shadow-sm">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
@@ -588,7 +579,7 @@ function InlinePortal() {
             <img
               src="/images/Aram_Ventures.png"
               alt="Aram Ventures"
-              className="h-10"
+              className="h-11"
               style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }}
             />
           </div>
@@ -617,16 +608,16 @@ function InlinePortal() {
       </div>
 
       {/* ── Filter Bar ────────────────────────────────────────── */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-[#181B24] border-b border-[#2A2D3E]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A7A9A]" />
             <input
               type="text"
               placeholder={`Search ${activeTab}...`}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] transition-colors"
+              className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#13151F] border border-[#2A2D3E] text-sm text-white placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E] transition-colors"
             />
           </div>
           <div className="flex gap-1.5 flex-wrap">
@@ -636,8 +627,8 @@ function InlinePortal() {
                 onClick={() => setSectorFilter(sectorFilter === s.id ? null : s.id)}
                 className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
                   sectorFilter === s.id
-                    ? 'border-[#6D4A9E] text-[#6D4A9E] bg-[#6D4A9E]/10'
-                    : 'border-gray-200 text-gray-500 hover:border-[#6D4A9E]/50'
+                    ? 'border-[#6D4A9E] text-[#9B72CF] bg-[#6D4A9E]/10'
+                    : 'border-[#2A2D3E] text-[#7A7A9A] hover:border-[#6D4A9E]/50'
                 }`}
               >
                 {s.name}
@@ -649,13 +640,13 @@ function InlinePortal() {
               <select
                 value={regionFilter}
                 onChange={e => setRegionFilter(e.target.value)}
-                className="appearance-none pl-3 pr-8 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-[#6D4A9E] transition-colors"
+                className="appearance-none pl-3 pr-8 py-2 rounded-lg bg-[#13151F] border border-[#2A2D3E] text-sm text-white focus:outline-none focus:border-[#6D4A9E] transition-colors"
               >
                 {ventureRegions.map(r => (
                   <option key={r.id} value={r.id}>{r.name}</option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A7A9A] pointer-events-none" />
             </div>
           )}
           {activeTab !== 'insights' && (
@@ -668,29 +659,29 @@ function InlinePortal() {
 
       {/* ── Portfolio Summary Bar ─────────────────────────────── */}
       {activeTab === 'portfolio' && (
-        <div className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
+        <div className="bg-gradient-to-r from-[#181B24] via-[#1A1D2A] to-[#181B24] border-b border-[#2A2D3E]">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 py-5">
             <div className="grid grid-cols-3 gap-4">
-              <div className="bg-[#0D0D14] rounded-xl p-4 border border-[#2A2A40]">
+              <div className="bg-[#1E2130] rounded-xl p-4 border border-[#2A2D3E] border-l-[3px] border-l-[#6D4A9E]">
                 <div className="flex items-center gap-2 mb-1">
                   <Briefcase className="w-4 h-4 text-[#9B72CF]" />
                   <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">Active Ventures</p>
                 </div>
-                <p className="text-xl font-bold text-white">{portfolioCompanies.length}</p>
+                <p className="text-2xl font-bold text-white">{portfolioCompanies.length}</p>
               </div>
-              <div className="bg-[#0D0D14] rounded-xl p-4 border border-[#2A2A40]">
+              <div className="bg-[#1E2130] rounded-xl p-4 border border-[#2A2D3E] border-l-[3px] border-l-[#6D4A9E]">
                 <div className="flex items-center gap-2 mb-1">
                   <DollarSign className="w-4 h-4 text-[#9B72CF]" />
                   <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">Total Seeking</p>
                 </div>
-                <p className="text-xl font-bold text-white">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
+                <p className="text-2xl font-bold text-white">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
               </div>
-              <div className="bg-[#0D0D14] rounded-xl p-4 border border-[#2A2A40]">
+              <div className="bg-[#1E2130] rounded-xl p-4 border border-[#2A2D3E] border-l-[3px] border-l-[#C9A84C]">
                 <div className="flex items-center gap-2 mb-1">
                   <Star className="w-4 h-4 text-[#C9A84C]" />
                   <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">True Potential Backed</p>
                 </div>
-                <p className="text-xl font-bold text-white">{truePotentialCount}</p>
+                <p className="text-2xl font-bold text-[#C9A84C]">{truePotentialCount}</p>
               </div>
             </div>
           </div>
@@ -711,7 +702,7 @@ function InlinePortal() {
                 ))}
               </StaggerContainer>
               {filteredPortfolio.length === 0 && (
-                <div className="text-center py-20"><p className="text-gray-400">No ventures match your filters</p></div>
+                <div className="text-center py-20"><p className="text-[#7A7A9A]">No ventures match your filters</p></div>
               )}
             </div>
           ) : (
@@ -741,7 +732,7 @@ function InlinePortal() {
                 ))}
               </StaggerContainer>
               {filteredEmerging.length === 0 && (
-                <div className="text-center py-20"><p className="text-gray-400">No opportunities match your filters</p></div>
+                <div className="text-center py-20"><p className="text-[#7A7A9A]">No opportunities match your filters</p></div>
               )}
             </div>
           ) : (
@@ -772,21 +763,21 @@ function InlinePortal() {
                 <Reveal>
                   <button
                     onClick={() => setSelectedInsight(featuredInsight)}
-                    className="w-full text-left mb-6 bg-gradient-to-br from-white to-gray-50 border border-[#6D4A9E]/20 rounded-xl p-6 md:p-8 transition-all duration-200 hover:border-[#6D4A9E]/40 hover:shadow-xl hover:shadow-[#6D4A9E]/5 group"
+                    className="w-full text-left mb-6 bg-gradient-to-br from-[#1E2130] to-[#1A1D2A] border border-[#6D4A9E]/20 rounded-xl p-6 md:p-8 transition-all duration-200 hover:border-[#6D4A9E]/40 hover:shadow-xl hover:shadow-[#6D4A9E]/5 group"
                   >
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#6D4A9E]/10 text-[#6D4A9E] border border-[#6D4A9E]/20">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#6D4A9E]/10 text-[#9B72CF] border border-[#6D4A9E]/20">
                         Macro Overview
                       </span>
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono text-[#C9A84C] bg-[#C9A84C]/10 border border-[#C9A84C]/15">
                         Start Here
                       </span>
                     </div>
-                    <h2 className="font-display text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-[#6D4A9E] transition-colors">
+                    <h2 className="font-display text-xl md:text-2xl font-bold text-white mb-3 leading-tight group-hover:text-[#9B72CF] transition-colors">
                       Why Sri Lanka&apos;s Tamil-majority regions, why now, and why diaspora capital
                     </h2>
-                    <p className="text-sm text-gray-500 leading-relaxed mb-4 max-w-3xl">{featuredInsight.summary}</p>
-                    <div className="flex items-center gap-2 text-xs text-[#6D4A9E] font-medium group-hover:gap-3 transition-all">
+                    <p className="text-sm text-[#A0A0B8] leading-relaxed mb-4 max-w-3xl">{featuredInsight.summary}</p>
+                    <div className="flex items-center gap-2 text-xs text-[#9B72CF] font-medium group-hover:gap-3 transition-all">
                       Read the macro thesis <ArrowRight className="w-3.5 h-3.5" />
                     </div>
                   </button>
@@ -794,9 +785,9 @@ function InlinePortal() {
               )}
               {showFeatured && (
                 <div className="flex items-center gap-3 mb-4">
-                  <h3 className="text-xs font-mono uppercase tracking-widest text-gray-400">Sector Deep Dives</h3>
-                  <div className="flex-1 h-px bg-gray-200" />
-                  <span className="text-xs text-gray-400 font-mono">{sectorInsights.length} sectors</span>
+                  <h3 className="text-xs font-mono uppercase tracking-widest text-[#7A7A9A]">Sector Deep Dives</h3>
+                  <div className="flex-1 h-px bg-[#2A2D3E]" />
+                  <span className="text-xs text-[#7A7A9A] font-mono">{sectorInsights.length} sectors</span>
                 </div>
               )}
               <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -807,7 +798,7 @@ function InlinePortal() {
                 ))}
               </StaggerContainer>
               {filteredInsights.length === 0 && (
-                <div className="text-center py-20"><p className="text-gray-400">No insights match your filters</p></div>
+                <div className="text-center py-20"><p className="text-[#7A7A9A]">No insights match your filters</p></div>
               )}
             </div>
           )

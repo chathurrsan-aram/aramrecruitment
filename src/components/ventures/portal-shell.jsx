@@ -40,12 +40,12 @@ function PortalSegmentedControl({ tabs, activeHref }) {
   );
 }
 
-/* ─── Map/Cards Toggle (light theme) ───────────────────────────────────── */
+/* ─── Map/Cards Toggle (dark theme) ────────────────────────────────────── */
 export function ViewToggle({ isCards, onChange }) {
   return (
-    <div className="relative flex bg-gray-100 rounded-lg p-0.5">
+    <div className="relative flex bg-[#1E2130] rounded-lg p-0.5">
       <div
-        className={`absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-white rounded-md shadow-sm transition-transform duration-300 ease-in-out ${
+        className={`absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-[#2A2D3E] rounded-md shadow-sm transition-transform duration-300 ease-in-out ${
           isCards ? 'translate-x-[calc(100%+2px)]' : 'translate-x-0'
         }`}
         style={{ left: '2px' }}
@@ -53,7 +53,7 @@ export function ViewToggle({ isCards, onChange }) {
       <button
         onClick={() => onChange(false)}
         className={`relative z-10 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-200 ${
-          !isCards ? 'text-[#6D4A9E]' : 'text-gray-400'
+          !isCards ? 'text-[#9B72CF]' : 'text-[#7A7A9A]'
         }`}
       >
         <Map className="w-3.5 h-3.5" />
@@ -62,7 +62,7 @@ export function ViewToggle({ isCards, onChange }) {
       <button
         onClick={() => onChange(true)}
         className={`relative z-10 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-200 ${
-          isCards ? 'text-[#6D4A9E]' : 'text-gray-400'
+          isCards ? 'text-[#9B72CF]' : 'text-[#7A7A9A]'
         }`}
       >
         <LayoutGrid className="w-3.5 h-3.5" />
@@ -77,7 +77,7 @@ export default function PortalShell({ children }) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-gray-900 flex flex-col">
+    <div className="min-h-screen bg-[#13151F] text-white flex flex-col">
       {/* Portal Nav: stays dark */}
       <header className="sticky top-0 z-40 bg-[#0D0D14]/95 backdrop-blur-xl border-b border-[#2A2A40]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center gap-4">
@@ -86,7 +86,7 @@ export default function PortalShell({ children }) {
             <img
               src="/images/Aram_Ventures.png"
               alt="Aram Ventures"
-              className="h-10"
+              className="h-11"
               style={{ filter: 'invert(1)', mixBlendMode: 'screen', background: 'transparent' }}
             />
           </Link>
