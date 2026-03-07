@@ -8,7 +8,7 @@ import TruePotentialBanner from './true-potential-banner';
 
 const portalTabs = [
   { href: '/ventures/portal/portfolio', label: 'Your Portfolio', icon: Briefcase },
-  { href: '/ventures/portal/emerging', label: 'Emerging Ventures', icon: TrendingUp },
+  { href: '/ventures/portal/emerging', label: 'Opportunities', icon: TrendingUp },
   { href: '/ventures/portal/insights', label: 'Insights', icon: BookOpen },
 ];
 
@@ -90,13 +90,10 @@ export default function PortalShell({ children }) {
           {/* Logo */}
           <Link href="/ventures" className="flex items-center gap-2 flex-shrink-0">
             <img
-              src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png"
-              alt="Aram"
-              className="h-8 brightness-0 invert"
+              src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
+              alt="Aram Ventures"
+              className="h-10 brightness-0 invert"
             />
-            <span className="font-mono text-[10px] tracking-[0.15em] text-[#9B72CF] uppercase hidden sm:block">
-              Ventures
-            </span>
           </Link>
 
           {/* Tabs */}

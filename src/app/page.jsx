@@ -330,44 +330,6 @@ function PartnersMarquee() {
   );
 }
 
-/* ─── Ventures CTA ────────────────────────────────── */
-function VenturesCTA() {
-  return (
-    <section className="py-24 md:py-32 relative overflow-hidden" style={{ backgroundColor: '#0D0D14' }}>
-      {/* Subtle gradient mesh */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-aram-purple/10 rounded-full blur-[120px]" />
-      <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full blur-[100px]" style={{ backgroundColor: 'rgba(26,188,156,0.06)' }} />
-
-      <div className="relative max-w-4xl mx-auto px-6 text-center">
-        <Reveal>
-          <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium mb-6" style={{ backgroundColor: 'rgba(201,168,76,0.15)', border: '1px solid rgba(201,168,76,0.3)', color: '#C9A84C' }}>
-            ✦ Aram Ventures
-          </span>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
-            From Research to Investment
-          </h2>
-        </Reveal>
-        <Reveal delay={0.2}>
-          <p className="text-lg text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Our four years of on-the-ground research have uncovered vetted, high-potential ventures across Tamil Sri Lanka. Now we&apos;re connecting diaspora capital with real opportunity.
-          </p>
-        </Reveal>
-        <Reveal delay={0.3}>
-          <Link
-            href="/ventures"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-aram-purple text-white rounded-xl font-semibold hover:-translate-y-0.5 transition-all shadow-lg"
-            style={{ boxShadow: '0 8px 24px rgba(109,74,158,0.3)' }}
-          >
-            Explore Aram Ventures <ArrowRight className="w-4 h-4" />
-          </Link>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
 /* ─── CTA Section ──────────────────────────────────── */
 function CTASection() {
   return (
@@ -420,7 +382,6 @@ export default function HomePage() {
       <ThreePillarModel />
       <RegionsPreview />
       <PartnersMarquee />
-      <VenturesCTA />
       <CTASection />
     </div>
   );

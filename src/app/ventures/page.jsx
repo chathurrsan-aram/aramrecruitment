@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter } from '@/components/ui/motion';
 import { ArrowRight, Briefcase, TrendingUp, BookOpen, ChevronDown } from 'lucide-react';
 
@@ -109,111 +109,116 @@ function WaitlistForm() {
   );
 }
 
+/* ─── Hero ────────────────────────────────────────────────────────────────── */
+function VenturesHero() {
+  const [loaded, setLoaded] = useState(false);
+  const heroRef = useRef(null);
+  const { scrollY } = useScroll();
+  const bgScale = useTransform(scrollY, [0, 800], [1, 1.15]);
+  const contentOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const contentY = useTransform(scrollY, [0, 500], [0, -60]);
+
+  useEffect(() => { requestAnimationFrame(() => setLoaded(true)); }, []);
+
+  return (
+    <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <motion.div className="absolute inset-0" style={{ scale: bgScale }}>
+        <div className="absolute inset-0 bg-[#0D0D14]" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#6D4A9E]/15 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-[#1ABC9C]/8 rounded-full blur-[100px]" />
+        <div className="absolute top-1/3 right-1/3 w-[300px] h-[300px] bg-[#C9A84C]/5 rounded-full blur-[100px]" />
+      </motion.div>
+
+      {/* Floating particles */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-[#6D4A9E]/20"
+          style={{
+            width: 4 + i * 3,
+            height: 4 + i * 3,
+            left: `${15 + i * 14}%`,
+            top: `${20 + (i % 3) * 20}%`,
+          }}
+          animate={{ y: [0, -20, 0], opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 4 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.6 }}
+        />
+      ))}
+
+      <motion.div
+        className="relative z-10 max-w-4xl mx-auto px-6 text-center pt-20"
+        style={{ opacity: contentOpacity, y: contentY }}
+      >
+        <motion.div
+          className="flex justify-center mb-8"
+          initial={{ opacity: 0, y: 10 }}
+          animate={loaded ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <img
+            src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
+            alt="Aram Ventures"
+            className="h-20 md:h-28 brightness-0 invert"
+          />
+        </motion.div>
+        <motion.h1
+          className="font-display text-4xl md:text-6xl font-bold text-white mb-5 leading-tight"
+          initial={{ opacity: 0, y: 20 }}
+          animate={loaded ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          The diaspora venture
+          <span className="block text-white/80">intelligence platform</span>
+        </motion.h1>
+        <motion.p
+          className="font-body text-lg md:text-xl text-[#7A7A9A] mb-10 max-w-2xl mx-auto leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={loaded ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          Connecting UK diaspora capital with vetted, high-potential ventures across Tamil Sri Lanka — backed by four years of on-the-ground research.
+        </motion.p>
+        <motion.div
+          className="flex flex-col sm:flex-row gap-3 justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={loaded ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <Link
+            href="/ventures/portal"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#6D4A9E] text-white rounded-xl font-semibold hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(109,74,158,0.3)] transition-all min-h-[48px]"
+          >
+            Explore the Demo <ArrowRight className="w-4 h-4" />
+          </Link>
+          <a
+            href="#content"
+            className="border border-[#2A2A40] text-white px-8 py-3.5 rounded-xl hover:border-[#6D4A9E] transition-all min-h-[48px] flex items-center justify-center gap-2"
+          >
+            Our Story <ChevronDown className="w-4 h-4" />
+          </a>
+        </motion.div>
+      </motion.div>
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Scroll</span>
+        <div className="w-px h-10 bg-white/20 relative overflow-hidden">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#6D4A9E] absolute left-1/2 -translate-x-1/2 animate-bounce-dot" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─── Landing Page ────────────────────────────────────────────────────────── */
 export default function VenturesLanding() {
   return (
     <div className="min-h-screen bg-[#0D0D14] text-white overflow-hidden">
-      {/* ── Minimal Nav ──────────────────────────────────────────────── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0D0D14]/80 backdrop-blur-xl border-b border-[#2A2A40]/50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-3">
-            <img
-              src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png"
-              alt="Aram"
-              className="h-10 brightness-0 invert"
-            />
-            <span className="font-mono text-xs tracking-[0.2em] text-[#9B72CF] uppercase">Ventures</span>
-          </Link>
-          <Link
-            href="/ventures/portal"
-            className="text-sm text-[#7A7A9A] hover:text-white transition-colors"
-          >
-            View Demo
-          </Link>
-        </div>
-      </header>
+      {/* ── Hero ──────────────────────────────────────────────────── */}
+      <VenturesHero />
 
-      {/* ── 1. Hero ──────────────────────────────────────────────────── */}
-      <section className="relative pt-32 pb-24 px-6">
-        {/* Gradient mesh background */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#6D4A9E]/15 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-[#1ABC9C]/8 rounded-full blur-[100px]" />
-        </div>
-        <div className="relative max-w-4xl mx-auto text-center">
-          <Reveal>
-            <p className="font-mono text-xs tracking-[0.3em] text-[#9B72CF] uppercase mb-4">
-              Aram Ventures
-            </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h1 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-6">
-              The diaspora venture<br />intelligence platform
-            </h1>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <p className="text-lg md:text-xl text-[#7A7A9A] max-w-2xl mx-auto mb-10 leading-relaxed">
-              Connecting UK diaspora capital with vetted, high-potential ventures across Tamil Sri Lanka — backed by four years of on-the-ground research.
-            </p>
-          </Reveal>
-          <Reveal delay={0.3}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="#waitlist"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#6D4A9E] text-white rounded-xl font-semibold hover:bg-[#5A3D82] transition-all duration-200 shadow-lg shadow-[#6D4A9E]/25"
-              >
-                Request Access <ArrowRight className="w-4 h-4" />
-              </a>
-              <Link
-                href="/ventures/portal"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-[#2A2A40] text-white rounded-xl font-semibold hover:border-[#6D4A9E] transition-all duration-200"
-              >
-                View Demo
-              </Link>
-            </div>
-          </Reveal>
-
-          {/* Frosted portal preview */}
-          <Reveal delay={0.5}>
-            <div className="mt-16 relative rounded-2xl border border-[#2A2A40] overflow-hidden">
-              <div className="bg-[#13131F] p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-[#2A2A40]" />
-                    <div className="w-3 h-3 rounded-full bg-[#2A2A40]" />
-                    <div className="w-3 h-3 rounded-full bg-[#2A2A40]" />
-                  </div>
-                  <div className="flex-1 h-7 bg-[#1A1A2E] rounded-lg" />
-                </div>
-                <div className="flex gap-3 mb-6">
-                  {['Your Portfolio', 'Emerging Ventures', 'Insights'].map((tab, i) => (
-                    <div key={tab} className={`px-4 py-2 rounded-lg text-sm font-medium ${i === 0 ? 'bg-[#6D4A9E]/20 text-[#9B72CF]' : 'text-[#7A7A9A]'}`}>
-                      {tab}
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { name: 'Vanni AgriConnect', sector: 'AgriTech', amount: '£120k' },
-                    { name: 'Nalam Health', sector: 'HealthTech', amount: '£250k' },
-                    { name: 'Malai Learn', sector: 'EdTech', amount: '£80k' },
-                  ].map(card => (
-                    <div key={card.name} className="bg-[#1A1A2E] rounded-xl p-4 border border-[#2A2A40]">
-                      <p className="text-sm font-semibold text-white mb-1">{card.name}</p>
-                      <p className="text-xs text-[#7A7A9A]">{card.sector} · Seeking {card.amount}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Frost overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D14] via-[#0D0D14]/60 to-transparent pointer-events-none" />
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ── 2. What's Inside ─────────────────────────────────────────── */}
-      <section className="py-24 px-6">
+      {/* ── 1. What's Inside ─────────────────────────────────────── */}
+      <section id="content" className="py-24 px-6">
         <div className="max-w-5xl mx-auto">
           <Reveal>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-center mb-16">What&apos;s Inside</h2>
@@ -221,7 +226,7 @@ export default function VenturesLanding() {
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { icon: Briefcase, title: 'Your Portfolio', desc: 'Track active ventures backed by True Potential — financials, thesis, growth plans.' },
-              { icon: TrendingUp, title: 'Emerging Ventures', desc: 'Explore the Sri Lanka opportunity map — pre-investment pipeline across sectors.' },
+              { icon: TrendingUp, title: 'Opportunities', desc: 'Explore the Sri Lanka opportunity map — pre-investment pipeline across sectors.' },
               { icon: BookOpen, title: 'Insights', desc: "Aram's proprietary research layer — district-level intelligence for informed capital." },
             ].map(item => (
               <StaggerItem key={item.title}>
@@ -238,14 +243,18 @@ export default function VenturesLanding() {
         </div>
       </section>
 
-      {/* ── 3. True Potential ────────────────────────────────────────── */}
+      {/* ── 2. True Potential ────────────────────────────────────── */}
       <section className="py-24 px-6 border-t border-[#2A2A40]/50">
         <div className="max-w-5xl mx-auto">
           <Reveal>
             <div className="text-center mb-12">
-              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C] text-sm font-medium mb-6">
-                ✦ True Potential
-              </span>
+              <div className="flex justify-center mb-6">
+                <img
+                  src="/images/tempImage5CilK3.jpeg"
+                  alt="True Potential"
+                  className="h-14 md:h-16 rounded-xl object-contain brightness-0 invert"
+                />
+              </div>
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">Backed by True Potential</h2>
               <p className="text-lg text-[#7A7A9A]">Every venture in our portfolio has execution support built in.</p>
             </div>
@@ -280,7 +289,7 @@ export default function VenturesLanding() {
         </div>
       </section>
 
-      {/* ── 4. The Opportunity ───────────────────────────────────────── */}
+      {/* ── 3. The Opportunity ───────────────────────────────────── */}
       <section className="py-24 px-6 border-t border-[#2A2A40]/50">
         <div className="max-w-5xl mx-auto">
           <Reveal>
@@ -306,7 +315,7 @@ export default function VenturesLanding() {
         </div>
       </section>
 
-      {/* ── 5. About the Founder ─────────────────────────────────────── */}
+      {/* ── 4. About the Founder ─────────────────────────────────── */}
       <section className="py-24 px-6 border-t border-[#2A2A40]/50">
         <div className="max-w-3xl mx-auto">
           <Reveal>
@@ -351,7 +360,7 @@ export default function VenturesLanding() {
         </div>
       </section>
 
-      {/* ── 6. Waitlist ──────────────────────────────────────────────── */}
+      {/* ── 5. Waitlist ──────────────────────────────────────────── */}
       <section id="waitlist" className="py-24 px-6 border-t border-[#2A2A40]/50">
         <div className="max-w-3xl mx-auto text-center">
           <Reveal>
@@ -366,14 +375,14 @@ export default function VenturesLanding() {
         </div>
       </section>
 
-      {/* ── Footer ───────────────────────────────────────────────────── */}
+      {/* ── Footer ───────────────────────────────────────────────── */}
       <footer className="border-t border-[#2A2A40]/50 py-8 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <img
-              src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png"
-              alt="Aram"
-              className="h-6 brightness-0 invert opacity-50"
+              src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
+              alt="Aram Ventures"
+              className="h-8 brightness-0 invert"
             />
             <span className="text-sm text-[#7A7A9A]">Aram Ventures © 2026</span>
           </div>

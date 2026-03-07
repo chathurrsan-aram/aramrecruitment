@@ -339,7 +339,7 @@ function EmergingPanelContent({ venture }) {
             </span>
           )}
           <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C]">
-            Emerging Opportunity
+            Opportunity
           </span>
         </div>
         <h2 className="font-display text-2xl font-bold text-white mb-1">{venture.name}</h2>

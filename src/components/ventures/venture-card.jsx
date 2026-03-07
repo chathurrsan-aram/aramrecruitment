@@ -74,7 +74,7 @@ export function EmergingCard({ venture, onClick }) {
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <SectorPill sectorId={venture.sector} />
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C]">
-          Emerging Opportunity
+          Opportunity
         </span>
       </div>
       <h3 className="font-display text-lg font-semibold text-white mb-1 group-hover:text-[#C9A84C] transition-colors">

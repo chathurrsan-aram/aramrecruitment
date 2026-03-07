@@ -14,7 +14,8 @@ export default function TruePotentialBanner() {
         onClick={() => setModalOpen(true)}
         className="w-full bg-[#13131F] border-t border-[#C9A84C]/20 py-3 px-6 flex items-center justify-center gap-3 text-sm hover:bg-[#1A1A2E] transition-colors duration-200"
       >
-        <span className="text-[#C9A84C] font-medium">✦ True Potential</span>
+        <img src="/images/tempImage5CilK3.jpeg" alt="True Potential" className="h-5 rounded object-contain brightness-0 invert opacity-80" />
+        <span className="text-[#C9A84C] font-medium">True Potential</span>
         <span className="text-[#2A2A40]">|</span>
         <span className="text-[#7A7A9A] hidden sm:inline">The execution arm of Aram Ventures</span>
         <span className="text-[#2A2A40] hidden sm:inline">|</span>
