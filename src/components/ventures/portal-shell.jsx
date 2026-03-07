@@ -12,7 +12,7 @@ const portalTabs = [
   { href: '/ventures/portal/insights', label: 'Insights', icon: BookOpen },
 ];
 
-/* ─── Segmented Control (dark theme, matching Research page style) ────── */
+/* ─── Segmented Control ────────────────────────────────────────────────── */
 function PortalSegmentedControl({ tabs, activeHref }) {
   const activeIdx = tabs.findIndex(t => activeHref.startsWith(t.href));
   return (
@@ -46,12 +46,12 @@ function PortalSegmentedControl({ tabs, activeHref }) {
   );
 }
 
-/* ─── Map/Cards Toggle (dark theme) ──────────────────────────────────── */
+/* ─── Map/Cards Toggle (light theme) ───────────────────────────────────── */
 export function ViewToggle({ isCards, onChange }) {
   return (
-    <div className="relative flex bg-[#1A1A2E] rounded-lg p-0.5">
+    <div className="relative flex bg-gray-100 rounded-lg p-0.5">
       <div
-        className={`absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-[#6D4A9E]/20 rounded-md transition-transform duration-300 ease-in-out ${
+        className={`absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-white rounded-md shadow-sm transition-transform duration-300 ease-in-out ${
           isCards ? 'translate-x-[calc(100%+2px)]' : 'translate-x-0'
         }`}
         style={{ left: '2px' }}
@@ -59,7 +59,7 @@ export function ViewToggle({ isCards, onChange }) {
       <button
         onClick={() => onChange(false)}
         className={`relative z-10 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-200 ${
-          !isCards ? 'text-[#9B72CF]' : 'text-[#7A7A9A]'
+          !isCards ? 'text-[#6D4A9E]' : 'text-gray-400'
         }`}
       >
         <Map className="w-3.5 h-3.5" />
@@ -68,7 +68,7 @@ export function ViewToggle({ isCards, onChange }) {
       <button
         onClick={() => onChange(true)}
         className={`relative z-10 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-200 ${
-          isCards ? 'text-[#9B72CF]' : 'text-[#7A7A9A]'
+          isCards ? 'text-[#6D4A9E]' : 'text-gray-400'
         }`}
       >
         <LayoutGrid className="w-3.5 h-3.5" />
@@ -83,8 +83,8 @@ export default function PortalShell({ children }) {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen bg-[#0D0D14] text-white flex flex-col">
-      {/* Portal Nav */}
+    <div className="min-h-screen bg-[#FAFAFA] text-gray-900 flex flex-col">
+      {/* Portal Nav — stays dark */}
       <header className="sticky top-0 z-40 bg-[#0D0D14]/95 backdrop-blur-xl border-b border-[#2A2A40]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center gap-4">
           {/* Logo */}
@@ -92,7 +92,7 @@ export default function PortalShell({ children }) {
             <img
               src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
               alt="Aram Ventures"
-              className="h-10 brightness-0 invert"
+              className="h-10"
             />
           </Link>
 

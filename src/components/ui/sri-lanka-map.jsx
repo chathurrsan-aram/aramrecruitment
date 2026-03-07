@@ -43,7 +43,7 @@ const STATUS_COLORS = {
   planned: '#C4B1DD',
 };
 
-const INACTIVE_COLOR = '#D1D5DB';
+const INACTIVE_COLOR = '#E5E5E0';
 
 function getDistrictFill(code, districtHighlights) {
   if (districtHighlights) {
@@ -57,7 +57,7 @@ function getDistrictFill(code, districtHighlights) {
   return INACTIVE_COLOR;
 }
 
-/* ─── Styles ──────────────────────────────────────── */
+/* ─── Styles (light theme) ───────────────────────── */
 function getStyle(feature, hoveredCode, selectedCode, selectedRegion, districtHighlights) {
   const code = feature.properties.code;
   const fill = getDistrictFill(code, districtHighlights);
@@ -71,7 +71,7 @@ function getStyle(feature, hoveredCode, selectedCode, selectedRegion, districtHi
     return {
       fillColor: fill,
       fillOpacity: 0.9,
-      color: '#FFFFFF',
+      color: '#1A1A1A',
       weight: 3,
       dashArray: ''
     };
@@ -90,8 +90,8 @@ function getStyle(feature, hoveredCode, selectedCode, selectedRegion, districtHi
   if (isHovered) {
     return {
       fillColor: fill,
-      fillOpacity: hasHighlight ? 0.75 : 0.4,
-      color: '#fff',
+      fillOpacity: hasHighlight ? 0.8 : 0.5,
+      color: '#333',
       weight: 2,
       dashArray: '',
     };
@@ -99,8 +99,8 @@ function getStyle(feature, hoveredCode, selectedCode, selectedRegion, districtHi
 
   return {
     fillColor: fill,
-    fillOpacity: hasHighlight ? 0.6 : 0.25,
-    color: 'rgba(255,255,255,0.7)',
+    fillOpacity: hasHighlight ? 0.7 : 0.4,
+    color: '#D1D5DB',
     weight: 1,
     dashArray: '',
   };
@@ -211,14 +211,14 @@ function ZoomControl() {
     <div className="absolute bottom-16 right-4 z-[400] flex flex-col gap-1">
       <button
         onClick={() => map.zoomIn()}
-        className="w-8 h-8 bg-white/95 backdrop-blur-sm border border-aram-warm-200 rounded-lg shadow-lg flex items-center justify-center text-aram-warm-500 hover:text-aram-green-900 transition-colors text-lg font-medium"
+        className="w-8 h-8 bg-white border border-gray-200 rounded-lg shadow-md flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors text-lg font-medium"
         aria-label="Zoom in"
       >
         +
       </button>
       <button
         onClick={() => map.zoomOut()}
-        className="w-8 h-8 bg-white/95 backdrop-blur-sm border border-aram-warm-200 rounded-lg shadow-lg flex items-center justify-center text-aram-warm-500 hover:text-aram-green-900 transition-colors text-lg font-medium"
+        className="w-8 h-8 bg-white border border-gray-200 rounded-lg shadow-md flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors text-lg font-medium"
         aria-label="Zoom out"
       >
         -
@@ -294,10 +294,10 @@ export default function SriLankaMap({
 
   if (geoError) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-aram-warm-50">
+      <div className="w-full h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <p className="text-aram-warm-500 text-sm font-medium mb-1">Unable to load map data</p>
-          <p className="text-aram-warm-400 text-xs">Please refresh the page to try again.</p>
+          <p className="text-gray-500 text-sm font-medium mb-1">Unable to load map data</p>
+          <p className="text-gray-400 text-xs">Please refresh the page to try again.</p>
         </div>
       </div>
     );
@@ -305,10 +305,10 @@ export default function SriLankaMap({
 
   if (!geoData) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-aram-warm-50">
+      <div className="w-full h-full flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-aram-warm-300 border-t-aram-purple rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-aram-warm-400 text-sm">Loading map...</p>
+          <div className="w-8 h-8 border-2 border-gray-200 border-t-[#6D4A9E] rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-400 text-sm">Loading map...</p>
         </div>
       </div>
     );
@@ -334,7 +334,7 @@ export default function SriLankaMap({
         doubleClickZoom={true}
         touchZoom={true}
         attributionControl={false}
-        style={{ background: '#F8FAFC' }}
+        style={{ background: '#F5F5F0' }}
         minZoom={7}
         maxZoom={11}
         maxBounds={[
@@ -368,17 +368,17 @@ export default function SriLankaMap({
       )}
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 z-[400] bg-white/95 backdrop-blur-sm rounded-xl border border-aram-warm-200 shadow-lg px-4 py-3">
-        <p className="text-[10px] font-mono uppercase tracking-wider text-aram-warm-400 mb-2">
+      <div className="absolute bottom-4 left-4 z-[400] bg-white rounded-xl border border-gray-200 shadow-lg px-4 py-3">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-2">
           District Status
         </p>
         {legend.map(item => (
           <div key={item.label} className="flex items-center gap-2 py-0.5">
             <span className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: item.color }} />
-            <span className="text-xs text-aram-warm-500 font-medium">
+            <span className="text-xs text-gray-600 font-medium">
               {item.label}
               {item.count != null && (
-                <span className="text-aram-warm-300 font-normal ml-1">({item.count})</span>
+                <span className="text-gray-400 font-normal ml-1">({item.count})</span>
               )}
             </span>
           </div>
@@ -389,7 +389,7 @@ export default function SriLankaMap({
       {selectedDistrict && (
         <button
           onClick={() => { onSelectDistrict(null); onSelectRegion(null); }}
-          className="absolute top-4 left-4 z-[400] flex items-center gap-1.5 text-sm bg-white/95 backdrop-blur-sm border border-aram-warm-200 rounded-lg px-3 py-2 shadow-lg text-aram-warm-500 hover:text-aram-green-900 transition-colors"
+          className="absolute top-4 left-4 z-[400] flex items-center gap-1.5 text-sm bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-md text-gray-500 hover:text-gray-900 transition-colors"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -401,7 +401,7 @@ export default function SriLankaMap({
   );
 }
 
-/* ─── Tooltip component ───────────────────────────── */
+/* ─── Tooltip component (light theme) ────────────── */
 function DistrictTooltip({ code, geoData, districtHighlights }) {
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const feature = geoData.features.find(f => f.properties.code === code);
@@ -421,29 +421,29 @@ function DistrictTooltip({ code, geoData, districtHighlights }) {
       className="fixed z-[2000] pointer-events-none"
       style={{ left: pos.x + 16, top: pos.y - 12 }}
     >
-      <div className="bg-aram-green-950/95 backdrop-blur-sm text-white rounded-lg px-3.5 py-2.5 shadow-xl border border-white/10">
-        <p className="font-semibold text-sm">{feature.properties.name}</p>
-        <p className="text-white/50 text-xs">{feature.properties.province} Province</p>
+      <div className="bg-white rounded-lg px-3.5 py-2.5 shadow-xl border border-gray-200">
+        <p className="font-semibold text-sm text-gray-900">{feature.properties.name}</p>
+        <p className="text-gray-400 text-xs">{feature.properties.province} Province</p>
         {districtHighlights ? (
           highlight ? (
             <p className="text-xs mt-1 font-medium" style={{ color: highlight.color }}>
               {highlight.label}
             </p>
           ) : (
-            <p className="text-white/40 text-xs mt-1">No ventures in this district</p>
+            <p className="text-gray-400 text-xs mt-1">No ventures in this district</p>
           )
         ) : (
           <>
             {project?.status === 'active' && (
-              <p className="text-aram-purple-light text-xs mt-1 font-medium">
+              <p className="text-[#6D4A9E] text-xs mt-1 font-medium">
                 Active — {project.projects.length} {project.projects.length === 1 ? 'project' : 'projects'}
               </p>
             )}
             {project?.status === 'planned' && (
-              <p className="text-purple-300 text-xs mt-1 font-medium">Planned expansion</p>
+              <p className="text-purple-500 text-xs mt-1 font-medium">Planned expansion</p>
             )}
             {!project && (
-              <p className="text-white/40 text-xs mt-1">No current operations</p>
+              <p className="text-gray-400 text-xs mt-1">No current operations</p>
             )}
           </>
         )}

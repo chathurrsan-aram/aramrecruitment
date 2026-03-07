@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Maximize2, Minimize2, ArrowRight, FileText, Table, Lock } from 'lucide-react';
 import { TruePotentialBadge } from './venture-card';
 import { useFounderModal } from './founder-modal';
-import { ventureSectors } from '@/data/venturesData';
+import { ventureSectors, investorPositions } from '@/data/venturesData';
 
 /* ─── True Potential involvement data per venture ─────────────────────── */
 const TP_INVOLVEMENT = {
@@ -60,23 +60,23 @@ function TruePotentialBlock({ ventureId }) {
   );
 }
 
-/* ─── Stat Block ─────────────────────────────────────────────────────── */
+/* ─── Stat Block (light theme) ──────────────────────────────────────── */
 function StatBlock({ label, value }) {
   return (
-    <div className="bg-[#1A1A2E] rounded-lg p-3 text-center">
-      <p className="text-lg font-bold text-white">{value}</p>
-      <p className="text-[10px] font-mono uppercase tracking-wider text-[#7A7A9A]">{label}</p>
+    <div className="bg-gray-50 rounded-lg p-3 text-center border border-gray-100">
+      <p className="text-lg font-bold text-gray-900">{value}</p>
+      <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">{label}</p>
     </div>
   );
 }
 
-/* ─── Tab Pill ────────────────────────────────────────────────────────── */
+/* ─── Tab Pill (light theme) ─────────────────────────────────────────── */
 function TabPill({ label, active, onClick }) {
   return (
     <button
       onClick={onClick}
       className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
-        active ? 'bg-[#6D4A9E]/20 text-[#9B72CF]' : 'text-[#7A7A9A] hover:text-white'
+        active ? 'bg-[#6D4A9E]/10 text-[#6D4A9E]' : 'text-gray-400 hover:text-gray-700'
       }`}
     >
       {label}
@@ -84,8 +84,8 @@ function TabPill({ label, active, onClick }) {
   );
 }
 
-/* ─── Document Row ────────────────────────────────────────────────────── */
-function DocumentRow({ doc, onRequest }) {
+/* ─── Document Row (light theme) ─────────────────────────────────────── */
+function DocumentRow({ doc }) {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: '', email: '' });
@@ -100,19 +100,19 @@ function DocumentRow({ doc, onRequest }) {
   const Icon = doc.type === 'XLSX' ? Table : FileText;
 
   return (
-    <div className="p-3 rounded-lg bg-[#1A1A2E] border border-[#2A2A40]">
+    <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
       <div className="flex items-center gap-3">
-        <Icon className="w-5 h-5 text-[#7A7A9A] flex-shrink-0" />
+        <Icon className="w-5 h-5 text-gray-400 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-white">{doc.name}</p>
-          <p className="text-[10px] font-mono text-[#7A7A9A] uppercase">{doc.type}</p>
+          <p className="text-sm font-medium text-gray-900">{doc.name}</p>
+          <p className="text-[10px] font-mono text-gray-400 uppercase">{doc.type}</p>
         </div>
         {submitted ? (
-          <span className="text-xs text-[#2ECC71]">Requested</span>
+          <span className="text-xs text-emerald-600">Requested</span>
         ) : (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-1 text-xs text-[#9B72CF] hover:text-white transition-colors"
+            className="flex items-center gap-1 text-xs text-[#6D4A9E] hover:text-[#5A3D82] transition-colors"
           >
             <Lock className="w-3 h-3" /> Request Access
           </button>
@@ -132,7 +132,7 @@ function DocumentRow({ doc, onRequest }) {
               placeholder="Name"
               value={form.name}
               onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-[#0D0D14] border border-[#2A2A40] text-white text-sm placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E]"
+              className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E]"
             />
             <input
               required
@@ -140,7 +140,7 @@ function DocumentRow({ doc, onRequest }) {
               placeholder="Email"
               value={form.email}
               onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-[#0D0D14] border border-[#2A2A40] text-white text-sm placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E]"
+              className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E]"
             />
             <button type="submit" className="w-full py-2 bg-[#6D4A9E] text-white rounded-lg text-sm font-medium hover:bg-[#5A3D82] transition-colors">
               Submit
@@ -152,7 +152,7 @@ function DocumentRow({ doc, onRequest }) {
   );
 }
 
-/* ─── Interest Form ───────────────────────────────────────────────────── */
+/* ─── Interest Form (light theme) ────────────────────────────────────── */
 function InterestForm({ companyName, variant = 'portfolio' }) {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -167,8 +167,8 @@ function InterestForm({ companyName, variant = 'portfolio' }) {
 
   if (submitted) {
     return (
-      <div className="p-4 rounded-xl bg-[#2ECC71]/10 border border-[#2ECC71]/30 text-center">
-        <p className="text-sm text-[#2ECC71] font-medium">Interest registered successfully</p>
+      <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
+        <p className="text-sm text-emerald-700 font-medium">Interest registered successfully</p>
       </div>
     );
   }
@@ -193,7 +193,7 @@ function InterestForm({ companyName, variant = 'portfolio' }) {
         placeholder="Name"
         value={form.name}
         onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-        className="w-full px-4 py-2.5 rounded-xl bg-[#1A1A2E] border border-[#2A2A40] text-white text-sm placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E]"
+        className="w-full px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E]"
       />
       <input
         required
@@ -201,20 +201,20 @@ function InterestForm({ companyName, variant = 'portfolio' }) {
         placeholder="Email"
         value={form.email}
         onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-        className="w-full px-4 py-2.5 rounded-xl bg-[#1A1A2E] border border-[#2A2A40] text-white text-sm placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E]"
+        className="w-full px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E]"
       />
       <textarea
         placeholder="Short note (optional)"
         rows={2}
         value={form.note}
         onChange={e => setForm(f => ({ ...f, note: e.target.value }))}
-        className="w-full px-4 py-2.5 rounded-xl bg-[#1A1A2E] border border-[#2A2A40] text-white text-sm placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E] resize-none"
+        className="w-full px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] resize-none"
       />
       <div className="flex gap-2">
         <button type="submit" className="flex-1 py-2.5 bg-[#6D4A9E] text-white rounded-xl text-sm font-medium hover:bg-[#5A3D82] transition-colors">
           Submit
         </button>
-        <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2.5 border border-[#2A2A40] text-[#7A7A9A] rounded-xl text-sm hover:text-white transition-colors">
+        <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2.5 border border-gray-200 text-gray-500 rounded-xl text-sm hover:text-gray-700 transition-colors">
           Cancel
         </button>
       </div>
@@ -222,9 +222,9 @@ function InterestForm({ companyName, variant = 'portfolio' }) {
   );
 }
 
-/* ─── Portfolio Panel Content ─────────────────────────────────────────── */
+/* ─── Portfolio Panel Content (light theme) ──────────────────────────── */
 function PortfolioPanelContent({ company }) {
-  const [tab, setTab] = useState('overview');
+  const [tab, setTab] = useState('your-position');
   const sector = ventureSectors.find(s => s.id === company.sector);
 
   const stageColor = company.stage === 'pre-seed' ? '#6D4A9E' : '#1ABC9C';
@@ -242,11 +242,11 @@ function PortfolioPanelContent({ company }) {
           <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium capitalize" style={{ backgroundColor: `${stageColor}20`, color: stageColor, border: `1px solid ${stageColor}30` }}>
             {company.stage}
           </span>
-          <span className="text-xs text-[#7A7A9A] font-mono">{company.region}</span>
+          <span className="text-xs text-gray-400 font-mono">{company.region}</span>
         </div>
-        <h2 className="font-display text-2xl font-bold text-white mb-1">{company.name}</h2>
+        <h2 className="font-display text-2xl font-bold text-gray-900 mb-1">{company.name}</h2>
         {company.truePotential && <TruePotentialBadge size="md" />}
-        <p className="text-[#7A7A9A] mt-2">{company.tagline}</p>
+        <p className="text-gray-600 mt-2">{company.tagline}</p>
       </div>
 
       {/* Stat bar */}
@@ -258,48 +258,102 @@ function PortfolioPanelContent({ company }) {
       </div>
 
       {/* Internal tabs */}
-      <div className="flex gap-1 bg-[#1A1A2E] rounded-lg p-1">
-        {['Overview', 'Growth Plan', 'Financials', 'Documents'].map(t => (
+      <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+        {['Your Position', 'Overview', 'Growth Plan', 'Financials', 'Documents'].map(t => (
           <TabPill key={t} label={t} active={tab === t.toLowerCase().replace(' ', '-')} onClick={() => setTab(t.toLowerCase().replace(' ', '-'))} />
         ))}
       </div>
 
       {/* Tab content */}
+      {tab === 'your-position' && (() => {
+        const position = investorPositions[company.id];
+        if (!position) {
+          return (
+            <div className="text-center py-8">
+              <p className="text-gray-400 text-sm">No position data available for this venture.</p>
+            </div>
+          );
+        }
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">Amount Invested</p>
+                <p className="text-xl font-bold text-gray-900">£{position.invested.toLocaleString()}</p>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">Current Value</p>
+                <p className="text-xl font-bold text-gray-900">£{position.positionValue.toLocaleString()}</p>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">Equity Held</p>
+                <p className="text-xl font-bold text-gray-900">{position.equityHeld}%</p>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">Return Multiple</p>
+                <p className={`text-xl font-bold ${position.returnMultiple >= 1 ? 'text-emerald-600' : 'text-gray-900'}`}>{position.returnMultiple.toFixed(2)}x</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="text-sm text-gray-500">Share Class</span>
+                <span className="text-sm font-medium text-gray-900">{position.shareClass}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="text-sm text-gray-500">Investment Date</span>
+                <span className="text-sm font-medium text-gray-900">{new Date(position.investmentDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="text-sm text-gray-500">Company Valuation</span>
+                <span className="text-sm font-medium text-gray-900">£{(position.currentValuation / 1000).toFixed(0)}k</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="text-sm text-gray-500">Status</span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">{position.status}</span>
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 text-center italic">
+              Position data shown for demo purposes. Live positions would be connected to your investor account.
+            </p>
+          </div>
+        );
+      })()}
+
       {tab === 'overview' && (
         <div className="space-y-6">
           <div>
-            <h3 className="text-sm font-semibold text-white mb-2">Problem</h3>
-            <p className="text-sm text-[#7A7A9A] leading-relaxed">{company.problem}</p>
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Problem</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">{company.problem}</p>
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white mb-2">Thesis</h3>
-            <p className="text-sm text-[#7A7A9A] leading-relaxed">{company.thesis}</p>
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Thesis</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">{company.thesis}</p>
           </div>
           {/* True Potential involvement */}
           {company.truePotential && <TruePotentialBlock ventureId={company.id} />}
           {/* Founder card */}
-          <div className="p-4 rounded-xl bg-[#1A1A2E] border border-[#2A2A40]">
+          <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-[#6D4A9E]/20 flex items-center justify-center">
-                <span className="font-display text-sm font-bold text-[#9B72CF]">{company.founder.initials}</span>
+              <div className="w-10 h-10 rounded-full bg-[#6D4A9E]/10 flex items-center justify-center">
+                <span className="font-display text-sm font-bold text-[#6D4A9E]">{company.founder.initials}</span>
               </div>
               <div>
-                <p className="font-semibold text-white text-sm">{company.founder.name}</p>
-                <p className="text-xs text-[#7A7A9A]">Age {company.founder.age} · {company.founder.based}</p>
+                <p className="font-semibold text-gray-900 text-sm">{company.founder.name}</p>
+                <p className="text-xs text-gray-500">Age {company.founder.age} · {company.founder.based}</p>
               </div>
             </div>
-            <p className="text-sm text-[#7A7A9A] mb-2">{company.founder.background}</p>
-            <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[#6D4A9E]/10 text-[#9B72CF] border border-[#6D4A9E]/20">
+            <p className="text-sm text-gray-600 mb-2">{company.founder.background}</p>
+            <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[#6D4A9E]/10 text-[#6D4A9E] border border-[#6D4A9E]/20">
               {company.founder.experience}
             </span>
           </div>
           {/* Why Now */}
           <div>
-            <h3 className="text-sm font-semibold text-white mb-2">Why Now</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Why Now</h3>
             <ul className="space-y-2">
               {company.whyNow.map((point, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-[#7A7A9A]">
-                  <span className="text-[#9B72CF] mt-1 flex-shrink-0">→</span>
+                <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                  <span className="text-[#6D4A9E] mt-1 flex-shrink-0">→</span>
                   {point}
                 </li>
               ))}
@@ -312,22 +366,20 @@ function PortfolioPanelContent({ company }) {
         <div className="space-y-4">
           {company.growthPlan.map((phase, i) => (
             <div key={i} className="relative pl-6">
-              {/* Timeline line */}
               {i < company.growthPlan.length - 1 && (
-                <div className="absolute left-[7px] top-6 bottom-0 w-0.5 bg-[#2A2A40]" />
+                <div className="absolute left-[7px] top-6 bottom-0 w-0.5 bg-gray-200" />
               )}
-              {/* Dot */}
               <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 flex items-center justify-center" style={{ borderColor: phase.color, backgroundColor: `${phase.color}20` }}>
                 <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: phase.color }} />
               </div>
               <div className="pb-6">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-semibold text-sm text-white">{phase.label}</span>
-                  <span className="text-[10px] font-mono text-[#7A7A9A]">{phase.timeframe}</span>
+                  <span className="font-semibold text-sm text-gray-900">{phase.label}</span>
+                  <span className="text-[10px] font-mono text-gray-400">{phase.timeframe}</span>
                 </div>
                 <ul className="space-y-1">
                   {phase.milestones.map((m, j) => (
-                    <li key={j} className="text-sm text-[#7A7A9A] flex items-start gap-2">
+                    <li key={j} className="text-sm text-gray-600 flex items-start gap-2">
                       <span className="mt-1 flex-shrink-0" style={{ color: phase.color }}>·</span>
                       {m}
                     </li>
@@ -347,19 +399,19 @@ function PortfolioPanelContent({ company }) {
             <StatBlock label="Runway" value={company.financials.runway} />
             <StatBlock label="Model" value={company.financials.model.split(' ').slice(0, 2).join(' ')} />
           </div>
-          <div className="p-4 rounded-xl bg-[#2ECC71]/10 border border-[#2ECC71]/20">
-            <p className="text-xs font-mono uppercase tracking-wider text-[#2ECC71] mb-1">Key Metric</p>
-            <p className="text-lg font-bold text-white">{company.financials.keyMetric}</p>
+          <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+            <p className="text-xs font-mono uppercase tracking-wider text-emerald-600 mb-1">Key Metric</p>
+            <p className="text-lg font-bold text-gray-900">{company.financials.keyMetric}</p>
           </div>
           <div>
-            <p className="text-xs font-mono uppercase tracking-wider text-[#7A7A9A] mb-3">Market Size</p>
+            <p className="text-xs font-mono uppercase tracking-wider text-gray-400 mb-3">Market Size</p>
             <div className="grid grid-cols-3 gap-2">
               <StatBlock label="TAM" value={company.financials.tam} />
               <StatBlock label="SAM" value={company.financials.sam} />
               <StatBlock label="SOM" value={company.financials.som} />
             </div>
           </div>
-          <p className="text-xs text-[#7A7A9A] text-center italic">Detailed financials available on request</p>
+          <p className="text-xs text-gray-400 text-center italic">Detailed financials available on request</p>
         </div>
       )}
 
@@ -372,14 +424,14 @@ function PortfolioPanelContent({ company }) {
       )}
 
       {/* Footer actions */}
-      <div className="pt-4 border-t border-[#2A2A40]">
+      <div className="pt-4 border-t border-gray-200">
         <InterestForm companyName={company.name} variant="portfolio" />
       </div>
     </div>
   );
 }
 
-/* ─── Emerging Panel Content ─────────────────────────────────────────── */
+/* ─── Emerging Panel Content (light theme) ──────────────────────────── */
 function EmergingPanelContent({ venture }) {
   const [tab, setTab] = useState('overview');
   const sector = ventureSectors.find(s => s.id === venture.sector);
@@ -398,13 +450,13 @@ function EmergingPanelContent({ venture }) {
             Opportunity
           </span>
         </div>
-        <h2 className="font-display text-2xl font-bold text-white mb-1">{venture.name}</h2>
-        <p className="text-xs font-mono text-[#7A7A9A]">{venture.region}</p>
-        <p className="text-[#7A7A9A] mt-2">{venture.tagline}</p>
+        <h2 className="font-display text-2xl font-bold text-gray-900 mb-1">{venture.name}</h2>
+        <p className="text-xs font-mono text-gray-400">{venture.region}</p>
+        <p className="text-gray-600 mt-2">{venture.tagline}</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-[#1A1A2E] rounded-lg p-1">
+      <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
         {['Overview', 'Why Now', 'Opportunity', 'Register Interest'].map(t => (
           <TabPill key={t} label={t} active={tab === t.toLowerCase().replace(' ', '-')} onClick={() => setTab(t.toLowerCase().replace(' ', '-'))} />
         ))}
@@ -413,23 +465,23 @@ function EmergingPanelContent({ venture }) {
       {tab === 'overview' && (
         <div className="space-y-6">
           <div className="flex items-center gap-2 mb-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[#6D4A9E]/10 text-[#9B72CF] border border-[#6D4A9E]/20">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-mono bg-[#6D4A9E]/10 text-[#6D4A9E] border border-[#6D4A9E]/20 font-medium">
               Aram-identified
             </span>
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white mb-2">Problem</h3>
-            <p className="text-sm text-[#7A7A9A] leading-relaxed">{venture.problem}</p>
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Problem</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">{venture.problem}</p>
           </div>
         </div>
       )}
 
       {tab === 'why-now' && (
         <div>
-          <h3 className="text-sm font-semibold text-white mb-3">Macro Tailwinds</h3>
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">Macro Tailwinds</h3>
           <ul className="space-y-3">
             {venture.whyNow.map((point, i) => (
-              <li key={i} className="flex items-start gap-3 p-3 rounded-lg bg-[#1A1A2E] border border-[#2A2A40] text-sm text-[#7A7A9A]">
+              <li key={i} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100 text-sm text-gray-600">
                 <span className="text-[#C9A84C] mt-0.5 flex-shrink-0 font-bold">{i + 1}</span>
                 {point}
               </li>
@@ -445,12 +497,12 @@ function EmergingPanelContent({ venture }) {
             <StatBlock label="SAM" value={venture.opportunity.sam} />
             <StatBlock label="SOM" value={venture.opportunity.som} />
           </div>
-          <div className="p-4 rounded-xl bg-[#1A1A2E] border border-[#2A2A40]">
-            <p className="text-xs font-mono uppercase tracking-wider text-[#7A7A9A] mb-2">Ideal Raise</p>
+          <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+            <p className="text-xs font-mono uppercase tracking-wider text-gray-400 mb-2">Ideal Raise</p>
             <p className="text-lg font-bold text-[#C9A84C]">{venture.opportunity.idealRaise}</p>
           </div>
           <div>
-            <p className="text-xs font-mono uppercase tracking-wider text-[#7A7A9A] mb-2">Seeking</p>
+            <p className="text-xs font-mono uppercase tracking-wider text-gray-400 mb-2">Seeking</p>
             <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#C9A84C]/15 border border-[#C9A84C]/30 text-[#C9A84C]">
               {venture.opportunity.seeking}
             </span>
@@ -465,7 +517,7 @@ function EmergingPanelContent({ venture }) {
   );
 }
 
-/* ─── Main Slide Panel ────────────────────────────────────────────────── */
+/* ─── Main Slide Panel (light theme) ─────────────────────────────────── */
 export default function SlidePanel({ item, type, onClose }) {
   const [fullscreen, setFullscreen] = useState(false);
 
@@ -484,7 +536,7 @@ export default function SlidePanel({ item, type, onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-40 ${fullscreen ? 'bg-black/80 backdrop-blur-md' : 'bg-black/40 backdrop-blur-sm'}`}
+            className={`fixed inset-0 z-40 ${fullscreen ? 'bg-black/40 backdrop-blur-md' : 'bg-black/20 backdrop-blur-sm'}`}
             onClick={onClose}
           />
 
@@ -494,14 +546,14 @@ export default function SlidePanel({ item, type, onClose }) {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: fullscreen ? 0 : '100%', opacity: fullscreen ? 0 : 1 }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className={`${panelClasses} bg-[#0D0D14] border-l-2 border-l-[#6D4A9E] overflow-y-auto`}
+            className={`${panelClasses} bg-white border-l border-gray-200 overflow-y-auto shadow-2xl`}
           >
             {/* Panel header */}
-            <div className="sticky top-0 bg-[#0D0D14]/95 backdrop-blur-sm border-b border-[#2A2A40] px-6 py-3 flex items-center justify-between z-10">
-              <button onClick={onClose} className="text-[#7A7A9A] hover:text-white transition-colors">
+            <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 px-6 py-3 flex items-center justify-between z-10">
+              <button onClick={onClose} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <X className="w-5 h-5" />
               </button>
-              <button onClick={() => setFullscreen(!fullscreen)} className="text-[#7A7A9A] hover:text-white transition-colors">
+              <button onClick={() => setFullscreen(!fullscreen)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 {fullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
               </button>
             </div>
