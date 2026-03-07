@@ -251,273 +251,201 @@ function VenturesHero({ onOpenOpportunity }) {
   );
 }
 
-/* ─── Light-Themed Venture Portal (embedded) ────────────────────────────── */
-function LightVenturePortal() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sectorFilter, setSectorFilter] = useState('all');
-  const [stageFilter, setStageFilter] = useState('all');
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [activeNav, setActiveNav] = useState('ventures');
-
-  const allVentures = [...portfolioCompanies, ...emergingVentures];
-  const stages = [...new Set(allVentures.map(v => v.stage).filter(Boolean))];
-  const spotlightVenture = portfolioCompanies.find(c => c.truePotential) || portfolioCompanies[0];
-
-  const filteredVentures = allVentures.filter(v => {
-    const q = searchQuery.toLowerCase();
-    const matchesSearch = !searchQuery || v.name.toLowerCase().includes(q) || v.tagline.toLowerCase().includes(q);
-    const matchesSector = sectorFilter === 'all' || v.sector === sectorFilter;
-    const matchesStage = stageFilter === 'all' || v.stage === stageFilter;
-    return matchesSearch && matchesSector && matchesStage;
-  });
-
+/* ─── How It Works Onboarding Strip ─────────────────────────────────────── */
+function HowItWorks() {
   return (
-    <section id="platform-preview" className="bg-[#F8F9FB]">
-      {/* ── Portal Navbar ─────────────────────────────────────── */}
-      <div className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img
-              src="/images/Untitled design-6.png"
-              alt="Aram Ventures - True Potential"
-              className="h-8"
-            />
-            <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-[#6D4A9E]/10 text-[#6D4A9E] text-[10px] font-mono tracking-wider uppercase font-medium">
-              Portal
-            </span>
-          </div>
-          <nav className="flex items-center gap-5 text-sm font-medium">
-            {[
-              { id: 'ventures', label: 'Ventures' },
-              { id: 'insights', label: 'Insights' },
-              { id: 'map', label: 'Map' },
-            ].map(item => (
-              <button
-                key={item.id}
-                onClick={() => setActiveNav(item.id)}
-                className={`pb-0.5 transition-colors ${
-                  activeNav === item.id
-                    ? 'text-[#6D4A9E] border-b-2 border-[#6D4A9E]'
-                    : 'text-gray-400 hover:text-gray-700'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* ── How It Works ──────────────────────────────────────── */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-10">
-          <p className="font-mono text-[10px] tracking-[0.25em] text-[#6D4A9E] uppercase text-center mb-6 font-medium">
-            How it works
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { step: '01', title: 'Discover', desc: 'Browse vetted ventures across Tamil Sri Lanka, filtered by sector and district.' },
-              { step: '02', title: 'Research', desc: 'Access founder profiles, financials, growth plans, and Aram intelligence reports.' },
-              { step: '03', title: 'Connect', desc: 'Express interest directly. Aram facilitates introductions and due diligence.' },
-              { step: '04', title: 'Invest', desc: 'Deploy capital with ongoing portfolio tracking and community-backed support.' },
-            ].map(item => (
-              <div key={item.step} className="text-center">
-                <div className="w-10 h-10 rounded-full bg-[#6D4A9E]/10 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-[#6D4A9E] font-mono text-sm font-bold">{item.step}</span>
-                </div>
-                <h4 className="font-display font-semibold text-gray-900 mb-1 text-sm md:text-base">{item.title}</h4>
-                <p className="text-xs md:text-sm text-gray-500 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Featured Venture Spotlight ─────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 pt-10 pb-6">
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-          <div className="md:flex">
-            <div className="md:w-2/3 p-6 md:p-8">
-              <div className="flex items-center gap-2 mb-4 flex-wrap">
-                <span className="px-2.5 py-0.5 rounded-full bg-[#6D4A9E]/10 text-[#6D4A9E] text-[11px] font-mono font-medium uppercase tracking-wider">
-                  Featured Venture
-                </span>
-                {spotlightVenture.truePotential && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#B8941F] text-[11px] font-medium">
-                    True Potential Backed
-                  </span>
-                )}
-              </div>
-              <h3 className="font-display text-2xl md:text-3xl font-bold text-gray-900 mb-2">{spotlightVenture.name}</h3>
-              <p className="text-gray-500 leading-relaxed mb-5">{spotlightVenture.tagline}</p>
-              <div className="flex flex-wrap gap-x-6 gap-y-3 mb-6">
-                {[
-                  { label: 'Sector', value: ventureSectors.find(s => s.id === spotlightVenture.sector)?.name },
-                  { label: 'Region', value: spotlightVenture.region },
-                  { label: 'Stage', value: spotlightVenture.stage, capitalize: true },
-                  { label: 'Seeking', value: `£${(spotlightVenture.seeking / 1000).toFixed(0)}k`, accent: true },
-                ].map(d => (
-                  <div key={d.label}>
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-0.5">{d.label}</p>
-                    <p className={`text-sm font-medium ${d.accent ? 'text-[#6D4A9E]' : 'text-gray-900'} ${d.capitalize ? 'capitalize' : ''}`}>{d.value}</p>
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={() => setSelectedItem({ ...spotlightVenture, _type: 'portfolio' })}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#6D4A9E] text-white rounded-lg text-sm font-medium hover:bg-[#5A3D82] transition-colors"
-              >
-                View Details <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            <div className="md:w-1/3 bg-gradient-to-br from-[#6D4A9E]/5 to-[#6D4A9E]/10 p-6 md:p-8 flex flex-col justify-center border-t md:border-t-0 md:border-l border-gray-200">
-              <div className="space-y-4">
-                <div>
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">Revenue</p>
-                  <p className="text-lg font-bold text-gray-900">{spotlightVenture.financials?.revenue}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">Valuation</p>
-                  <p className="text-lg font-bold text-gray-900">£{(spotlightVenture.valuation / 1000).toFixed(0)}k</p>
-                </div>
-                <div>
-                  <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">Raised So Far</p>
-                  <p className="text-lg font-bold text-[#6D4A9E]">£{(spotlightVenture.raised / 1000).toFixed(0)}k</p>
-                </div>
-                <div className="pt-2">
-                  <div className="flex justify-between text-xs text-gray-500 mb-1">
-                    <span>Funding Progress</span>
-                    <span>{Math.round((spotlightVenture.raised / spotlightVenture.seeking) * 100)}%</span>
-                  </div>
-                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#6D4A9E] rounded-full"
-                      style={{ width: `${Math.min(100, (spotlightVenture.raised / spotlightVenture.seeking) * 100)}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Search & Filters ──────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 pb-4">
-        <div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search ventures..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#6D4A9E]/20 focus:border-[#6D4A9E] transition-all"
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            <select
-              value={sectorFilter}
-              onChange={e => setSectorFilter(e.target.value)}
-              className="px-3 py-2.5 rounded-lg bg-white border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6D4A9E]/20 focus:border-[#6D4A9E] transition-all appearance-none pr-8 cursor-pointer"
-              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
-            >
-              <option value="all">All Sectors</option>
-              {ventureSectors.map(s => (
-                <option key={s.id} value={s.id}>{s.name}</option>
-              ))}
-            </select>
-            <select
-              value={stageFilter}
-              onChange={e => setStageFilter(e.target.value)}
-              className="px-3 py-2.5 rounded-lg bg-white border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6D4A9E]/20 focus:border-[#6D4A9E] transition-all appearance-none pr-8 cursor-pointer capitalize"
-              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
-            >
-              <option value="all">All Stages</option>
-              {stages.map(s => (
-                <option key={s} value={s} className="capitalize">{s}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Stats Bar ─────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 pb-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div className="bg-white border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-10">
+        <p className="font-mono text-[10px] tracking-[0.25em] text-[#6D4A9E] uppercase text-center mb-6 font-medium">
+          How it works
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { label: 'Active Ventures', value: portfolioCompanies.length },
-            { label: 'Total Seeking', value: `£${(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k` },
-            { label: 'Opportunities', value: emergingVentures.length },
-            { label: 'True Potential Backed', value: portfolioCompanies.filter(c => c.truePotential).length, accent: true },
-          ].map(stat => (
-            <div key={stat.label} className="bg-white rounded-xl border border-gray-200 p-4">
-              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">{stat.label}</p>
-              <p className={`text-2xl font-bold ${stat.accent ? 'text-[#6D4A9E]' : 'text-gray-900'}`}>{stat.value}</p>
+            { step: '01', title: 'Discover', desc: 'Browse vetted ventures across Tamil Sri Lanka, filtered by sector and district.' },
+            { step: '02', title: 'Research', desc: 'Access founder profiles, financials, growth plans, and Aram intelligence reports.' },
+            { step: '03', title: 'Connect', desc: 'Express interest directly. Aram facilitates introductions and due diligence.' },
+            { step: '04', title: 'Invest', desc: 'Deploy capital with ongoing portfolio tracking and community-backed support.' },
+          ].map(item => (
+            <div key={item.step} className="text-center">
+              <div className="w-10 h-10 rounded-full bg-[#6D4A9E]/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-[#6D4A9E] font-mono text-sm font-bold">{item.step}</span>
+              </div>
+              <h4 className="font-display font-semibold text-gray-900 mb-1 text-sm md:text-base">{item.title}</h4>
+              <p className="text-xs md:text-sm text-gray-500 leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* ── Venture Card Grid ─────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredVentures.map(venture => {
-            const isPortfolio = 'equity' in venture;
-            const sector = ventureSectors.find(s => s.id === venture.sector);
-            return (
-              <div
-                key={venture.id}
-                onClick={() => setSelectedItem({ ...venture, _type: isPortfolio ? 'portfolio' : 'emerging' })}
-                className="bg-white rounded-xl border border-gray-200 p-5 hover:border-[#6D4A9E]/40 hover:shadow-[0_4px_20px_rgba(109,74,158,0.08)] transition-all duration-200 cursor-pointer group"
-              >
-                <div className="flex items-center gap-2 mb-3 flex-wrap">
-                  {sector && (
-                    <span
-                      className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium"
-                      style={{ backgroundColor: `${sector.color}15`, color: sector.color, border: `1px solid ${sector.color}30` }}
-                    >
-                      {sector.name}
-                    </span>
-                  )}
-                  {venture.stage && (
-                    <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 text-[10px] font-mono font-medium capitalize">
-                      {venture.stage}
-                    </span>
-                  )}
-                  {venture.truePotential && (
-                    <span className="px-2 py-0.5 rounded-full bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#B8941F] text-[10px] font-medium">
-                      True Potential
-                    </span>
-                  )}
+/* ─── Light-Themed Embedded Portal (original structure) ──────────────────── */
+function EmbeddedPortalPreview() {
+  const [activeTab, setActiveTab] = useState('portfolio');
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const tabs = [
+    { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
+    { id: 'opportunities', label: 'Opportunities', icon: TrendingUp },
+    { id: 'insights', label: 'Insights', icon: BookOpen },
+  ];
+
+  const filteredPortfolio = portfolioCompanies.filter(c => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return c.name.toLowerCase().includes(q) || c.tagline.toLowerCase().includes(q);
+  });
+
+  const filteredEmerging = emergingVentures.filter(v => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return v.name.toLowerCase().includes(q) || v.tagline.toLowerCase().includes(q);
+  });
+
+  const filteredInsights = ventureInsights.filter(i => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q);
+  });
+
+  return (
+    <section id="platform-preview" className="bg-[#F8F9FB] py-16 px-4 md:px-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Light card container */}
+        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          {/* Portal header */}
+          <div className="px-4 md:px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img
+                src="/images/Untitled design-6.png"
+                alt="Aram Ventures - True Potential"
+                className="h-8"
+              />
+            </div>
+          </div>
+
+          {/* Tab toggles */}
+          <div className="px-4 md:px-6 py-3 border-b border-gray-200">
+            <div className="flex bg-gray-100 rounded-xl p-1 max-w-md mx-auto">
+              {tabs.map(tab => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => { setActiveTab(tab.id); setSearchQuery(''); setSelectedItem(null); }}
+                    className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex-1 ${
+                      isActive
+                        ? 'bg-[#6D4A9E] text-white shadow-sm'
+                        : 'text-gray-500 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Tab content */}
+          <div className="p-4 md:p-6 bg-[#F8F9FB]">
+            {/* Search */}
+            <div className="relative max-w-sm mb-6">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder={`Search ${activeTab}...`}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] focus:ring-1 focus:ring-[#6D4A9E]/20 transition-colors"
+              />
+            </div>
+
+            {/* Portfolio tab */}
+            {activeTab === 'portfolio' && (
+              <div>
+                {/* Summary bar */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="bg-white border border-gray-200 rounded-xl p-4">
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500 mb-1">Active Ventures</p>
+                    <p className="text-xl font-bold text-gray-900">{portfolioCompanies.length}</p>
+                  </div>
+                  <div className="bg-white border border-gray-200 rounded-xl p-4">
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500 mb-1">Total Seeking</p>
+                    <p className="text-xl font-bold text-gray-900">£{(portfolioCompanies.reduce((sum, c) => sum + c.seeking, 0) / 1000).toFixed(0)}k</p>
+                  </div>
+                  <div className="bg-white border border-gray-200 rounded-xl p-4">
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500 mb-1">True Potential Backed</p>
+                    <p className="text-xl font-bold text-gray-900">{portfolioCompanies.filter(c => c.truePotential).length}</p>
+                  </div>
                 </div>
-                <h3 className="font-display text-lg font-semibold text-gray-900 mb-1 group-hover:text-[#6D4A9E] transition-colors">{venture.name}</h3>
-                <p className="text-sm text-gray-500 mb-4 line-clamp-2">{venture.tagline}</p>
-                <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-100">
-                  <span className="flex items-center gap-1">
-                    <Map className="w-3 h-3" />
-                    {venture.region}
-                  </span>
-                  <span className="font-mono text-[#6D4A9E] font-medium">
-                    {venture.seeking ? `£${(venture.seeking / 1000).toFixed(0)}k` : venture.estimateRange}
-                  </span>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredPortfolio.map(company => (
+                    <div key={company.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-[#6D4A9E] hover:shadow-md transition-all duration-200 cursor-pointer" onClick={() => setSelectedItem({ ...company, _type: 'portfolio' })}>
+                      <div className="flex items-center gap-2 mb-3 flex-wrap">
+                        {company.truePotential && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#6D4A9E]/10 border border-[#6D4A9E]/20 text-[#6D4A9E] text-[11px] font-medium">
+                            ✦ True Potential
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-display text-lg font-semibold text-gray-900 mb-1">{company.name}</h3>
+                      <p className="text-sm text-gray-500 mb-3 line-clamp-2">{company.tagline}</p>
+                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                        <span className="font-mono">{company.region}</span>
+                        <span className="text-gray-300">·</span>
+                        <span className="font-mono text-[#6D4A9E]">Seeking £{(company.seeking / 1000).toFixed(0)}k</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            );
-          })}
-        </div>
+            )}
 
-        {filteredVentures.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-gray-400 text-sm">No ventures match your filters.</p>
-            <button
-              onClick={() => { setSearchQuery(''); setSectorFilter('all'); setStageFilter('all'); }}
-              className="mt-2 text-[#6D4A9E] text-sm font-medium hover:underline"
-            >
-              Clear filters
-            </button>
+            {/* Opportunities tab */}
+            {activeTab === 'opportunities' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredEmerging.map(venture => (
+                  <div key={venture.id} className="bg-white border border-dashed border-gray-300 rounded-xl p-5 hover:border-[#6D4A9E]/50 transition-all duration-200 cursor-pointer" onClick={() => setSelectedItem({ ...venture, _type: 'emerging' })}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#6D4A9E]/10 border border-[#6D4A9E]/20 text-[#6D4A9E]">
+                        Opportunity
+                      </span>
+                    </div>
+                    <h3 className="font-display text-lg font-semibold text-gray-900 mb-1">{venture.name}</h3>
+                    <p className="text-sm text-gray-500 mb-3 line-clamp-2">{venture.tagline}</p>
+                    <div className="flex items-center gap-3 text-xs text-gray-500">
+                      <span className="font-mono">{venture.region}</span>
+                      <span className="text-gray-300">·</span>
+                      <span className="font-mono text-[#6D4A9E]">Est. {venture.estimateRange}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Insights tab */}
+            {activeTab === 'insights' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredInsights.map(insight => (
+                  <div key={insight.id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-[#6D4A9E] hover:shadow-md transition-all duration-200">
+                    <h3 className="font-display text-base font-semibold text-gray-900 mb-2 leading-snug">{insight.title}</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed mb-3 line-clamp-2">{insight.summary}</p>
+                    <div className="flex items-center gap-3 text-xs text-gray-500">
+                      <span className="font-mono">{insight.region}</span>
+                      <span className="text-gray-300">·</span>
+                      <span>{insight.readTime} min read</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Slide-out panel */}
@@ -546,8 +474,11 @@ export default function VenturesLanding() {
       {/* ── Venture Opportunity Popout ──────────────────────────── */}
       <OpportunityPopout isOpen={showOpportunity} onClose={() => setShowOpportunity(false)} />
 
-      {/* ── Light Venture Portal ─────────────────────────────────── */}
-      <LightVenturePortal />
+      {/* ── How It Works ─────────────────────────────────────────── */}
+      <HowItWorks />
+
+      {/* ── Embedded Portal (light theme) ─────────────────────── */}
+      <EmbeddedPortalPreview />
 
       {/* ── Waitlist ──────────────────────────────────────────── */}
       <section id="waitlist" className="py-24 px-6 border-t border-gray-200 bg-white">
