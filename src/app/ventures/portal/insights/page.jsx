@@ -36,15 +36,15 @@ export default function InsightsTab() {
   return (
     <div className="flex flex-col h-[calc(100vh-110px)]">
       {/* Filter bar */}
-      <div className="px-4 md:px-6 py-4 border-b border-[#2A2A40] flex flex-wrap items-center gap-3">
+      <div className="px-4 md:px-6 py-4 border-b border-gray-200 bg-white flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A7A9A]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search insights..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#1A1A2E] border border-[#2A2A40] text-sm text-white placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E] transition-colors"
+            className="w-full pl-9 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] transition-colors"
           />
         </div>
 
@@ -56,8 +56,8 @@ export default function InsightsTab() {
               onClick={() => setSectorFilter(sectorFilter === s.id ? null : s.id)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
                 sectorFilter === s.id
-                  ? 'border-[#6D4A9E] text-[#9B72CF] bg-[#6D4A9E]/10'
-                  : 'border-[#2A2A40] text-[#7A7A9A] hover:border-[#6D4A9E]/50'
+                  ? 'border-[#6D4A9E] text-[#6D4A9E] bg-[#6D4A9E]/10'
+                  : 'border-gray-200 text-gray-500 hover:border-[#6D4A9E]/50'
               }`}
             >
               {s.name}
@@ -70,13 +70,13 @@ export default function InsightsTab() {
           <select
             value={regionFilter}
             onChange={e => setRegionFilter(e.target.value)}
-            className="appearance-none pl-3 pr-8 py-2 rounded-lg bg-[#1A1A2E] border border-[#2A2A40] text-sm text-white focus:outline-none focus:border-[#6D4A9E] transition-colors"
+            className="appearance-none pl-3 pr-8 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-[#6D4A9E] transition-colors"
           >
             {ventureRegions.map(r => (
               <option key={r.id} value={r.id}>{r.name}</option>
             ))}
           </select>
-          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A7A9A] pointer-events-none" />
+          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
       </div>
 
@@ -91,7 +91,7 @@ export default function InsightsTab() {
         </StaggerContainer>
         {filteredInsights.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-[#7A7A9A]">No insights match your filters</p>
+            <p className="text-gray-400">No insights match your filters</p>
           </div>
         )}
       </div>

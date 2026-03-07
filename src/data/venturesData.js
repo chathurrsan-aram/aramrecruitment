@@ -306,6 +306,40 @@ export const ventureInsights = [
   },
 ];
 
+// ─── Investor Position Data (demo) ───────────────────────────────────────────
+export const investorPositions = {
+  'vanni-agriconnect': {
+    invested: 25000,
+    equityHeld: 3.8,
+    shareClass: 'Ordinary',
+    investmentDate: '2025-06-15',
+    currentValuation: 650000,
+    positionValue: 24700,
+    returnMultiple: 0.99,
+    status: 'Active',
+  },
+  'nalam-health': {
+    invested: 40000,
+    equityHeld: 3.6,
+    shareClass: 'Ordinary',
+    investmentDate: '2025-03-20',
+    currentValuation: 1100000,
+    positionValue: 39600,
+    returnMultiple: 0.99,
+    status: 'Active',
+  },
+  'malai-learn': {
+    invested: 15000,
+    equityHeld: 3.75,
+    shareClass: 'Ordinary',
+    investmentDate: '2025-09-01',
+    currentValuation: 400000,
+    positionValue: 15000,
+    returnMultiple: 1.0,
+    status: 'Active',
+  },
+};
+
 // ─── Venture Regions (for filtering) ─────────────────────────────────────────
 export const ventureRegions = [
   { id: 'all', name: 'All Regions' },

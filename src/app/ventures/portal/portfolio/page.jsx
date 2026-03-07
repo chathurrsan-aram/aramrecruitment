@@ -6,17 +6,17 @@ import { StaggerContainer, StaggerItem } from '@/components/ui/motion';
 import { ViewToggle } from '@/components/ventures/portal-shell';
 import { PortfolioCard } from '@/components/ventures/venture-card';
 import SlidePanel from '@/components/ventures/slide-panel';
-import { portfolioCompanies, ventureSectors, ventureRegions, getVenturesByDistrict } from '@/data/venturesData';
-import { Search, Filter } from 'lucide-react';
+import { portfolioCompanies, ventureSectors, ventureRegions, getVenturesByDistrict, investorPositions } from '@/data/venturesData';
+import { Search, Filter, TrendingUp, DollarSign, PieChart } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 const SriLankaMap = dynamic(() => import('@/components/ui/sri-lanka-map'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full flex items-center justify-center bg-[#13131F]">
+    <div className="w-full h-full flex items-center justify-center bg-gray-50">
       <div className="text-center">
-        <div className="w-8 h-8 border-2 border-[#2A2A40] border-t-[#6D4A9E] rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-[#7A7A9A] text-sm">Loading map...</p>
+        <div className="w-8 h-8 border-2 border-gray-200 border-t-[#6D4A9E] rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-gray-400 text-sm">Loading map...</p>
       </div>
     </div>
   ),
@@ -34,7 +34,7 @@ for (const company of portfolioCompanies) {
 
 const portfolioLegend = [
   { color: '#6D4A9E', label: 'Portfolio venture' },
-  { color: '#D1D5DB', label: 'No ventures' },
+  { color: '#E5E5E0', label: 'No ventures' },
 ];
 
 export default function PortfolioTab() {
@@ -82,16 +82,16 @@ export default function PortfolioTab() {
   return (
     <div className="flex flex-col h-[calc(100vh-110px)]">
       {/* Filter bar */}
-      <div className="px-4 md:px-6 py-4 border-b border-[#2A2A40] flex flex-wrap items-center gap-3">
+      <div className="px-4 md:px-6 py-4 border-b border-gray-200 bg-white flex flex-wrap items-center gap-3">
         {/* Search */}
         <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A7A9A]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search portfolio..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#1A1A2E] border border-[#2A2A40] text-sm text-white placeholder:text-[#7A7A9A] focus:outline-none focus:border-[#6D4A9E] transition-colors"
+            className="w-full pl-9 pr-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6D4A9E] transition-colors"
           />
         </div>
 
@@ -103,8 +103,8 @@ export default function PortfolioTab() {
               onClick={() => setSectorFilter(sectorFilter === s.id ? null : s.id)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
                 sectorFilter === s.id
-                  ? 'border-[#6D4A9E] text-[#9B72CF] bg-[#6D4A9E]/10'
-                  : 'border-[#2A2A40] text-[#7A7A9A] hover:border-[#6D4A9E]/50'
+                  ? 'border-[#6D4A9E] text-[#6D4A9E] bg-[#6D4A9E]/10'
+                  : 'border-gray-200 text-gray-500 hover:border-[#6D4A9E]/50'
               }`}
             >
               {s.name}
@@ -114,6 +114,46 @@ export default function PortfolioTab() {
 
         <div className="ml-auto">
           <ViewToggle isCards={isCards} onChange={setIsCards} />
+        </div>
+      </div>
+
+      {/* Portfolio Position Summary */}
+      <div className="px-4 md:px-6 py-4 bg-white border-b border-gray-200">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+            <div className="flex items-center gap-2 mb-1">
+              <DollarSign className="w-4 h-4 text-[#6D4A9E]" />
+              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Total Invested</p>
+            </div>
+            <p className="text-xl font-bold text-gray-900">
+              £{Object.values(investorPositions).reduce((sum, p) => sum + p.invested, 0).toLocaleString()}
+            </p>
+          </div>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+            <div className="flex items-center gap-2 mb-1">
+              <TrendingUp className="w-4 h-4 text-emerald-600" />
+              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Current Value</p>
+            </div>
+            <p className="text-xl font-bold text-gray-900">
+              £{Object.values(investorPositions).reduce((sum, p) => sum + p.positionValue, 0).toLocaleString()}
+            </p>
+          </div>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+            <div className="flex items-center gap-2 mb-1">
+              <PieChart className="w-4 h-4 text-[#C9A84C]" />
+              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Active Positions</p>
+            </div>
+            <p className="text-xl font-bold text-gray-900">{Object.keys(investorPositions).length}</p>
+          </div>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+            <div className="flex items-center gap-2 mb-1">
+              <TrendingUp className="w-4 h-4 text-[#6D4A9E]" />
+              <p className="text-[10px] font-mono uppercase tracking-wider text-gray-400">Avg. Multiple</p>
+            </div>
+            <p className="text-xl font-bold text-gray-900">
+              {(Object.values(investorPositions).reduce((sum, p) => sum + p.returnMultiple, 0) / Object.keys(investorPositions).length).toFixed(2)}x
+            </p>
+          </div>
         </div>
       </div>
 
@@ -130,7 +170,7 @@ export default function PortfolioTab() {
             </StaggerContainer>
             {filteredCompanies.length === 0 && (
               <div className="text-center py-20">
-                <p className="text-[#7A7A9A]">No ventures match your filters</p>
+                <p className="text-gray-400">No ventures match your filters</p>
               </div>
             )}
           </div>
