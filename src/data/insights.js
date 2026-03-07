@@ -35,9 +35,9 @@ export const insights = [
     sectors: ["education"], region: "northern", subRegion: "jaffna", partners: [], type: "observation", source: "trip-2024", date: "2024-08-15", readTime: 3,
   },
   {
-    id: "i-008", title: "Dreamspace: decentralising innovation in Sri Lanka",
-    summary: "Non-profit innovation platform with bio lab (mycelium packaging), media lab (award-winning documentaries), and music lab. Working with University of Moratuwa. British High Commission connection could unlock further support.",
-    sectors: ["technology", "economic-dev"], region: "western", subRegion: "colombo", partners: ["dreamspace"], type: "observation", source: "trip-2024", date: "2024-08-15", readTime: 4,
+    id: "i-008", title: "Dreamspace: decentralising innovation to the North and East",
+    summary: "Non-profit innovation platform with bio lab (mycelium packaging), media lab (award-winning documentaries), and music lab. Their decentralisation model could bring maker spaces and innovation hubs to Jaffna and Batticaloa, connecting northern and eastern youth with tech and enterprise pathways.",
+    sectors: ["technology", "economic-dev"], region: "northern", subRegion: "jaffna", partners: ["dreamspace"], type: "observation", source: "trip-2024", date: "2024-08-15", readTime: 4,
   },
   {
     id: "i-009", title: "Self-harm patterns in children's homes",

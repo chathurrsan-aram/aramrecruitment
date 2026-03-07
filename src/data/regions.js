@@ -38,18 +38,7 @@ export const regions = [
       { id: "jaffna", name: "Jaffna", lat: 9.66, lng: 80.02 },
       { id: "mullaitivu", name: "Mullaitivu", lat: 9.27, lng: 80.57 },
       { id: "vavuniya", name: "Vavuniya", lat: 8.75, lng: 80.50 },
-    ],
-  },
-  {
-    id: "western",
-    name: "Western Province",
-    description: "Sri Lanka's innovation hub, where diaspora connections meet local entrepreneurship and tech-driven social enterprise.",
-    center: [79.90, 6.93],
-    zoom: 9,
-    gradient: "from-purple-800 to-purple-950",
-    provinces: ["Western"],
-    subRegions: [
-      { id: "colombo", name: "Colombo", lat: 6.93, lng: 79.86 },
+      { id: "mannar", name: "Mannar", lat: 8.98, lng: 79.91 },
     ],
   },
 ];
