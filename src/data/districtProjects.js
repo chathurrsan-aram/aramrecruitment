@@ -15,7 +15,7 @@ export const districtProjects = {
     status: "active",
     projects: ["Education Mentorship", "Skills Workshop"],
     volunteers: 5,
-    description: "Our longest-running programme — pairing diaspora professionals with university students in Kandy for career mentorship.",
+    description: "Our longest-running programme, pairing diaspora professionals with university students in Kandy for career mentorship.",
   },
   GL: {
     status: "active",
@@ -39,7 +39,7 @@ export const districtProjects = {
     status: "planned",
     projects: ["Pen Pal Programme"],
     volunteers: 0,
-    description: "Expanding our pen pal programme to Batticaloa schools. Currently in planning — volunteers needed!",
+    description: "Expanding our pen pal programme to Batticaloa schools. Currently in planning, volunteers needed!",
   },
   AD: {
     status: "planned",

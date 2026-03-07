@@ -28,7 +28,7 @@ for (const venture of emergingVentures) {
   const sector = ventureSectors.find(s => s.id === venture.sector);
   opportunityHighlights[venture.districtCode] = {
     color: sector?.color || '#C9A84C',
-    label: `Opportunity — ${venture.name}`,
+    label: `Opportunity: ${venture.name}`,
   };
 }
 

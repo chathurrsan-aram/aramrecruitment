@@ -18,7 +18,7 @@ function AboutHero() {
         </Reveal>
         <Reveal delay={0.15}>
           <p className="text-lg text-aram-warm-500 leading-relaxed">
-            A youth-led movement connecting the Sri Lankan Tamil diaspora with communities on the ground — because presence, not just funding, creates lasting change.
+            A youth-led movement connecting the Sri Lankan Tamil diaspora with communities on the ground, because presence, not just funding, creates lasting change.
           </p>
         </Reveal>
       </div>
@@ -38,7 +38,7 @@ function WhoWeAre() {
         </Reveal>
         <Reveal delay={0.1}>
           <p className="text-lg text-aram-warm-500 leading-relaxed mb-6">
-            The Aram Initiative is a youth-led movement connecting the Sri Lankan Tamil diaspora with communities on the ground. Founded by young UK professionals, we believe that presence — not just funding — creates lasting change.
+            The Aram Initiative is a youth-led movement connecting the Sri Lankan Tamil diaspora with communities on the ground. Founded by young UK professionals, we believe that presence, not just funding, creates lasting change.
           </p>
         </Reveal>
         <Reveal delay={0.2}>
@@ -94,7 +94,7 @@ function OurModel() {
         'Microcredit revolving fund for women\'s self-help groups in eastern Sri Lanka',
         'Virtual mentorship programme connecting UK professionals with Sri Lankan students',
         'Pen pal project bridging UK and Sri Lankan young people',
-        'Partner capacity building — training, resources, and ongoing support',
+        'Partner capacity building: training, resources, and ongoing support',
         'Year-round engagement beyond the annual trip window',
       ],
     },

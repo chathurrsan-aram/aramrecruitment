@@ -28,7 +28,7 @@ const reports = [
   },
   {
     title: 'Aram Trip 2026 FAQ',
-    description: 'Everything you need to know about the upcoming Aram Trip 2026 — logistics, expectations, and preparation.',
+    description: 'Everything you need to know about the upcoming Aram Trip 2026: logistics, expectations, and preparation.',
     url: 'https://aram.org.uk/wp-content/uploads/2026/01/aram-trip-2026-1.pdf',
     year: '2026',
     type: 'FAQ',

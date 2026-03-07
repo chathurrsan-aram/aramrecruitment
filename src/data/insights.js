@@ -31,7 +31,7 @@ export const insights = [
   },
   {
     id: "i-007", title: "Career aspirations limited to teaching",
-    summary: "Students across multiple locations — Varany Central College, Herman Girls' Home, Pannankandy School — aspire only to become teachers. Reflects limited exposure to career options, no guidance infrastructure, and perceived difficulty of STEM subjects.",
+    summary: "Students across multiple locations (Varany Central College, Herman Girls' Home, Pannankandy School) aspire only to become teachers. Reflects limited exposure to career options, no guidance infrastructure, and perceived difficulty of STEM subjects.",
     sectors: ["education"], region: "northern", subRegion: "jaffna", partners: [], type: "observation", source: "trip-2024", date: "2024-08-15", readTime: 3,
   },
   {
@@ -51,7 +51,7 @@ export const insights = [
   },
   {
     id: "i-011", title: "Drug issues and motivation in residential care",
-    summary: "Children in St John's Boys' Home face substance abuse and lack study motivation but show strong interest in physical fitness. Gym could serve as an engagement lever — 'mentoring-gym scheme' where fitness is tied to educational participation.",
+    summary: "Children in St John's Boys' Home face substance abuse and lack study motivation but show strong interest in physical fitness. Gym could serve as an engagement lever, a 'mentoring-gym scheme' where fitness is tied to educational participation.",
     sectors: ["wellbeing", "education"], region: "eastern", subRegion: "batticaloa", partners: ["st-johns"], type: "observation", source: "trip-2024", date: "2024-08-15", readTime: 3,
   },
   {
@@ -76,7 +76,7 @@ export const insights = [
   },
   {
     id: "i-016", title: "Vavuniya family visits: drug crisis and dropout risk",
-    summary: "Older children expressed wanting to work due to financial struggles. Drugs are a major issue in the area. Motivational talks similar to the Varany career sessions could help — tailored for both children and parents to highlight available opportunities.",
+    summary: "Older children expressed wanting to work due to financial struggles. Drugs are a major issue in the area. Motivational talks similar to the Varany career sessions could help, tailored for both children and parents to highlight available opportunities.",
     sectors: ["education", "wellbeing"], region: "northern", subRegion: "vavuniya", partners: [], type: "observation", source: "trip-2024", date: "2024-08-15", readTime: 2,
   },
 ];

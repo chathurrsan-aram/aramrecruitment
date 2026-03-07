@@ -7,10 +7,14 @@ import Footer from './footer';
 export default function LayoutShell({ children }) {
   const pathname = usePathname();
   const isVentures = pathname.startsWith('/ventures');
+  const isVenturesLanding = pathname === '/ventures';
+
+  // Show navbar on ventures landing page (transparent), hide on portal pages
+  const showNavbar = !isVentures || isVenturesLanding;
 
   return (
     <>
-      {!isVentures && <Navbar />}
+      {showNavbar && <Navbar />}
       <main>{children}</main>
       {!isVentures && <Footer />}
     </>

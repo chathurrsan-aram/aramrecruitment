@@ -17,23 +17,20 @@ function PortalSegmentedControl({ tabs, activeHref }) {
   const activeIdx = tabs.findIndex(t => activeHref.startsWith(t.href));
   return (
     <div className="relative flex bg-[#1A1A2E] rounded-xl p-1">
-      <div
-        className="absolute top-1 bottom-1 bg-[#6D4A9E]/20 rounded-lg transition-transform duration-300 ease-in-out"
-        style={{
-          width: `calc(${100 / tabs.length}% - 4px)`,
-          left: '4px',
-          transform: `translateX(calc(${activeIdx} * (100% + ${4 / (tabs.length)}px)))`,
-        }}
-      />
-      {tabs.map(tab => {
+      {tabs.map((tab, idx) => {
         const Icon = tab.icon;
         const isActive = activeHref.startsWith(tab.href);
+        const isPortfolioActive = isActive && tab.href.includes('portfolio');
         return (
           <Link
             key={tab.href}
             href={tab.href}
-            className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 flex-1 text-center ${
-              isActive ? 'text-[#9B72CF]' : 'text-[#7A7A9A] hover:text-white'
+            className={`relative z-10 flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex-1 text-center ${
+              isPortfolioActive
+                ? 'bg-[#6D4A9E] text-white'
+                : isActive
+                  ? 'bg-[#6D4A9E]/20 text-[#9B72CF]'
+                  : 'text-[#7A7A9A] hover:text-white'
             }`}
           >
             <Icon className="w-4 h-4 hidden sm:block" />
@@ -84,7 +81,7 @@ export default function PortalShell({ children }) {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-gray-900 flex flex-col">
-      {/* Portal Nav — stays dark */}
+      {/* Portal Nav: stays dark */}
       <header className="sticky top-0 z-40 bg-[#0D0D14]/95 backdrop-blur-xl border-b border-[#2A2A40]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center gap-4">
           {/* Logo */}
@@ -93,6 +90,7 @@ export default function PortalShell({ children }) {
               src="/images/Gemini_Generated_Image_sdboy7sdboy7sdbo-2.png"
               alt="Aram Ventures"
               className="h-10"
+              style={{ mixBlendMode: 'lighten' }}
             />
           </Link>
 

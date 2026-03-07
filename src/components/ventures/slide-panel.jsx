@@ -31,7 +31,7 @@ function TruePotentialBlock({ ventureId }) {
     <div className="rounded-xl border-l-4 border-l-[#C9A84C] overflow-hidden" style={{ backgroundColor: '#1B3A4B' }}>
       <div className="p-5">
         <div className="flex items-center gap-2 mb-4">
-          <img src="/images/tempImage5CilK3.jpeg" alt="True Potential" className="h-4 rounded object-contain" />
+          <span className="text-xs font-bold text-[#C9A84C] tracking-wider">✦ TRUE POTENTIAL</span>
           <span className="text-xs font-semibold text-[#C9A84C]">True Potential Involvement</span>
         </div>
         <div className="space-y-3">

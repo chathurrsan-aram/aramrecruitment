@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Target, Cpu, Rocket } from 'lucide-react';
 
 /* ─── Context ─────────────────────────────────────────────────────────────── */
 const FounderModalContext = createContext({ open: () => {} });
@@ -16,6 +16,24 @@ export function FounderModalProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
+
+  const blocks = [
+    {
+      icon: Target,
+      title: 'Strategy',
+      desc: "The venture's problem is structured and stress-tested before any capital moves. A clear thesis, go-to-market plan and 90-day milestone set is in place from day one.",
+    },
+    {
+      icon: Cpu,
+      title: 'Technology',
+      desc: 'Where the venture needs digital infrastructure, it gets built. From WhatsApp-native tools to full web platforms, the technical layer is delivered directly.',
+    },
+    {
+      icon: Rocket,
+      title: 'Delivery',
+      desc: "True Potential acts as the embedded execution partner across the venture's early phase. Milestones are tracked, stakeholders coordinated, and blockers removed.",
+    },
+  ];
 
   return (
     <FounderModalContext.Provider value={{ open }}>
@@ -37,8 +55,7 @@ export function FounderModalProvider({ children }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="fixed inset-x-4 top-[8%] md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-[580px] max-h-[84vh] overflow-y-auto z-[60] rounded-2xl border border-[#C9A84C]/20"
-              style={{ backgroundColor: '#1B3A4B' }}
+              className="fixed inset-x-4 top-[8%] md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:w-[580px] max-h-[84vh] overflow-y-auto z-[60] rounded-2xl bg-[#0D0D14] border border-[#2A2A40]"
             >
               <button
                 onClick={close}
@@ -48,60 +65,52 @@ export function FounderModalProvider({ children }) {
               </button>
 
               <div className="p-8">
-                {/* Logo */}
-                <div className="flex justify-center mb-6">
-                  <img
-                    src="/images/tempImage5CilK3.jpeg"
-                    alt="True Potential"
-                    className="h-12 rounded-lg object-contain"
-                  />
+                {/* True Potential Logo */}
+                <div className="flex justify-center mb-8">
+                  <div className="px-6 py-3">
+                    <svg width="200" height="48" viewBox="0 0 200 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <text x="100" y="20" textAnchor="middle" fill="#C9A84C" fontFamily="Poppins, sans-serif" fontSize="14" fontWeight="700" letterSpacing="0.15em">TRUE</text>
+                      <text x="100" y="40" textAnchor="middle" fill="#C9A84C" fontFamily="Poppins, sans-serif" fontSize="14" fontWeight="700" letterSpacing="0.15em">POTENTIAL</text>
+                      <line x1="30" y1="24" x2="70" y2="24" stroke="#C9A84C" strokeWidth="0.5" opacity="0.4" />
+                      <line x1="130" y1="24" x2="170" y2="24" stroke="#C9A84C" strokeWidth="0.5" opacity="0.4" />
+                    </svg>
+                  </div>
                 </div>
 
                 {/* Headline */}
                 <h2 className="font-display text-2xl font-bold text-white text-center mb-4">
-                  What does True Potential backing mean?
+                  What True Potential backing means
                 </h2>
-                <p className="text-[#A8C4D4] text-sm text-center leading-relaxed mb-8">
-                  True Potential-backed ventures are directly supported by the founder — bringing PE-grade strategy thinking and hands-on technical execution to early-stage opportunities in Tamil Sri Lanka.
+
+                {/* Description */}
+                <p className="text-[#A0A0B8] text-sm text-center leading-relaxed mb-8">
+                  True Potential is the execution layer behind select Aram Ventures portfolio companies. Backed ventures receive direct support across strategy, technology and delivery from a founder with a background in PE-grade strategy consulting and hands-on technical build.
                 </p>
 
-                {/* Founder card */}
-                <div className="bg-[#0D2B3A] rounded-xl border border-[#2A4A5A] p-6 mb-6">
-                  <div className="flex items-center gap-4 mb-5">
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#C9A84C] to-[#C9A84C]/60 flex items-center justify-center flex-shrink-0">
-                      <span className="font-display text-lg font-bold text-[#0D2B3A]">F</span>
-                    </div>
-                    <div>
-                      <h3 className="font-display text-lg font-bold text-white">[FOUNDER NAME]</h3>
-                      <p className="text-[#A8C4D4] text-sm">Strategy Consultant & Founder, Aram Ventures</p>
-                      <p className="text-[#A8C4D4]/60 text-xs mt-0.5">Age 25 · London, UK · Sri Lankan Tamil</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    {[
-                      { icon: '📊', title: 'Strategy & Due Diligence', desc: 'Commercial due diligence for PE firms across fintech, wealth management and data — delivered at PwC, Alpha FMC, Marathon Capital and McKinsey' },
-                      { icon: '🌍', title: 'Founded Aram', desc: '4 years building the diaspora organisation behind this platform — 500+ members, original field research, grassroots development projects across Sri Lanka' },
-                      { icon: '⚙️', title: 'Strategy + Builder', desc: 'Can structure a problem at consulting speed and build the technical solution — websites, automations, AI-powered workflows' },
-                      { icon: '✦', title: 'Known for', desc: 'Breaking ambiguous, complex problems into structured, executable plans. Every client and collaborator says the same thing.' },
-                    ].map(row => (
-                      <div key={row.title} className="flex items-start gap-3 p-3 rounded-lg bg-[#1B3A4B] border border-[#2A4A5A]">
-                        <span className="text-base flex-shrink-0 mt-0.5">{row.icon}</span>
+                {/* Three blocks */}
+                <div className="space-y-4 mb-8">
+                  {blocks.map(block => {
+                    const Icon = block.icon;
+                    return (
+                      <div key={block.title} className="flex items-start gap-4 p-4 rounded-xl bg-[#13131F] border border-[#2A2A40]">
+                        <div className="w-10 h-10 rounded-lg bg-[#C9A84C]/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Icon className="w-5 h-5 text-[#C9A84C]" />
+                        </div>
                         <div>
-                          <p className="font-semibold text-sm text-white mb-0.5">{row.title}</p>
-                          <p className="text-xs text-[#A8C4D4] leading-relaxed">{row.desc}</p>
+                          <p className="font-semibold text-white text-sm mb-1">{block.title}</p>
+                          <p className="text-xs text-[#A0A0B8] leading-relaxed">{block.desc}</p>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
 
                 {/* Gold divider */}
                 <div className="h-px bg-[#C9A84C]/30 mb-6" />
 
                 {/* Bottom line */}
-                <p className="text-center text-sm text-[#A8C4D4]/60">
-                  When you see the True Potential badge, this is who&apos;s behind it.
+                <p className="text-center text-xs text-[#7A7A9A]">
+                  Built by Chathurrsan T, strategy consultant and founder of the Aram Initiative.
                 </p>
               </div>
             </motion.div>

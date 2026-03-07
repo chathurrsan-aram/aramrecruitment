@@ -418,7 +418,7 @@ export default function InitiativeDetail({ initiative }) {
         <AnimatedSection className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-3">Get Involved</h2>
           <p className="text-gray-600 mb-6 leading-relaxed">
-            This initiative needs people like you. Whether through volunteering, mentoring, or contributing expertise — there are ways to help.
+            This initiative needs people like you. Whether through volunteering, mentoring, or contributing expertise, there are ways to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
