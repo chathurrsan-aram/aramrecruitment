@@ -1,10 +1,46 @@
 'use client';
 
+import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars -- motion used in JSX as motion.div
 import { X, MapPin, Clock, User, ExternalLink, Lightbulb, CheckCircle2 } from 'lucide-react';
 import { activitySectorColors } from '@/data/tripActivities';
 
+/* Render text that may contain \n line breaks as paragraphs */
+function MultiLineText({ text, className = '' }) {
+  const lines = text.split('\n').filter(Boolean);
+  if (lines.length === 1) return <p className={className}>{text}</p>;
+  return (
+    <div className={`space-y-2 ${className}`}>
+      {lines.map((line, i) => (
+        <p key={i}>{line}</p>
+      ))}
+    </div>
+  );
+}
+
 export default function ActivityDetailPanel({ activity, onClose }) {
+  const containerRef = useRef(null);
+
+  /* Scroll to top and lock body scroll when panel opens */
+  useEffect(() => {
+    if (!activity) return;
+
+    /* Lock body scroll */
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    /* Scroll panel container to top */
+    requestAnimationFrame(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = 0;
+      }
+    });
+
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [activity]);
+
   if (!activity) return null;
 
   const {
@@ -17,6 +53,7 @@ export default function ActivityDetailPanel({ activity, onClose }) {
 
   return (
     <motion.div
+      ref={containerRef}
       initial={{ x: '100%' }}
       animate={{ x: 0 }}
       exit={{ x: '100%' }}
@@ -68,7 +105,7 @@ export default function ActivityDetailPanel({ activity, onClose }) {
         {whatIsIt && (
           <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3">What is it?</h2>
-            <p className="text-base text-gray-600 leading-relaxed">{whatIsIt}</p>
+            <MultiLineText text={whatIsIt} className="text-base text-gray-600 leading-relaxed" />
           </section>
         )}
 
@@ -100,7 +137,7 @@ export default function ActivityDetailPanel({ activity, onClose }) {
           <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3">Materials needed</h2>
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-              <p className="text-sm text-gray-600 leading-relaxed">{materialsNeeded}</p>
+              <MultiLineText text={materialsNeeded} className="text-sm text-gray-600 leading-relaxed" />
             </div>
           </section>
         )}
@@ -109,7 +146,7 @@ export default function ActivityDetailPanel({ activity, onClose }) {
         {howToRunIt && (
           <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3">How to run it</h2>
-            <p className="text-base text-gray-600 leading-relaxed">{howToRunIt}</p>
+            <MultiLineText text={howToRunIt} className="text-base text-gray-600 leading-relaxed" />
           </section>
         )}
 
