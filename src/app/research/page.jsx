@@ -9,15 +9,15 @@ import InsightCard from '@/components/ui/insight-card';
 import PartnerCard from '@/components/ui/partner-card';
 import SectorTag from '@/components/ui/sector-tag';
 import TypeBadge from '@/components/ui/type-badge';
-import { insights } from '@/data/insights';
+import { insights, macroIntroText, macroClosingBlock } from '@/data/insights';
 import { partners } from '@/data/partners';
 import { regions } from '@/data/regions';
 import { sectors } from '@/data/sectors';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
 import {
-  Search, Map, LayoutGrid, ArrowLeft, X, ChevronRight,
+  Search, Map, LayoutGrid, ArrowLeft, X, ChevronRight, ChevronDown,
   Users, Lightbulb, MapPin, ExternalLink, Filter, ArrowDown, ArrowUp, MousePointerClick,
-  Globe, Building2, BookOpen, Layers, Maximize2,
+  Globe, Building2, BookOpen, Layers, Maximize2, AlertTriangle,
 } from 'lucide-react';
 import { videos } from '@/lib/cloudinary';
 
@@ -234,6 +234,7 @@ function SearchAutocomplete({ searchQuery, onChange, onSelectSuggestion, classNa
 function DetailView({ item, type, onBack, backLabel }) {
   if (type === 'insight') {
     const region = regions.find(r => r.id === item.region);
+    const isMacro = item.type === 'macro';
     return (
       <motion.div
         initial={{ x: '100%' }}
@@ -248,10 +249,22 @@ function DetailView({ item, type, onBack, backLabel }) {
           </button>
           <div className="flex items-center gap-2 mb-4 flex-wrap">
             <TypeBadge type={item.type} />
-            {region && <span className="font-mono text-[11px] text-aram-warm-400">{region.name}</span>}
+            {isMacro ? (
+              <span className="font-mono text-[11px] text-amber-600">All regions</span>
+            ) : (
+              region && <span className="font-mono text-[11px] text-aram-warm-400">{region.name}</span>
+            )}
           </div>
           <h1 className="font-display text-3xl md:text-4xl font-bold text-aram-green-900 mb-6 leading-tight">{item.title}</h1>
-          <p className="text-lg text-aram-warm-500 leading-relaxed mb-8">{item.summary}</p>
+          {isMacro && item.fullText ? (
+            <div className="text-lg text-aram-warm-500 leading-relaxed mb-8 space-y-4">
+              {item.fullText.split('\n\n').map((para, idx) => (
+                <p key={idx}>{para}</p>
+              ))}
+            </div>
+          ) : (
+            <p className="text-lg text-aram-warm-500 leading-relaxed mb-8">{item.summary}</p>
+          )}
           <div className="flex gap-2 flex-wrap">
             {item.sectors.map(s => <SectorTag key={s} sector={s} size="md" />)}
           </div>
@@ -490,13 +503,53 @@ function MapSidebar({ selectedDistrict, selectedRegion, contentMode, searchQuery
   return null;
 }
 
+/* ─── Macro Closing Block ─────────────────────────── */
+function MacroClosingBlock() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.2 }}
+      className="mt-10 rounded-2xl bg-amber-50/60 border border-amber-200/60 p-8 md:p-10"
+    >
+      <h3 className="font-display text-xl md:text-2xl font-bold text-aram-green-900 mb-4">{macroClosingBlock.title}</h3>
+      <div className="text-base md:text-lg text-aram-warm-600 leading-relaxed space-y-4 border-l-4 border-amber-400 pl-6">
+        {macroClosingBlock.fullText.split('\n\n').map((para, idx) => (
+          <p key={idx}>{para}</p>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Macro Intro Block ──────────────────────────── */
+function MacroIntroBlock() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="mb-8 rounded-xl bg-amber-50/50 border border-amber-200/50 p-6 md:p-8"
+    >
+      <p className="text-base md:text-lg text-aram-warm-600 leading-relaxed border-l-4 border-amber-400 pl-5">
+        {macroIntroText}
+      </p>
+    </motion.div>
+  );
+}
+
 /* ─── Card Grid with Filters (Fix #7) ────────────── */
-function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
+function CardGrid({ contentMode, searchQuery, onSelectDetail, typeFilter }) {
   const [sectorFilter, setSectorFilter] = useState(null);
   const [regionFilter, setRegionFilter] = useState(null);
 
+  const isMacroFilter = typeFilter === 'macro';
+
   const filteredInsights = useMemo(() => {
     let filtered = insights;
+    if (typeFilter === 'macro') {
+      filtered = filtered.filter(i => i.type === 'macro');
+    }
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(i => i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q));
@@ -510,7 +563,7 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
       filtered = filtered.filter(i => i.region === regionFilter);
     }
     return filtered;
-  }, [searchQuery, sectorFilter, regionFilter]);
+  }, [searchQuery, sectorFilter, regionFilter, typeFilter]);
 
   const filteredPartners = useMemo(() => {
     let filtered = partners;
@@ -573,64 +626,85 @@ function CardGrid({ contentMode, searchQuery, onSelectDetail }) {
         </button>
       </div>
 
-      {/* Region dropdown */}
-      <div className="flex items-center gap-3">
-        <select
-          value={regionFilter || ''}
-          onChange={(e) => setRegionFilter(e.target.value || null)}
-          className="text-sm border border-aram-warm-200 rounded-lg px-3 py-1.5 bg-white text-aram-warm-500 focus:outline-none focus:ring-2 focus:ring-aram-purple/30 focus:border-aram-purple transition-all"
-        >
-          <option value="">All Regions</option>
-          {regions.map(r => (
-            <option key={r.id} value={r.id}>{r.name}</option>
-          ))}
-        </select>
-        {(sectorFilter || regionFilter) && (
+      {/* Region dropdown — hidden when macro filter active (macro cards are cross-regional) */}
+      {!isMacroFilter && (
+        <div className="flex items-center gap-3">
+          <select
+            value={regionFilter || ''}
+            onChange={(e) => setRegionFilter(e.target.value || null)}
+            className="text-sm border border-aram-warm-200 rounded-lg px-3 py-1.5 bg-white text-aram-warm-500 focus:outline-none focus:ring-2 focus:ring-aram-purple/30 focus:border-aram-purple transition-all"
+          >
+            <option value="">All Regions</option>
+            {regions.map(r => (
+              <option key={r.id} value={r.id}>{r.name}</option>
+            ))}
+          </select>
+          {(sectorFilter || regionFilter) && (
+            <button
+              onClick={() => { setSectorFilter(null); setRegionFilter(null); }}
+              className="text-xs text-aram-purple hover:text-aram-green-900 font-medium transition-colors"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+      )}
+      {isMacroFilter && sectorFilter && (
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => { setSectorFilter(null); setRegionFilter(null); }}
+            onClick={() => setSectorFilter(null)}
             className="text-xs text-aram-purple hover:text-aram-green-900 font-medium transition-colors"
           >
             Clear filters
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 
   if (contentMode === 'insights') {
     return (
       <div className="max-w-6xl mx-auto px-6 py-8">
+        {isMacroFilter && <MacroIntroBlock />}
         {filterBar}
         <p className="text-sm text-aram-warm-400 font-mono mb-6">{filteredInsights.length} {itemLabel}</p>
         {filteredInsights.length > 0 ? (
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" staggerDelay={0.06}>
-            {filteredInsights.map(insight => {
-              const region = regions.find(r => r.id === insight.region);
-              return (
-                <StaggerItem key={insight.id}>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    className="rounded-xl border border-aram-warm-200 bg-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-aram-purple group h-full"
-                    onClick={() => onSelectDetail({ type: 'insight', data: insight })}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectDetail({ type: 'insight', data: insight }); } }}
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <TypeBadge type={insight.type} />
-                      {region && <span className="font-mono text-[10px] text-aram-warm-300">{region.name}</span>}
+          <>
+            <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" staggerDelay={0.06}>
+              {filteredInsights.map(insight => {
+                const region = regions.find(r => r.id === insight.region);
+                const isMacro = insight.type === 'macro';
+                return (
+                  <StaggerItem key={insight.id}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className="rounded-xl border border-aram-warm-200 bg-white p-5 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-aram-purple group h-full"
+                      onClick={() => onSelectDetail({ type: 'insight', data: insight })}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectDetail({ type: 'insight', data: insight }); } }}
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <TypeBadge type={insight.type} />
+                        {isMacro ? (
+                          <span className="font-mono text-[10px] text-amber-600">All regions</span>
+                        ) : (
+                          region && <span className="font-mono text-[10px] text-aram-warm-300">{region.name}</span>
+                        )}
+                      </div>
+                      <h3 className="font-display text-base font-semibold text-aram-green-900 mb-2 group-hover:text-aram-purple transition-colors line-clamp-2">
+                        {insight.title}
+                      </h3>
+                      <p className="text-sm text-aram-warm-400 leading-relaxed line-clamp-3 mb-3">{insight.summary}</p>
+                      <div className="flex gap-1.5 flex-wrap mt-auto">
+                        {insight.sectors.slice(0, 3).map(s => <SectorTag key={s} sector={s} />)}
+                      </div>
                     </div>
-                    <h3 className="font-display text-base font-semibold text-aram-green-900 mb-2 group-hover:text-aram-purple transition-colors line-clamp-2">
-                      {insight.title}
-                    </h3>
-                    <p className="text-sm text-aram-warm-400 leading-relaxed line-clamp-3 mb-3">{insight.summary}</p>
-                    <div className="flex gap-1.5 flex-wrap mt-auto">
-                      {insight.sectors.slice(0, 3).map(s => <SectorTag key={s} sector={s} />)}
-                    </div>
-                  </div>
-                </StaggerItem>
-              );
-            })}
-          </StaggerContainer>
+                  </StaggerItem>
+                );
+              })}
+            </StaggerContainer>
+            {isMacroFilter && <MacroClosingBlock />}
+          </>
         ) : (
           <div className="text-center py-20">
             <div className="w-14 h-14 bg-aram-warm-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -702,6 +776,7 @@ function ResearchContent() {
   const searchParams = useSearchParams();
   const initialView = searchParams?.get('view') || 'map';
   const initialRegion = searchParams?.get('region') || null;
+  const initialType = searchParams?.get('type') || null;
 
   const [isCardView, setIsCardView] = useState(initialView === 'cards');
   const [isPartners, setIsPartners] = useState(false);
@@ -712,6 +787,9 @@ function ResearchContent() {
   const [loaded, setLoaded] = useState(false);
   const [showTutorial, setShowTutorial] = useState(true);
   const [showScrollUp, setShowScrollUp] = useState(false);
+  const [typeFilter, setTypeFilter] = useState(initialType);
+  const [showMacroOverlay, setShowMacroOverlay] = useState(false);
+  const [expandedMacro, setExpandedMacro] = useState(null);
   const tutorialInteractionsRef = useRef(0);
 
   /* Refs for section-based scroll (Fix #4, #5) */
@@ -788,6 +866,7 @@ function ResearchContent() {
   const handleViewToggle = useCallback((val) => {
     setIsCardView(val);
     setDetailItem(null);
+    setShowMacroOverlay(false);
     dismissTutorialOnInteraction();
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
@@ -795,6 +874,19 @@ function ResearchContent() {
       window.history.replaceState({}, '', url.toString());
     }
   }, [dismissTutorialOnInteraction]);
+
+  const handleTypeFilter = useCallback((type) => {
+    setTypeFilter(prev => prev === type ? null : type);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (typeFilter === type) {
+        url.searchParams.delete('type');
+      } else {
+        url.searchParams.set('type', type);
+      }
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, [typeFilter]);
 
   const focusImmersiveViewport = useCallback(() => {
     const controlsEl = controlsRef.current;
@@ -983,14 +1075,29 @@ function ResearchContent() {
             isRight={isCardView}
             onChange={handleViewToggle}
           />
-          <SegmentedControl
-            leftLabel="Insights"
-            rightLabel="Partners"
-            leftIcon={Lightbulb}
-            rightIcon={Users}
-            isRight={isPartners}
-            onChange={(val) => { setIsPartners(val); dismissTutorialOnInteraction(); }}
-          />
+          <div className="flex items-center gap-2">
+            <SegmentedControl
+              leftLabel="Insights"
+              rightLabel="Partners"
+              leftIcon={Lightbulb}
+              rightIcon={Users}
+              isRight={isPartners}
+              onChange={(val) => { setIsPartners(val); setTypeFilter(null); dismissTutorialOnInteraction(); }}
+            />
+            {!isPartners && (
+              <button
+                onClick={() => handleTypeFilter('macro')}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  typeFilter === 'macro'
+                    ? 'bg-amber-100 text-amber-700 border border-amber-300 shadow-sm'
+                    : 'bg-aram-warm-100 text-aram-warm-400 hover:bg-amber-50 hover:text-amber-600'
+                }`}
+              >
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Macro</span>
+              </button>
+            )}
+          </div>
           <Link href="/partners" className="text-aram-warm-300 hover:text-aram-purple transition-colors flex items-center gap-1 text-xs font-medium" title="Partners Directory">
             <ExternalLink className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Directory</span>
@@ -1030,7 +1137,7 @@ function ResearchContent() {
                 <div
                   className="relative overflow-hidden transition-all duration-500 ease-in-out"
                   style={{
-                    flex: hasSidebar ? '1 1 55%' : '1 1 100%',
+                    flex: (hasSidebar || showMacroOverlay) ? '1 1 55%' : '1 1 100%',
                     minHeight: '400px',
                   }}
                 >
@@ -1091,8 +1198,13 @@ function ResearchContent() {
                   </AnimatePresence>
 
 
-                  {/* Map hint - only when no district selected */}
-                  {!hasSidebar && (
+                  {/* Desaturation overlay when macro context is active */}
+                  {showMacroOverlay && (
+                    <div className="absolute inset-0 bg-amber-900/20 backdrop-saturate-[0.4] z-[5] pointer-events-none transition-all duration-500" />
+                  )}
+
+                  {/* Map hint - only when no district selected and macro overlay not active */}
+                  {!hasSidebar && !showMacroOverlay && (
                     <div className="absolute bottom-4 right-4 z-10 pointer-events-none">
                       <motion.div
                         initial={{ opacity: 0, y: -8 }}
@@ -1108,11 +1220,36 @@ function ResearchContent() {
                       </motion.div>
                     </div>
                   )}
+
+                  {/* Macro Context toggle - bottom left of map */}
+                  {!isPartners && (
+                    <div className="absolute bottom-4 left-4 z-10">
+                      <button
+                        onClick={() => {
+                          setShowMacroOverlay(prev => !prev);
+                          if (!showMacroOverlay) {
+                            setSelectedDistrict(null);
+                            setSelectedRegion(null);
+                          }
+                          setExpandedMacro(null);
+                        }}
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold shadow-lg transition-all ${
+                          showMacroOverlay
+                            ? 'bg-amber-500 text-white border border-amber-600 shadow-amber-500/30'
+                            : 'bg-white/90 backdrop-blur-sm text-amber-700 border border-amber-200 hover:bg-amber-50 hover:border-amber-300'
+                        }`}
+                      >
+                        <AlertTriangle className="w-4 h-4" />
+                        Macro Context
+                        <span className={`w-2 h-2 rounded-full ${showMacroOverlay ? 'bg-white' : 'bg-amber-400'}`} />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Sidebar (Fix #6: 45% width, no truncation) */}
                 <AnimatePresence>
-                  {hasSidebar && (
+                  {hasSidebar && !showMacroOverlay && (
                     <motion.div
                       key="sidebar"
                       ref={sidebarRef}
@@ -1134,10 +1271,95 @@ function ResearchContent() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+
+                {/* Macro overlay panel (replaces sidebar when macro context is active) */}
+                <AnimatePresence>
+                  {showMacroOverlay && (
+                    <motion.div
+                      key="macro-overlay"
+                      initial={{ flex: '0 0 0%', opacity: 0 }}
+                      animate={{ flex: '0 0 50%', opacity: 1 }}
+                      exit={{ flex: '0 0 0%', opacity: 0 }}
+                      transition={{ type: 'spring', damping: 30, stiffness: 250 }}
+                      className="bg-white border-l border-amber-200 overflow-y-auto overflow-x-hidden hidden lg:block min-w-0"
+                    >
+                      <div className="p-6 md:p-8 max-w-xl">
+                        <div className="flex items-center justify-between mb-6">
+                          <div className="flex items-center gap-2">
+                            <AlertTriangle className="w-5 h-5 text-amber-600" />
+                            <h2 className="font-display text-xl font-bold text-aram-green-900">Macro Context</h2>
+                          </div>
+                          <button
+                            onClick={() => setShowMacroOverlay(false)}
+                            className="text-aram-warm-300 hover:text-aram-green-900 transition-colors"
+                          >
+                            <X className="w-5 h-5" />
+                          </button>
+                        </div>
+
+                        {/* Intro text */}
+                        <div className="mb-8 rounded-xl bg-amber-50/50 border border-amber-200/50 p-5">
+                          <p className="text-sm text-aram-warm-600 leading-relaxed border-l-3 border-amber-400 pl-4">
+                            {macroIntroText}
+                          </p>
+                        </div>
+
+                        {/* Collapsible macro problems */}
+                        <div className="space-y-3">
+                          {insights.filter(i => i.type === 'macro').map((macro) => (
+                            <div key={macro.id} className="rounded-xl border border-aram-warm-200 overflow-hidden">
+                              <button
+                                onClick={() => setExpandedMacro(prev => prev === macro.id ? null : macro.id)}
+                                className="w-full flex items-start gap-3 p-4 text-left hover:bg-amber-50/30 transition-colors"
+                              >
+                                <ChevronDown className={`w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0 transition-transform duration-200 ${expandedMacro === macro.id ? 'rotate-180' : ''}`} />
+                                <div className="min-w-0 flex-1">
+                                  <h3 className="font-display text-sm font-semibold text-aram-green-900 leading-snug">{macro.title}</h3>
+                                  <div className="flex gap-1.5 flex-wrap mt-2">
+                                    {macro.sectors.slice(0, 3).map(s => <SectorTag key={s} sector={s} />)}
+                                  </div>
+                                </div>
+                              </button>
+                              <AnimatePresence>
+                                {expandedMacro === macro.id && (
+                                  <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.25 }}
+                                    className="overflow-hidden"
+                                  >
+                                    <div className="px-4 pb-4 pt-0 pl-11">
+                                      <div className="text-sm text-aram-warm-500 leading-relaxed space-y-3">
+                                        {macro.fullText.split('\n\n').map((para, idx) => (
+                                          <p key={idx}>{para}</p>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Closing block */}
+                        <div className="mt-8 rounded-xl bg-amber-50/60 border border-amber-200/60 p-6">
+                          <h3 className="font-display text-lg font-bold text-aram-green-900 mb-3">{macroClosingBlock.title}</h3>
+                          <div className="text-sm text-aram-warm-600 leading-relaxed space-y-3 border-l-4 border-amber-400 pl-4">
+                            {macroClosingBlock.fullText.split('\n\n').map((para, idx) => (
+                              <p key={idx}>{para}</p>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Mobile sidebar (below map) */}
-              {hasSidebar && (
+              {hasSidebar && !showMacroOverlay && (
                 <div className="lg:hidden bg-white border-t border-aram-warm-200">
                   <MapSidebar
                     selectedDistrict={selectedDistrict}
@@ -1148,6 +1370,79 @@ function ResearchContent() {
                     onClearDistrict={handleClearDistrict}
                     onSelectDetail={setDetailItem}
                   />
+                </div>
+              )}
+
+              {/* Mobile macro overlay (below map) */}
+              {showMacroOverlay && (
+                <div className="lg:hidden bg-white border-t border-amber-200">
+                  <div className="p-5">
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="flex items-center gap-2">
+                        <AlertTriangle className="w-5 h-5 text-amber-600" />
+                        <h2 className="font-display text-lg font-bold text-aram-green-900">Macro Context</h2>
+                      </div>
+                      <button
+                        onClick={() => setShowMacroOverlay(false)}
+                        className="text-aram-warm-300 hover:text-aram-green-900 transition-colors"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    <div className="mb-6 rounded-xl bg-amber-50/50 border border-amber-200/50 p-4">
+                      <p className="text-sm text-aram-warm-600 leading-relaxed">
+                        {macroIntroText}
+                      </p>
+                    </div>
+
+                    <div className="space-y-3">
+                      {insights.filter(i => i.type === 'macro').map((macro) => (
+                        <div key={macro.id} className="rounded-xl border border-aram-warm-200 overflow-hidden">
+                          <button
+                            onClick={() => setExpandedMacro(prev => prev === macro.id ? null : macro.id)}
+                            className="w-full flex items-start gap-3 p-4 text-left hover:bg-amber-50/30 transition-colors"
+                          >
+                            <ChevronDown className={`w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0 transition-transform duration-200 ${expandedMacro === macro.id ? 'rotate-180' : ''}`} />
+                            <div className="min-w-0 flex-1">
+                              <h3 className="font-display text-sm font-semibold text-aram-green-900 leading-snug">{macro.title}</h3>
+                              <div className="flex gap-1.5 flex-wrap mt-2">
+                                {macro.sectors.slice(0, 3).map(s => <SectorTag key={s} sector={s} />)}
+                              </div>
+                            </div>
+                          </button>
+                          <AnimatePresence>
+                            {expandedMacro === macro.id && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.25 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="px-4 pb-4 pt-0 pl-11">
+                                  <div className="text-sm text-aram-warm-500 leading-relaxed space-y-3">
+                                    {macro.fullText.split('\n\n').map((para, idx) => (
+                                      <p key={idx}>{para}</p>
+                                    ))}
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-6 rounded-xl bg-amber-50/60 border border-amber-200/60 p-5">
+                      <h3 className="font-display text-lg font-bold text-aram-green-900 mb-3">{macroClosingBlock.title}</h3>
+                      <div className="text-sm text-aram-warm-600 leading-relaxed space-y-3 border-l-4 border-amber-400 pl-4">
+                        {macroClosingBlock.fullText.split('\n\n').map((para, idx) => (
+                          <p key={idx}>{para}</p>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </motion.div>
@@ -1164,6 +1459,7 @@ function ResearchContent() {
                 contentMode={contentMode}
                 searchQuery={searchQuery}
                 onSelectDetail={setDetailItem}
+                typeFilter={typeFilter}
               />
             </motion.div>
           )}

@@ -7,12 +7,17 @@ import { Clock } from 'lucide-react';
 
 export default function InsightCard({ insight, compact = false }) {
   const region = regions.find((r) => r.id === insight.region);
+  const isMacro = insight.type === 'macro';
 
   return (
     <div className="rounded-xl border border-aram-warm-200 bg-white p-5 transition-all hover:border-aram-purple hover:-translate-y-0.5 hover:shadow-lg">
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <TypeBadge type={insight.type} />
-        {region && (
+        {isMacro ? (
+          <span className="font-mono text-[11px] text-amber-600">
+            All regions
+          </span>
+        ) : region && (
           <span className="font-mono text-[11px] text-aram-warm-400">
             {region.name}
           </span>
