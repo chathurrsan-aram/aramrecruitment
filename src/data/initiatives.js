@@ -2,6 +2,10 @@ export const sectorColors = {
   'Economic Development': '#2D6A4F',
   'Holistic Wellbeing': '#B5651D',
   'Education': '#6D4A9E',
+  'Healthcare': '#059669',
+  'SEN': '#D97706',
+  'Wellbeing': '#B5651D',
+  'Technology': '#2563EB',
 };
 
 export const statusStyles = {

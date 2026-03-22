@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import AnimatedSection from '@/components/AnimatedSection';
 import InitiativeGrid from '@/components/initiatives/InitiativeGrid';
 import initiatives from '@/data/initiatives';
+import tripActivities from '@/data/tripActivities';
 
 export default function InitiativesPage() {
   const [pageLoaded, setPageLoaded] = useState(false);
@@ -63,7 +64,7 @@ export default function InitiativesPage() {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <AnimatedSection>
-            <InitiativeGrid initiatives={initiatives} />
+            <InitiativeGrid initiatives={initiatives} activities={tripActivities} />
           </AnimatedSection>
         </div>
       </section>
