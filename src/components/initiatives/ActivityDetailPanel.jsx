@@ -19,16 +19,12 @@ function MultiLineText({ text, className = '' }) {
 }
 
 export default function ActivityDetailPanel({ activity, onClose }) {
-  const containerRef = useRef(null);
+  const scrollRef = useRef(null);
 
-  /* Scroll panel to top when it opens */
+  /* Reset scroll to top every time a new activity opens */
   useEffect(() => {
-    if (!activity) return;
-    requestAnimationFrame(() => {
-      if (containerRef.current) {
-        containerRef.current.scrollTop = 0;
-      }
-    });
+    if (!activity || !scrollRef.current) return;
+    scrollRef.current.scrollTop = 0;
   }, [activity]);
 
   if (!activity) return null;
@@ -43,13 +39,13 @@ export default function ActivityDetailPanel({ activity, onClose }) {
 
   return (
     <motion.div
-      ref={containerRef}
       initial={{ x: '100%' }}
       animate={{ x: 0 }}
       exit={{ x: '100%' }}
       transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-      className="fixed inset-0 z-[9999] bg-white overflow-y-auto"
+      className="fixed inset-0 z-[9999]"
     >
+      <div ref={scrollRef} className="absolute inset-0 bg-white overflow-y-auto">
       <div className="max-w-3xl mx-auto px-6 py-10">
         {/* Close button */}
         <button
@@ -183,6 +179,7 @@ export default function ActivityDetailPanel({ activity, onClose }) {
             </p>
           </div>
         )}
+      </div>
       </div>
     </motion.div>
   );
