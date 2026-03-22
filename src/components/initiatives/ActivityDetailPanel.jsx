@@ -21,24 +21,14 @@ function MultiLineText({ text, className = '' }) {
 export default function ActivityDetailPanel({ activity, onClose }) {
   const containerRef = useRef(null);
 
-  /* Scroll to top and lock body scroll when panel opens */
+  /* Scroll panel to top when it opens */
   useEffect(() => {
     if (!activity) return;
-
-    /* Lock body scroll */
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    /* Scroll panel container to top */
     requestAnimationFrame(() => {
       if (containerRef.current) {
         containerRef.current.scrollTop = 0;
       }
     });
-
-    return () => {
-      document.body.style.overflow = prev;
-    };
   }, [activity]);
 
   if (!activity) return null;
