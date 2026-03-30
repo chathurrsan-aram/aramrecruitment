@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ExternalLink, Mail, Lock, LayoutGrid, List } from 'lucide-react';
-import { ideas, SECTOR_COLOURS, ALL_SECTORS, STATUS_STYLES, READINESS_LABELS, getCurrentStep } from '@/data/ideas';
+import { ideas, SECTOR_COLOURS, ALL_SECTORS, READINESS_LABELS, getCurrentStep } from '@/data/ideas';
 
 const PASSWORD = 'aram2026';
 
@@ -76,15 +76,6 @@ function SectorPill({ sector, small = false }) {
   );
 }
 
-function StatusBadge({ status }) {
-  const style = STATUS_STYLES[status] || STATUS_STYLES['Unsure'];
-  return (
-    <span className={`inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full ${style.bg} ${style.text}`}>
-      {status}
-    </span>
-  );
-}
-
 function OwnerAvatar({ name, sector, size = 'sm' }) {
   const colour = SECTOR_COLOURS[sector] || '#7c3aed';
   const initial = name.charAt(0).toUpperCase();
@@ -141,51 +132,55 @@ function FilterChips({ active, onChange, counts }) {
 function PulseStyle() {
   return (
     <style jsx global>{`
-      @keyframes readiness-pulse {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 1; }
-      }
-      .readiness-pulse {
-        animation: readiness-pulse 2s ease-in-out infinite;
+      @media (prefers-reduced-motion: no-preference) {
+        @keyframes readiness-pulse {
+          0%, 100% { opacity: 0.45; }
+          50% { opacity: 1; }
+        }
+        .readiness-pulse {
+          animation: readiness-pulse 2s ease-in-out infinite;
+        }
       }
     `}</style>
   );
 }
 
-/* ─── Readiness Bar ──────────────────────────────────── */
-function ReadinessBar({ readiness }) {
+/* ─── Readiness Bar (detail) ─────────────────────────── */
+function DetailReadinessBar({ readiness }) {
   const filled = READINESS_LABELS.filter((r) => readiness[r.key]).length;
   if (filled === 0) return null;
-  const colour = filled >= 4 ? '#22c55e' : filled >= 2 ? '#f59e0b' : '#ef4444';
   const currentStep = getCurrentStep(readiness);
 
   return (
-    <div>
+    <div className="mt-5">
       <PulseStyle />
-      <div className="flex gap-1.5 mb-2">
+      <div className="flex gap-1 mb-1.5">
         {READINESS_LABELS.map((r, i) => {
           const isFilled = readiness[r.key];
           const isCurrent = i === currentStep;
           return (
             <div
               key={r.key}
-              className={`flex-1 h-3 rounded-full ${isCurrent ? 'readiness-pulse' : ''}`}
+              className={`flex-1 h-2 rounded-full ${isCurrent ? 'readiness-pulse' : ''}`}
               style={{
-                backgroundColor: isFilled ? colour : isCurrent ? colour : '#e5e7eb',
+                backgroundColor: isFilled ? '#97C459' : '#e5e7eb',
               }}
             />
           );
         })}
       </div>
-      <div className="flex gap-1.5">
+      <div className="flex gap-1">
         {READINESS_LABELS.map((r, i) => {
+          const isFilled = readiness[r.key];
           const isCurrent = i === currentStep;
           return (
             <span
               key={r.key}
-              className={`flex-1 text-[10px] text-center ${
-                isCurrent ? 'text-gray-700 font-semibold' : 'text-gray-400'
-              }`}
+              className="flex-1 text-[10px] text-center"
+              style={{
+                color: isFilled ? '#3B6D11' : '#9ca3af',
+                fontWeight: isCurrent ? 500 : 400,
+              }}
             >
               {r.label}
             </span>
@@ -263,31 +258,25 @@ function ListCard({ idea, onClick }) {
   );
 }
 
-/* ─── Detail Section Card ────────────────────────────── */
-function SectionCard({ title, children, accent = false }) {
-  return (
-    <div className={`rounded-xl border p-5 ${accent ? 'bg-aram-purple-50 border-aram-purple-100' : 'bg-gray-50 border-gray-100'}`}>
-      <h3 className={`text-xs font-semibold uppercase tracking-wider mb-3 ${accent ? 'text-aram-purple' : 'text-gray-400'}`}>
-        {title}
-      </h3>
-      {children}
-    </div>
-  );
-}
-
-/* ─── Detail View (redesigned) ───────────────────────── */
+/* ─── Detail View ────────────────────────────────────── */
 function DetailView({ idea, onBack }) {
-  const [activeTab, setActiveTab] = useState('overview');
-
-  const tabs = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'plan', label: 'Plan & Logistics' },
-    { id: 'impact', label: 'Impact & Risks' },
-  ];
-
   const hasPhases = idea.phases && (idea.phases.preTrip || idea.phases.onTrip || idea.phases.postTrip);
-  const hasPlan = hasPhases || idea.logisticsNeeded || idea.resources || idea.successMetrics;
-  const hasImpact = idea.impactType || idea.afterWeLeave || idea.risks || idea.openQuestions || idea.nextSteps;
+  const whyText = [idea.observation, idea.rootCause].filter(Boolean).join(' ');
+
+  const factsItems = [
+    idea.partnersNeeded && { label: 'Partners', value: idea.partnersNeeded },
+    idea.resources && { label: 'Resources', value: idea.resources },
+    idea.successMetrics && { label: 'Success looks like', value: idea.successMetrics },
+    idea.afterWeLeave && { label: 'After we leave', value: idea.afterWeLeave },
+  ].filter(Boolean);
+
+  const hasRisks = idea.risks || idea.nextSteps;
+  const ownerFirst = idea.owner.split(' ')[0];
+
+  const metaDots = [
+    idea.impactType && idea.impactType,
+    idea.group && idea.group,
+  ].filter(Boolean);
 
   return (
     <motion.div
@@ -295,6 +284,7 @@ function DetailView({ idea, onBack }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
+      className="max-w-3xl mx-auto"
     >
       {/* Back */}
       <button
@@ -304,200 +294,152 @@ function DetailView({ idea, onBack }) {
         <ArrowLeft className="w-4 h-4" /> Back to all ideas
       </button>
 
-      {/* Header card */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-          <OwnerAvatar name={idea.owner} sector={idea.sectors[0]} size="lg" />
-          <div className="flex-1 min-w-0">
-            <h1 className="font-display text-xl md:text-2xl font-bold text-gray-900 mb-1">{idea.name}</h1>
-            <p className="text-sm text-gray-500 mb-3">{idea.owner}{idea.location ? ` \u00B7 ${idea.location}` : ''}</p>
-            <div className="flex items-center gap-2 flex-wrap">
-              {idea.sectors.map((s) => <SectorPill key={s} sector={s} />)}
-              <StatusBadge status={idea.status} />
-              {idea.group && (
-                <span className="text-[11px] text-gray-400 font-medium px-2.5 py-0.5 rounded-full bg-gray-100">
-                  {idea.group}
+      {/* ── Header ── */}
+      <div className="flex items-start gap-3 mb-1">
+        <OwnerAvatar name={idea.owner} sector={idea.sectors[0]} size="lg" />
+        <h1 className="font-display text-[22px] font-medium text-gray-900 leading-tight pt-1">{idea.name}</h1>
+      </div>
+      <div className="ml-12">
+        <p className="text-[13px] text-gray-400">{idea.owner}{idea.location ? ` \u00B7 ${idea.location}` : ''}</p>
+        <div className="flex gap-1.5 flex-wrap mt-2">
+          {idea.sectors.map((s) => <SectorPill key={s} sector={s} />)}
+        </div>
+      </div>
+
+      {/* ── Readiness bar ── */}
+      {READINESS_LABELS.some((r) => idea.readiness[r.key]) && (
+        <DetailReadinessBar readiness={idea.readiness} />
+      )}
+
+      {/* ── Why this matters ── */}
+      {whyText && (
+        <div className="mt-8">
+          <p className="text-[12px] font-medium text-gray-400 mb-2">Why this matters</p>
+          <p className="text-[14px] text-gray-600 leading-relaxed">{whyText}</p>
+        </div>
+      )}
+
+      {/* ── The idea (hero card) ── */}
+      {idea.description && (
+        <div
+          className="mt-6 border-l-[3px] py-5 pr-5 pl-5"
+          style={{
+            borderColor: '#7F77DD',
+            backgroundColor: '#EEEDFE',
+            borderRadius: '0 12px 12px 0',
+          }}
+        >
+          <p className="text-[13px] font-medium mb-2" style={{ color: '#534AB7' }}>The idea</p>
+          <p className="text-[15px] leading-[1.65]" style={{ color: '#26215C' }}>{idea.description}</p>
+          {metaDots.length > 0 && (
+            <div className="flex gap-4 mt-3 flex-wrap">
+              {metaDots.map((item) => (
+                <span key={item} className="flex items-center gap-1.5 text-[12px]" style={{ color: '#534AB7' }}>
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: '#7F77DD' }} />
+                  {item}
                 </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Phases ── */}
+      {hasPhases && (
+        <div className="mt-8">
+          <p className="text-[12px] font-medium text-gray-400 mb-2">What we&apos;d do</p>
+          <div className="rounded-xl overflow-hidden border border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-px" style={{ backgroundColor: '#e5e7eb' }}>
+              {[
+                { label: 'Before the trip', content: idea.phases.preTrip },
+                { label: 'During the trip', content: idea.phases.onTrip },
+                { label: 'After the trip', content: idea.phases.postTrip },
+              ].map(
+                (phase) =>
+                  phase.content && (
+                    <div key={phase.label} className="bg-white p-3.5">
+                      <p className="text-[11px] font-medium mb-1.5" style={{ color: '#534AB7' }}>{phase.label}</p>
+                      <p className="text-[12px] text-gray-600 leading-[1.5]">{phase.content}</p>
+                    </div>
+                  )
               )}
             </div>
           </div>
         </div>
+      )}
 
-        {/* Readiness bar inside header */}
-        {READINESS_LABELS.some((r) => idea.readiness[r.key]) && (
-          <div className="mt-5 pt-5 border-t border-gray-100">
-            <p className="text-[10px] uppercase tracking-wider text-gray-400 mb-2">Readiness</p>
-            <ReadinessBar readiness={idea.readiness} />
-          </div>
-        )}
-
-        {/* Action buttons */}
-        <div className="flex flex-col sm:flex-row gap-2 mt-5 pt-5 border-t border-gray-100">
-          {idea.driveLink && (
-            <a
-              href={idea.driveLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
+      {/* ── Facts grid ── */}
+      {factsItems.length > 0 && (
+        <div className="mt-8">
+          <div className="rounded-xl overflow-hidden border border-gray-200">
+            <div
+              className={`grid gap-px ${factsItems.length <= 2 ? 'grid-cols-1 sm:grid-cols-' + factsItems.length : 'grid-cols-1 sm:grid-cols-2'}`}
+              style={{ backgroundColor: '#e5e7eb' }}
             >
-              <ExternalLink className="w-3.5 h-3.5" /> View template on Drive
-            </a>
-          )}
-          <a
-            href={`mailto:trip@aram.org.uk?subject=${encodeURIComponent(`Interested in helping: ${idea.name}`)}`}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-aram-purple hover:bg-aram-purple-dark text-xs font-semibold text-white transition-colors"
-          >
-            <Mail className="w-3.5 h-3.5" /> I&apos;m interested in helping
-          </a>
+              {factsItems.map((item) => (
+                <div key={item.label} className="bg-white p-3.5">
+                  <p className="text-[10px] text-gray-400 mb-1">{item.label}</p>
+                  <p className="text-[13px] text-gray-700 leading-[1.5]">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-gray-100 rounded-xl p-1">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 text-xs font-semibold py-2.5 rounded-lg transition-all ${
-              activeTab === tab.id
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab content */}
-      <AnimatePresence mode="wait">
-        {activeTab === 'overview' && (
-          <motion.div
-            key="overview"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="space-y-4"
-          >
-            {idea.observation && (
-              <SectionCard title="The observation">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.observation}</p>
-              </SectionCard>
-            )}
-            {idea.rootCause && (
-              <SectionCard title="Root cause">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.rootCause}</p>
-              </SectionCard>
-            )}
-            {idea.description && (
-              <SectionCard title="The idea" accent>
-                <p className="text-sm text-gray-700 leading-relaxed">{idea.description}</p>
-              </SectionCard>
-            )}
-            {idea.similarTried && (
-              <SectionCard title="Has anything similar been tried?">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.similarTried}</p>
-              </SectionCard>
-            )}
-          </motion.div>
-        )}
-
-        {activeTab === 'plan' && (
-          <motion.div
-            key="plan"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="space-y-4"
-          >
-            {/* Phases */}
-            {hasPhases && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {[
-                  { label: 'Pre-trip', content: idea.phases.preTrip },
-                  { label: 'On-trip', content: idea.phases.onTrip },
-                  { label: 'Post-trip', content: idea.phases.postTrip },
-                ].map(
-                  (phase) =>
-                    phase.content && (
-                      <SectionCard key={phase.label} title={phase.label} accent>
-                        <p className="text-xs text-gray-600 leading-relaxed">{phase.content}</p>
-                      </SectionCard>
-                    )
-                )}
+      {/* ── What's still open ── */}
+      {hasRisks && (
+        <div className="mt-8 rounded-xl bg-gray-100 p-4 sm:px-5">
+          <p className="text-[12px] font-medium text-gray-400 mb-3">What&apos;s still open</p>
+          <div className={`grid gap-6 ${idea.risks && idea.nextSteps ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+            {idea.risks && (
+              <div>
+                <p className="text-[11px] text-gray-400 mb-1">Risks flagged</p>
+                <p className="text-[13px] text-gray-600 leading-[1.5]">{idea.risks}</p>
               </div>
             )}
-            {idea.logisticsNeeded && (
-              <SectionCard title="Logistics needed">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.logisticsNeeded}</p>
-              </SectionCard>
-            )}
-            {idea.partnersNeeded && (
-              <SectionCard title="Partners needed">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.partnersNeeded}</p>
-              </SectionCard>
-            )}
-            {idea.resources && (
-              <SectionCard title="Resources needed">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.resources}</p>
-              </SectionCard>
-            )}
-            {idea.successMetrics && (
-              <SectionCard title="Success metrics">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.successMetrics}</p>
-              </SectionCard>
-            )}
-            {!hasPlan && (
-              <p className="text-sm text-gray-400 text-center py-8">Plan details not yet defined for this idea.</p>
-            )}
-          </motion.div>
-        )}
-
-        {activeTab === 'impact' && (
-          <motion.div
-            key="impact"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="space-y-4"
-          >
-            {idea.impactType && (
-              <SectionCard title="Impact type" accent>
-                <p className="text-sm font-semibold text-gray-800 mb-1">{idea.impactType}</p>
-                {idea.impactDescription && (
-                  <p className="text-sm text-gray-600 leading-relaxed">{idea.impactDescription}</p>
-                )}
-              </SectionCard>
-            )}
-            {idea.afterWeLeave && (
-              <SectionCard title="What changes after we leave?">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.afterWeLeave}</p>
-              </SectionCard>
-            )}
-            {idea.risks && (
-              <SectionCard title="Risks & backup">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.risks}</p>
-              </SectionCard>
-            )}
-            {idea.openQuestions && (
-              <SectionCard title="Open questions">
-                <p className="text-sm text-gray-600 leading-relaxed">{idea.openQuestions}</p>
-              </SectionCard>
-            )}
             {idea.nextSteps && (
-              <SectionCard title="Next steps" accent>
-                <p className="text-sm text-gray-700 leading-relaxed">{idea.nextSteps}</p>
-              </SectionCard>
+              <div>
+                <p className="text-[11px] text-gray-400 mb-1">Next steps</p>
+                <p className="text-[13px] text-gray-600 leading-[1.5]">{idea.nextSteps}</p>
+              </div>
             )}
-            {!hasImpact && (
-              <p className="text-sm text-gray-400 text-center py-8">Impact details not yet defined for this idea.</p>
-            )}
-          </motion.div>
+          </div>
+          {idea.openQuestions && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <p className="text-[11px] text-gray-400 mb-1">Open questions</p>
+              <p className="text-[13px] text-gray-600 leading-[1.5]">{idea.openQuestions}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Previous experience footnote ── */}
+      {idea.similarTried && (
+        <p className="mt-6 text-[12px] text-gray-400 leading-relaxed">{idea.similarTried}</p>
+      )}
+
+      {/* ── Action buttons ── */}
+      <div className="flex flex-col sm:flex-row gap-2 mt-8 pt-6" style={{ borderTop: '0.5px solid #e5e7eb' }}>
+        {idea.driveLink && (
+          <a
+            href={idea.driveLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gray-50 text-[13px] font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+            style={{ border: '0.5px solid #d1d5db' }}
+          >
+            <ExternalLink className="w-3.5 h-3.5" /> View template on Drive
+          </a>
         )}
-      </AnimatePresence>
+        <a
+          href={`mailto:trip@aram.org.uk?subject=${encodeURIComponent(`Re: ${idea.name}`)}`}
+          className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[13px] font-medium text-white transition-colors hover:opacity-90"
+          style={{ backgroundColor: '#7c3aed' }}
+        >
+          <Mail className="w-3.5 h-3.5" /> Contact {ownerFirst} to discuss more
+        </a>
+      </div>
     </motion.div>
   );
 }

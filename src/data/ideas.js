@@ -28,19 +28,19 @@ export const STATUS_STYLES = {
 export const READINESS_LABELS = [
   { key: 'research', label: 'Research' },
   { key: 'template', label: 'Template' },
-  { key: 'partnerIdentified', label: "Partner ID'd" },
   { key: 'preTripPlan', label: 'Pre-trip plan' },
+  { key: 'partnerIdentified', label: "Partner ID'd" },
   { key: 'budget', label: 'Budget' },
   { key: 'confirmed', label: 'Confirmed' },
 ];
 
-// Returns the index of the current "in progress" step (first false after last true)
+// Returns the index of the current "in progress" step (last completed stage)
 export function getCurrentStep(readiness) {
   let lastTrue = -1;
   for (let i = 0; i < READINESS_LABELS.length; i++) {
     if (readiness[READINESS_LABELS[i].key]) lastTrue = i;
   }
-  return lastTrue + 1 < READINESS_LABELS.length ? lastTrue + 1 : -1;
+  return lastTrue;
 }
 
 export const ideas = ideasData;
