@@ -110,6 +110,12 @@ function Hero() {
           >
             Join the Movement
           </Link>
+          <Link
+            href="/ideas"
+            className="bg-white/10 backdrop-blur-sm text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-white/20 hover:-translate-y-0.5 transition-all min-h-[48px] flex items-center justify-center gap-2"
+          >
+            Ideas Hub <ArrowRight className="w-4 h-4" />
+          </Link>
           <a
             href="#tagline"
             className="border border-white/20 text-white px-8 py-3.5 rounded-xl hover:border-white/50 transition-all min-h-[48px] flex items-center justify-center gap-2"
