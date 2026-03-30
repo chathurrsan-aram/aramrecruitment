@@ -9,7 +9,7 @@
       "research": true,
       "template": true,
       "partnerIdentified": true,
-      "preTripPlan": true,
+      "preTripPlan": false,
       "budget": false,
       "confirmed": false
     },
@@ -46,7 +46,7 @@
       "research": true,
       "template": true,
       "partnerIdentified": true,
-      "preTripPlan": true,
+      "preTripPlan": false,
       "budget": false,
       "confirmed": false
     },
@@ -83,7 +83,7 @@
       "research": true,
       "template": true,
       "partnerIdentified": false,
-      "preTripPlan": true,
+      "preTripPlan": false,
       "budget": false,
       "confirmed": false
     },
