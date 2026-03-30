@@ -71,6 +71,12 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/ideas"
+            className="text-xs font-semibold px-4 py-1.5 rounded-full bg-aram-purple text-white hover:bg-aram-purple-dark transition-all hover:-translate-y-0.5"
+          >
+            Ideas Hub
+          </Link>
         </nav>
 
         <button
@@ -99,9 +105,16 @@ export default function Navbar() {
               </Link>
             ))}
             <Link
-              href="/join"
+              href="/ideas"
               onClick={() => setMobileOpen(false)}
               className="mt-3 bg-aram-purple text-white font-semibold py-3 px-6 rounded-xl text-sm text-center transition-all duration-200"
+            >
+              Ideas Hub
+            </Link>
+            <Link
+              href="/join"
+              onClick={() => setMobileOpen(false)}
+              className="mt-2 bg-aram-purple/10 text-aram-purple font-semibold py-3 px-6 rounded-xl text-sm text-center transition-all duration-200"
             >
               Join Us
             </Link>
