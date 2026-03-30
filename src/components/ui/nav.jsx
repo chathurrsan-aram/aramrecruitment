@@ -11,7 +11,6 @@ const navLinks = [
   { href: '/research', label: 'Research' },
   { href: '/trip', label: 'Trip' },
   { href: '/reports', label: 'Reports' },
-  { href: '/ventures', label: 'Ventures' },
   { href: '/join', label: 'Join Us' },
 ];
 
@@ -22,7 +21,6 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const hasHero = ['/', '/research'].includes(pathname);
-  const isVenturesLanding = pathname === '/ventures';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -40,9 +38,6 @@ export default function Navbar() {
     observer.observe(html, { attributes: true, attributeFilter: ['data-immersive'] });
     return () => observer.disconnect();
   }, []);
-
-  // Ventures landing: no navbar at all — hero content stands alone
-  if (isVenturesLanding) return null;
 
   const solid = scrolled || !hasHero;
   const bg = solid ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent';
