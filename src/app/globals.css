@@ -1,0 +1,180 @@
+@import "tailwindcss";
+
+@theme {
+  /* Aram greens → now purple tones */
+  --color-aram-green-950: #1E0A3C;
+  --color-aram-green-900: #5A3D82;
+  --color-aram-green-800: #6D4A9E;
+  --color-aram-green-700: #7B5EAE;
+  --color-aram-green-600: #8B6BB5;
+  --color-aram-green-100: #F0EBF5;
+
+  /* Aram warms */
+  --color-aram-warm-50: #FDFCFA;
+  --color-aram-warm-100: #F5F3EE;
+  --color-aram-warm-200: #E8E4DE;
+  --color-aram-warm-300: #C4C4B4;
+  --color-aram-warm-400: #8A9B8E;
+  --color-aram-warm-500: #5A6B5E;
+
+  /* Sector colours */
+  --color-sector-healthcare: #C85C5C;
+  --color-sector-education: #5C8DC8;
+  --color-sector-sen: #8B5CC8;
+  --color-sector-technology: #5CC8B5;
+  --color-sector-wellbeing: #C8A85C;
+  --color-sector-economic-dev: #5CC86A;
+
+  /* Aram purples (primary accent) */
+  --color-aram-purple: #6D4A9E;
+  --color-aram-purple-light: #8B6BB5;
+  --color-aram-purple-dark: #5A3D82;
+  --color-aram-purple-50: #F5F0FA;
+  --color-aram-purple-100: #E8DFF3;
+  --color-leadership: #9D8BB8;
+  --color-leadership-bg: #F0EBF5;
+  --color-leadership-text: #5A4775;
+  --color-sector: #0D9488;
+  --color-sector-bg: #CCFBF1;
+  --color-sector-text: #0F766E;
+  --color-team: #64748B;
+  --color-team-bg: #F1F5F9;
+  --color-team-text: #475569;
+  --color-priority: #F59E0B;
+  --color-priority-bg: #FEF3C7;
+  --color-priority-text: #B45309;
+  --color-card-bg: #FAFAFA;
+  --color-card-border: #E5E7EB;
+
+  /* Fonts */
+  --font-display: 'Poppins', system-ui, sans-serif;
+  --font-body: 'Poppins', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-aram-warm-50);
+  color: var(--color-aram-warm-500);
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Pulsating status dots (for initiatives page) */
+.status-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+}
+
+.status-dot-urgent .circle,
+.status-dot-open .circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.status-dot-urgent .circle {
+  background-color: #F97316;
+}
+
+.status-dot-open .circle {
+  background-color: #22C55E;
+}
+
+.status-dot-urgent .ringring,
+.status-dot-open .ringring {
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  animation: pulsate 1.5s ease-out infinite;
+  opacity: 0;
+}
+
+.status-dot-urgent .ringring {
+  border: 3px solid #F97316;
+}
+
+.status-dot-open .ringring {
+  border: 3px solid #22C55E;
+}
+
+@keyframes pulsate {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Scroll indicator bounce */
+@keyframes bounce-dot {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(12px); }
+}
+
+.animate-bounce-dot {
+  animation: bounce-dot 2s ease-in-out infinite;
+}
+
+/* Dot grid pattern */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Noise texture overlay */
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Hide Leaflet default controls */
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-dot-urgent .ringring,
+  .status-dot-open .ringring {
+    animation: none;
+  }
+  .animate-marquee {
+    animation: none;
+  }
+  .animate-bounce-dot {
+    animation: none;
+  }
+}
