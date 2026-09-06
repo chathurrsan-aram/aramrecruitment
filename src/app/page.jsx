@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter, DrawPath } from '@/components/ui/motion';
-import { videos, LOCAL_HERO_VIDEO } from '@/lib/cloudinary';
+import { heroVideos } from '@/lib/cloudinary';
 import useHeroVideo from '@/components/ui/use-hero-video';
 import { partners } from '@/data/partners';
 import { regions } from '@/data/regions';
@@ -34,8 +34,7 @@ function Hero() {
           autoPlay muted playsInline preload="auto"
           poster="/images/Community.jpg"
         >
-          <source src={videos.heroMain} />
-          <source src={LOCAL_HERO_VIDEO} type="video/mp4" />
+          <source src={heroVideos.home} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-aram-green-950/80" />
       </motion.div>
