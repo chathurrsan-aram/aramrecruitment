@@ -1438,7 +1438,7 @@ function RecruitmentPage() {
       {/* Hero */}
       <section className="relative min-h-[77vh] flex items-center justify-center overflow-hidden pt-32">
         <div className="absolute inset-0">
-          <img src="/images/Community.png" alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center top' }} />
+          <img src="/images/Community.jpg" alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center top' }} />
           <div className="absolute inset-0 bg-[#6D4A9E]/10" />
         </div>
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
