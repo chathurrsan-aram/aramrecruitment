@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { videos } from '@/lib/cloudinary';
+import { heroVideos } from '@/lib/cloudinary';
 import AnimatedSection from '@/components/AnimatedSection';
 
 const roles = [
@@ -546,7 +546,7 @@ const CultureMemoModal = ({ onClose }) => {
             preload="metadata"
             poster="/images/Hope.jpg"
           >
-            <source src={videos.heroMain} type="video/mp4" />
+            <source src={heroVideos.home} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
