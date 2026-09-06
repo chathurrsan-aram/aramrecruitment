@@ -20,6 +20,7 @@ import {
   Globe, Building2, BookOpen, Layers, Maximize2, AlertTriangle,
 } from 'lucide-react';
 import { videos } from '@/lib/cloudinary';
+import useHeroVideo from '@/components/ui/use-hero-video';
 
 const DISTRICT_NAMES = {
   CO: 'Colombo', GQ: 'Gampaha', KT: 'Kalutara', KY: 'Kandy', MT: 'Matale',
@@ -809,6 +810,8 @@ function ResearchContent() {
 
   useEffect(() => { requestAnimationFrame(() => setLoaded(true)); }, []);
 
+  useHeroVideo(videoRef);
+
   /* Auto-dismiss tutorial after 8 s */
   useEffect(() => {
     if (!showTutorial) return;
@@ -973,7 +976,7 @@ function ResearchContent() {
           <video
             ref={videoRef}
             className="w-full h-full object-cover"
-            autoPlay loop muted playsInline
+            autoPlay muted playsInline preload="auto"
             poster="/images/Community.png"
           >
             <source src={videos.researchHero} type="video/mp4" />

@@ -6,8 +6,8 @@ const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dhzuwjkkz';
  * @param {string} [transforms='q_auto,f_auto'] - Cloudinary transformation string
  * @returns {string} Full Cloudinary delivery URL
  */
-export function cloudinaryVideo(publicId, transforms = 'q_auto,f_auto') {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${transforms}/${publicId}`;
+export function cloudinaryVideo(publicId, transforms = 'q_auto') {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${transforms}/${publicId}.mp4`;
 }
 
 // Centralised public IDs - update these to match your Cloudinary dashboard

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Polyline, Marker, CircleMarker, useMap } from 'react-leaflet';
+import { MapContainer, GeoJSON, Polyline, Marker, CircleMarker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { DISTRICT_META, enrichGeoData } from '@/components/ui/map-utils';
@@ -358,10 +358,6 @@ export default function TripJourneyMap({ activeDay, tripDays }) {
           [11.0, 83.5],
         ]}
       >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
-          opacity={0.35}
-        />
 
         <GeoJSON
           key={geoKey}

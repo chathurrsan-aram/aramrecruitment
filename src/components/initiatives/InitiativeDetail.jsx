@@ -11,7 +11,7 @@ export default function InitiativeDetail({ initiative }) {
   const [pageLoaded, setPageLoaded] = useState(false);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'instant' });
     requestAnimationFrame(() => setPageLoaded(true));
   }, []);
 
