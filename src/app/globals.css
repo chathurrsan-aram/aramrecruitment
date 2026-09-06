@@ -56,6 +56,14 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Background hero videos: never show WebKit's centre play glyph or controls */
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-panel {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--color-aram-warm-50);

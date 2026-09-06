@@ -19,7 +19,7 @@ import {
   Users, Lightbulb, MapPin, ExternalLink, Filter, ArrowDown, ArrowUp, MousePointerClick,
   Globe, Building2, BookOpen, Layers, Maximize2, AlertTriangle,
 } from 'lucide-react';
-import { videos } from '@/lib/cloudinary';
+import { videos, LOCAL_HERO_VIDEO } from '@/lib/cloudinary';
 import useHeroVideo from '@/components/ui/use-hero-video';
 
 const DISTRICT_NAMES = {
@@ -975,11 +975,12 @@ function ResearchContent() {
         <motion.div className="absolute inset-0 noise-overlay" style={{ y: bgY, scale: bgScale }}>
           <video
             ref={videoRef}
-            className="w-full h-full object-cover"
+            className="hero-video w-full h-full object-cover"
             autoPlay muted playsInline preload="auto"
-            poster="/images/Community.png"
+            poster="/images/Community.jpg"
           >
-            <source src={videos.researchHero} type="video/mp4" />
+            <source src={videos.researchHero} />
+            <source src={LOCAL_HERO_VIDEO} type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-aram-green-950/80" />
         </motion.div>

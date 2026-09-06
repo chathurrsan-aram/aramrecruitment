@@ -6,9 +6,12 @@ const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dhzuwjkkz';
  * @param {string} [transforms='q_auto,f_auto'] - Cloudinary transformation string
  * @returns {string} Full Cloudinary delivery URL
  */
-export function cloudinaryVideo(publicId, transforms = 'q_auto') {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${transforms}/${publicId}.mp4`;
+export function cloudinaryVideo(publicId, transforms = 'q_auto,f_auto') {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${transforms}/${publicId}`;
 }
+
+// Self-hosted fallback used when the Cloudinary clip cannot be loaded.
+export const LOCAL_HERO_VIDEO = '/images/Git_hero.mp4';
 
 // Centralised public IDs - update these to match your Cloudinary dashboard
 export const videos = {

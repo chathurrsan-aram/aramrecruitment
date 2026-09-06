@@ -39,3 +39,6 @@ dist-ssr
 # Next.js
 .next/
 out/
+
+# Tracked hero video (local fallback for the Cloudinary hero clip)
+!public/images/Git_hero.mp4
