@@ -1,618 +1,684 @@
 'use client';
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, ExternalLink, Mail, Lock, LayoutGrid, List } from 'lucide-react';
-import { ideas, SECTOR_COLOURS, ALL_SECTORS, READINESS_LABELS, getCurrentStep } from '@/data/ideas';
+import { ArrowLeft, ExternalLink, Mail, Lock } from 'lucide-react';
+import { ideas } from '@/data/ideas';
+import Image from 'next/image';
+
+/* ------------------------------------------------------------------ */
+/*  COLOUR MAPS                                                       */
+/* ------------------------------------------------------------------ */
+
+const sectorColors = {
+  Healthcare: '#ef4444',
+  Education: '#22c55e',
+  Technology: '#7c3aed',
+  'Economic Development': '#d97706',
+  SEN: '#ec4899',
+  Wellbeing: '#8b5cf6',
+  'Diaspora Reconnection': '#0d9488',
+  'Community Development': '#0d9488',
+  Media: '#64748b',
+};
+
+const statusColors = {
+  Exploring: { bg: 'bg-white/5', text: 'text-white/50' },
+  'Semi-clear': { bg: 'bg-white/5', text: 'text-white/50' },
+  'Research done': { bg: 'bg-amber-500/10', text: 'text-amber-400' },
+  'Template done': { bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
+  'Clear idea': { bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
+  'Short-term idea': { bg: 'bg-blue-500/10', text: 'text-blue-400' },
+  'Long-term idea': { bg: 'bg-purple-500/10', text: 'text-purple-400' },
+  Unsure: { bg: 'bg-white/5', text: 'text-white/50' },
+};
+
+const FILTER_CHIPS = [
+  'All',
+  'Community Development',
+  'Technology',
+  'Education',
+  'Healthcare',
+  'Wellbeing',
+  'SEN',
+  'Diaspora Reconnection',
+  'Economic Development',
+  'Media',
+];
 
 const PASSWORD = 'aram2026';
 
-/* ─── Password Gate ──────────────────────────────────── */
-function PasswordGate({ onAuth }) {
-  const [value, setValue] = useState('');
+const READINESS_LABELS = [
+  'Research',
+  'Template',
+  "Partner ID'd",
+  'Pre-trip plan',
+  'Budget',
+  'Confirmed',
+];
+
+const READINESS_KEYS = [
+  'research',
+  'template',
+  'partnerIdentified',
+  'preTripPlan',
+  'budget',
+  'confirmed',
+];
+
+/* ------------------------------------------------------------------ */
+/*  HELPERS                                                           */
+/* ------------------------------------------------------------------ */
+
+function getStatusStyle(status) {
+  return statusColors[status] || statusColors.Unsure;
+}
+
+function getSectorColor(sector) {
+  return sectorColors[sector] || '#6D4A9E';
+}
+
+function countForSector(sector) {
+  if (sector === 'All') return ideas.length;
+  return ideas.filter((i) =>
+    Array.isArray(i.sectors)
+      ? i.sectors.includes(sector)
+      : i.sector === sector
+  ).length;
+}
+
+function filterIdeas(sector) {
+  if (sector === 'All') return ideas;
+  return ideas.filter((i) =>
+    Array.isArray(i.sectors)
+      ? i.sectors.includes(sector)
+      : i.sector === sector
+  );
+}
+
+function getSectors(idea) {
+  if (Array.isArray(idea.sectors)) return idea.sectors;
+  if (idea.sector) return [idea.sector];
+  return [];
+}
+
+function hasContent(value) {
+  if (value === null || value === undefined) return false;
+  if (typeof value === 'string' && value.trim() === '') return false;
+  return true;
+}
+
+/* ------------------------------------------------------------------ */
+/*  PASSWORD GATE                                                     */
+/* ------------------------------------------------------------------ */
+
+function PasswordGate({ onSuccess }) {
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
 
-  const submit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
-    if (value === PASSWORD) {
+    if (password === PASSWORD) {
       sessionStorage.setItem('ideas-auth', 'true');
-      onAuth();
+      onSuccess();
     } else {
       setError(true);
-      setTimeout(() => setError(false), 1500);
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-gray-900 via-gray-800 to-[#1a1a2e]">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm text-center"
-      >
-        <div className="w-16 h-16 rounded-2xl bg-aram-purple/20 flex items-center justify-center mx-auto mb-6">
-          <Lock className="w-7 h-7 text-aram-purple-light" />
-        </div>
-        <h1 className="font-display text-2xl font-bold text-white mb-2">Aram Ideas Hub</h1>
-        <p className="text-sm text-gray-400 mb-8">Enter the volunteer password to continue</p>
-        <form onSubmit={submit} className="flex flex-col gap-3">
-          <input
-            type="password"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder="Password"
-            autoFocus
-            className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-aram-purple/50 transition-colors ${
-              error ? 'border-red-500' : 'border-white/10'
-            }`}
-          />
-          {error && <p className="text-red-400 text-xs">Incorrect password</p>}
-          <button
-            type="submit"
-            className="w-full py-3 rounded-xl bg-aram-purple hover:bg-aram-purple-dark text-white font-semibold text-sm transition-colors"
-          >
-            Enter
-          </button>
-        </form>
-      </motion.div>
-    </div>
-  );
-}
-
-/* ─── Shared Components ──────────────────────────────── */
-
-function SectorPill({ sector, small = false }) {
-  const colour = SECTOR_COLOURS[sector] || '#64748b';
-  return (
-    <span
-      className={`inline-flex items-center rounded-full font-medium ${
-        small ? 'text-[10px] px-2 py-0.5' : 'text-xs px-2.5 py-1'
-      }`}
-      style={{ backgroundColor: `${colour}15`, color: colour }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen bg-aram-green-950 flex items-center justify-center px-4"
     >
-      {sector}
-    </span>
-  );
-}
-
-function OwnerAvatar({ name, sector, size = 'sm' }) {
-  const colour = SECTOR_COLOURS[sector] || '#7c3aed';
-  const initial = name.charAt(0).toUpperCase();
-  const sizeClass = size === 'lg' ? 'w-9 h-9 text-sm' : 'w-7 h-7 text-xs';
-  return (
-    <span
-      className={`inline-flex items-center justify-center rounded-full text-white font-bold shrink-0 ${sizeClass}`}
-      style={{ backgroundColor: colour }}
-    >
-      {initial}
-    </span>
-  );
-}
-
-/* ─── Filter Chips ───────────────────────────────────── */
-function FilterChips({ active, onChange, counts }) {
-  const total = ideas.length;
-  return (
-    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-      <button
-        onClick={() => onChange('All')}
-        className={`shrink-0 text-xs font-semibold px-4 py-2 rounded-full transition-all ${
-          active === 'All'
-            ? 'bg-aram-purple text-white shadow-sm'
-            : 'bg-white text-gray-500 border border-gray-200 hover:border-aram-purple/30 hover:text-aram-purple'
-        }`}
-      >
-        All ({total})
-      </button>
-      {ALL_SECTORS.map((sector) => {
-        const count = counts[sector] || 0;
-        const colour = SECTOR_COLOURS[sector];
-        const isActive = active === sector;
-        return (
-          <button
-            key={sector}
-            onClick={() => onChange(sector)}
-            className={`shrink-0 text-xs font-semibold px-4 py-2 rounded-full transition-all ${
-              isActive
-                ? 'text-white shadow-sm'
-                : 'bg-white text-gray-500 border border-gray-200 hover:border-gray-300'
-            }`}
-            style={isActive ? { backgroundColor: colour } : undefined}
-          >
-            {sector} ({count})
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ─── Pulsating CSS ──────────────────────────────────── */
-function PulseStyle() {
-  return (
-    <style jsx global>{`
-      @media (prefers-reduced-motion: no-preference) {
-        @keyframes readiness-pulse {
-          0%, 100% { opacity: 0.45; }
-          50% { opacity: 1; }
-        }
-        .readiness-pulse {
-          animation: readiness-pulse 2s ease-in-out infinite;
-        }
-      }
-    `}</style>
-  );
-}
-
-/* ─── Readiness Bar (detail) ─────────────────────────── */
-function DetailReadinessBar({ readiness }) {
-  const filled = READINESS_LABELS.filter((r) => readiness[r.key]).length;
-  if (filled === 0) return null;
-  const currentStep = getCurrentStep(readiness);
-
-  return (
-    <div className="mt-5">
-      <PulseStyle />
-      <div className="flex gap-1 mb-1.5">
-        {READINESS_LABELS.map((r, i) => {
-          const isFilled = readiness[r.key];
-          const isCurrent = i === currentStep;
-          return (
-            <div
-              key={r.key}
-              className={`flex-1 h-2 rounded-full ${isCurrent ? 'readiness-pulse' : ''}`}
-              style={{
-                backgroundColor: isFilled ? '#97C459' : '#e5e7eb',
-              }}
+      <div className="w-full max-w-md">
+        <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-8 md:p-10">
+          <div className="flex justify-center mb-6">
+            <Image
+              src="https://res.cloudinary.com/dhzuwjkkz/image/upload/v1771802172/a730ae79-83b6-460d-b17f-c562f2948100_pcjimk.png"
+              alt="Aram"
+              width={120}
+              height={40}
+              style={{ filter: 'invert(1)', mixBlendMode: 'screen' }}
+              unoptimized
             />
-          );
-        })}
-      </div>
-      <div className="flex gap-1">
-        {READINESS_LABELS.map((r, i) => {
-          const isFilled = readiness[r.key];
-          const isCurrent = i === currentStep;
-          return (
-            <span
-              key={r.key}
-              className="flex-1 text-[10px] text-center"
-              style={{
-                color: isFilled ? '#3B6D11' : '#9ca3af',
-                fontWeight: isCurrent ? 500 : 400,
-              }}
-            >
-              {r.label}
-            </span>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Grid Card (compact overview) ───────────────────── */
-function GridCard({ idea, onClick }) {
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.97 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.97 }}
-      className="group rounded-xl border border-gray-200 bg-white hover:shadow-md hover:border-aram-purple/20 p-4 cursor-pointer transition-all flex flex-col"
-      onClick={onClick}
-    >
-      <div className="flex items-start gap-2.5 mb-3">
-        <OwnerAvatar name={idea.owner} sector={idea.sectors[0]} />
-        <div className="min-w-0 flex-1">
-          <h3 className="text-gray-900 font-semibold text-sm leading-tight truncate">{idea.name}</h3>
-          <p className="text-[11px] text-gray-400 mt-0.5">{idea.owner}</p>
-        </div>
-      </div>
-      <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3 flex-1">
-        {idea.description}
-      </p>
-      <div className="flex gap-1.5 flex-wrap">
-        {idea.sectors.map((s) => (
-          <SectorPill key={s} sector={s} small />
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── List Card (full-width row) ─────────────────────── */
-function ListCard({ idea, onClick }) {
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      className="group w-full rounded-xl border border-gray-200 bg-white hover:shadow-md hover:border-aram-purple/20 p-5 cursor-pointer transition-all"
-      onClick={onClick}
-    >
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-gray-900 font-semibold text-sm mb-1.5">{idea.name}</h3>
-          <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">
-            {idea.description}
-          </p>
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-1.5">
-              <OwnerAvatar name={idea.owner} sector={idea.sectors[0]} />
-              <span className="text-xs text-gray-500 font-medium">{idea.owner}</span>
-            </div>
-            <div className="flex gap-1.5 flex-wrap">
-              {idea.sectors.map((s) => (
-                <SectorPill key={s} sector={s} small />
-              ))}
-            </div>
           </div>
-        </div>
-        <span className="shrink-0 text-aram-purple text-xs font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-          View <ArrowRight className="w-3 h-3" />
-        </span>
-      </div>
-    </motion.div>
-  );
-}
 
-/* ─── Detail View ────────────────────────────────────── */
-function DetailView({ idea, onBack }) {
-  const hasPhases = idea.phases && (idea.phases.preTrip || idea.phases.onTrip || idea.phases.postTrip);
-  const whyText = [idea.observation, idea.rootCause].filter(Boolean).join(' ');
-
-  const factsItems = [
-    idea.partnersNeeded && { label: 'Partners', value: idea.partnersNeeded },
-    idea.resources && { label: 'Resources', value: idea.resources },
-    idea.successMetrics && { label: 'Success looks like', value: idea.successMetrics },
-    idea.afterWeLeave && { label: 'After we leave', value: idea.afterWeLeave },
-  ].filter(Boolean);
-
-  const hasRisks = idea.risks || idea.nextSteps;
-  const ownerFirst = idea.owner.split(' ')[0];
-
-  const metaDots = [
-    idea.impactType && idea.impactType,
-    idea.group && idea.group,
-  ].filter(Boolean);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      className="max-w-3xl mx-auto"
-    >
-      {/* Back */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-1.5 text-aram-purple text-sm font-medium mb-6 hover:gap-2.5 transition-all"
-      >
-        <ArrowLeft className="w-4 h-4" /> Back to all ideas
-      </button>
-
-      {/* ── Header ── */}
-      <div className="flex items-start gap-3 mb-1">
-        <OwnerAvatar name={idea.owner} sector={idea.sectors[0]} size="lg" />
-        <h1 className="font-display text-[22px] font-medium text-gray-900 leading-tight pt-1">{idea.name}</h1>
-      </div>
-      <div className="ml-12">
-        <p className="text-[13px] text-gray-400">{idea.owner}{idea.location ? ` \u00B7 ${idea.location}` : ''}</p>
-        <div className="flex gap-1.5 flex-wrap mt-2">
-          {idea.sectors.map((s) => <SectorPill key={s} sector={s} />)}
-        </div>
-      </div>
-
-      {/* ── Readiness bar ── */}
-      {READINESS_LABELS.some((r) => idea.readiness[r.key]) && (
-        <DetailReadinessBar readiness={idea.readiness} />
-      )}
-
-      {/* ── Why this matters ── */}
-      {whyText && (
-        <div className="mt-8">
-          <p className="text-[12px] font-medium text-gray-400 mb-2">Why this matters</p>
-          <p className="text-[14px] text-gray-600 leading-relaxed">{whyText}</p>
-        </div>
-      )}
-
-      {/* ── The idea (hero card) ── */}
-      {idea.description && (
-        <div
-          className="mt-6 border-l-[3px] py-5 pr-5 pl-5"
-          style={{
-            borderColor: '#7F77DD',
-            backgroundColor: '#EEEDFE',
-            borderRadius: '0 12px 12px 0',
-          }}
-        >
-          <p className="text-[13px] font-medium mb-2" style={{ color: '#534AB7' }}>The idea</p>
-          <p className="text-[15px] leading-[1.65]" style={{ color: '#26215C' }}>{idea.description}</p>
-          {metaDots.length > 0 && (
-            <div className="flex gap-4 mt-3 flex-wrap">
-              {metaDots.map((item) => (
-                <span key={item} className="flex items-center gap-1.5 text-[12px]" style={{ color: '#534AB7' }}>
-                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: '#7F77DD' }} />
-                  {item}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── Phases ── */}
-      {hasPhases && (
-        <div className="mt-8">
-          <p className="text-[12px] font-medium text-gray-400 mb-2">What we&apos;d do</p>
-          <div className="rounded-xl overflow-hidden border border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px" style={{ backgroundColor: '#e5e7eb' }}>
-              {[
-                { label: 'Before the trip', content: idea.phases.preTrip },
-                { label: 'During the trip', content: idea.phases.onTrip },
-                { label: 'After the trip', content: idea.phases.postTrip },
-              ].map(
-                (phase) =>
-                  phase.content && (
-                    <div key={phase.label} className="bg-white p-3.5">
-                      <p className="text-[11px] font-medium mb-1.5" style={{ color: '#534AB7' }}>{phase.label}</p>
-                      <p className="text-[12px] text-gray-600 leading-[1.5]">{phase.content}</p>
-                    </div>
-                  )
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Facts grid ── */}
-      {factsItems.length > 0 && (
-        <div className="mt-8">
-          <div className="rounded-xl overflow-hidden border border-gray-200">
-            <div
-              className={`grid gap-px ${factsItems.length <= 2 ? 'grid-cols-1 sm:grid-cols-' + factsItems.length : 'grid-cols-1 sm:grid-cols-2'}`}
-              style={{ backgroundColor: '#e5e7eb' }}
-            >
-              {factsItems.map((item) => (
-                <div key={item.label} className="bg-white p-3.5">
-                  <p className="text-[10px] text-gray-400 mb-1">{item.label}</p>
-                  <p className="text-[13px] text-gray-700 leading-[1.5]">{item.value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── What's still open ── */}
-      {hasRisks && (
-        <div className="mt-8 rounded-xl bg-gray-100 p-4 sm:px-5">
-          <p className="text-[12px] font-medium text-gray-400 mb-3">What&apos;s still open</p>
-          <div className={`grid gap-6 ${idea.risks && idea.nextSteps ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
-            {idea.risks && (
-              <div>
-                <p className="text-[11px] text-gray-400 mb-1">Risks flagged</p>
-                <p className="text-[13px] text-gray-600 leading-[1.5]">{idea.risks}</p>
-              </div>
-            )}
-            {idea.nextSteps && (
-              <div>
-                <p className="text-[11px] text-gray-400 mb-1">Next steps</p>
-                <p className="text-[13px] text-gray-600 leading-[1.5]">{idea.nextSteps}</p>
-              </div>
-            )}
-          </div>
-          {idea.openQuestions && (
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <p className="text-[11px] text-gray-400 mb-1">Open questions</p>
-              <p className="text-[13px] text-gray-600 leading-[1.5]">{idea.openQuestions}</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── Previous experience footnote ── */}
-      {idea.similarTried && (
-        <p className="mt-6 text-[12px] text-gray-400 leading-relaxed">{idea.similarTried}</p>
-      )}
-
-      {/* ── Action buttons ── */}
-      <div className="flex flex-col sm:flex-row gap-2 mt-8 pt-6" style={{ borderTop: '0.5px solid #e5e7eb' }}>
-        {idea.driveLink && (
-          <a
-            href={idea.driveLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gray-50 text-[13px] font-medium text-gray-600 hover:bg-gray-100 transition-colors"
-            style={{ border: '0.5px solid #d1d5db' }}
-          >
-            <ExternalLink className="w-3.5 h-3.5" /> View template on Drive
-          </a>
-        )}
-        <a
-          href={`mailto:trip@aram.org.uk?subject=${encodeURIComponent(`Re: ${idea.name}`)}`}
-          className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-[13px] font-medium text-white transition-colors hover:opacity-90"
-          style={{ backgroundColor: '#7c3aed' }}
-        >
-          <Mail className="w-3.5 h-3.5" /> Contact {ownerFirst} to discuss more
-        </a>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── Main Page ──────────────────────────────────────── */
-export default function IdeasPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-white" />}>
-      <IdeasPageInner />
-    </Suspense>
-  );
-}
-
-function IdeasPageInner() {
-  const searchParams = useSearchParams();
-  const [authed, setAuthed] = useState(false);
-  const [filter, setFilter] = useState('All');
-  const [selectedId, setSelectedId] = useState(null);
-  const [viewMode, setViewMode] = useState('grid');
-
-  useEffect(() => {
-    if (sessionStorage.getItem('ideas-auth') === 'true') setAuthed(true);
-  }, []);
-
-  useEffect(() => {
-    const id = searchParams.get('id');
-    if (id) setSelectedId(id);
-  }, [searchParams]);
-
-  const sectorCounts = useMemo(() => {
-    const counts = {};
-    ALL_SECTORS.forEach((s) => (counts[s] = 0));
-    ideas.forEach((idea) => idea.sectors.forEach((s) => { counts[s] = (counts[s] || 0) + 1; }));
-    return counts;
-  }, []);
-
-  const filtered = useMemo(() => {
-    if (filter === 'All') return ideas;
-    return ideas.filter((idea) => idea.sectors.includes(filter));
-  }, [filter]);
-
-  const emptySectors = useMemo(() => {
-    return ALL_SECTORS.filter((s) => (sectorCounts[s] || 0) === 0);
-  }, [sectorCounts]);
-
-  const selectedIdea = selectedId ? ideas.find((i) => i.id === selectedId) : null;
-
-  const openDetail = (id) => {
-    setSelectedId(id);
-    window.history.pushState(null, '', `/ideas?id=${id}`);
-    window.scrollTo(0, 0);
-  };
-
-  const closeDetail = () => {
-    setSelectedId(null);
-    window.history.pushState(null, '', '/ideas');
-  };
-
-  if (!authed) return <PasswordGate onAuth={() => setAuthed(true)} />;
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero banner */}
-      <section className="relative min-h-[40vh] flex items-center justify-center overflow-hidden pt-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-[#1a1a2e]" />
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-aram-purple rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-sector rounded-full blur-3xl" />
-        </div>
-        <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
-            2026 Trip
-          </p>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+          <h1 className="font-display text-2xl font-bold text-white text-center mb-2">
             Ideas Hub
           </h1>
-          <p className="text-base text-gray-300 max-w-xl mx-auto leading-relaxed">
-            Browse emerging initiative ideas for the 2026 trip. Click any idea to see full details.
+          <p className="text-white/50 text-sm text-center mb-8 leading-relaxed">
+            Enter the password to access emerging initiative ideas for the 2026 trip.
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError(false);
+                }}
+                placeholder="Password"
+                className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-10 pr-4 py-3 text-sm placeholder:text-white/30 focus:outline-none focus:border-aram-purple transition-colors"
+              />
+            </div>
+
+            {error && (
+              <p className="text-red-400 text-sm text-center">
+                Incorrect password
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="w-full bg-aram-purple text-white rounded-xl py-3 text-sm font-medium hover:bg-aram-purple-dark transition-colors"
+            >
+              Access Ideas Hub
+            </button>
+          </form>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  OVERVIEW                                                          */
+/* ------------------------------------------------------------------ */
+
+function Overview({ onSelectIdea }) {
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  const filtered = filterIdeas(activeFilter);
+
+  const emptySectors =
+    activeFilter === 'All'
+      ? FILTER_CHIPS.filter((s) => s !== 'All' && countForSector(s) === 0)
+      : [];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen bg-aram-green-950"
+    >
+      <div className="max-w-4xl mx-auto px-4 md:px-6 pt-28 md:pt-32 pb-16">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-white mb-2">
+            Ideas Hub
+          </h1>
+          <p className="text-white/60">
+            Emerging initiative ideas for the 2026 trip
           </p>
         </div>
-      </section>
 
-      {/* Content */}
-      <section className="py-10">
-        <div className="max-w-5xl mx-auto px-6">
-          <AnimatePresence mode="wait">
-            {selectedIdea ? (
-              <DetailView key="detail" idea={selectedIdea} onBack={closeDetail} />
-            ) : (
-              <motion.div
-                key="overview"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                {/* Toolbar: filters + view toggle */}
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex-1 overflow-hidden">
-                    <FilterChips active={filter} onChange={setFilter} counts={sectorCounts} />
-                  </div>
-                  <div className="flex gap-1 bg-white border border-gray-200 rounded-lg p-0.5 shrink-0">
-                    <button
-                      onClick={() => setViewMode('grid')}
-                      className={`p-2 rounded-md transition-colors ${
-                        viewMode === 'grid' ? 'bg-aram-purple text-white' : 'text-gray-400 hover:text-gray-600'
-                      }`}
-                      aria-label="Grid view"
-                    >
-                      <LayoutGrid className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setViewMode('list')}
-                      className={`p-2 rounded-md transition-colors ${
-                        viewMode === 'list' ? 'bg-aram-purple text-white' : 'text-gray-400 hover:text-gray-600'
-                      }`}
-                      aria-label="List view"
-                    >
-                      <List className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Cards */}
-                <AnimatePresence mode="popLayout">
-                  {filtered.length > 0 ? (
-                    viewMode === 'grid' ? (
-                      <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {filtered.map((idea) => (
-                          <GridCard key={idea.id} idea={idea} onClick={() => openDetail(idea.id)} />
-                        ))}
-                      </motion.div>
-                    ) : (
-                      <div className="space-y-3">
-                        {filtered.map((idea) => (
-                          <ListCard key={idea.id} idea={idea} onClick={() => openDetail(idea.id)} />
-                        ))}
-                      </div>
-                    )
-                  ) : (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-center py-16"
-                    >
-                      <p className="text-gray-400 text-sm">
-                        No ideas in this sector yet. Be the first to submit one{' '}
-                        <a
-                          href="mailto:trip@aram.org.uk?subject=New idea submission"
-                          className="text-aram-purple hover:underline"
-                        >
-                          &rarr;
-                        </a>
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Empty sectors bar */}
-                {filter === 'All' && emptySectors.length > 0 && (
-                  <div className="mt-8 p-4 rounded-xl bg-white border border-gray-100">
-                    <p className="text-xs text-gray-400 mb-2">Sectors still looking for ideas:</p>
-                    <div className="flex gap-2 flex-wrap">
-                      {emptySectors.map((s) => (
-                        <SectorPill key={s} sector={s} small />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+        {/* Filter chips */}
+        <div
+          className="flex gap-2 overflow-x-auto pb-2 mb-8"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          <style>{`
+            .hide-scrollbar::-webkit-scrollbar { display: none; }
+          `}</style>
+          <div className="flex gap-2 hide-scrollbar">
+            {FILTER_CHIPS.map((chip) => {
+              const count = countForSector(chip);
+              const isActive = activeFilter === chip;
+              return (
+                <button
+                  key={chip}
+                  onClick={() => setActiveFilter(chip)}
+                  className={`rounded-full px-4 py-2 text-sm font-medium cursor-pointer transition-all whitespace-nowrap ${
+                    isActive
+                      ? 'bg-aram-purple text-white'
+                      : 'border border-white/10 text-white/50 hover:border-white/20'
+                  }`}
+                >
+                  {chip} ({count})
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </section>
-    </div>
+
+        {/* Idea cards */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeFilter}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col gap-3"
+          >
+            {filtered.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-white/40 text-lg mb-2">
+                  No ideas in this sector yet.
+                </p>
+                <a
+                  href="mailto:trip@aram.org.uk"
+                  className="text-aram-purple-light text-sm hover:text-aram-purple transition-colors"
+                >
+                  Be the first to submit one &rarr;
+                </a>
+              </div>
+            ) : (
+              filtered.map((idea, index) => {
+                const sectors = getSectors(idea);
+                const primaryColor = getSectorColor(sectors[0]);
+                const status = getStatusStyle(idea.status);
+                const initials = (idea.owner || '?')
+                  .split(' ')
+                  .map((w) => w[0])
+                  .join('')
+                  .toUpperCase()
+                  .slice(0, 2);
+
+                return (
+                  <motion.div
+                    key={idea.id || idea.slug || index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.03 }}
+                    onClick={() => onSelectIdea(idea)}
+                    className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5 md:p-6 hover:bg-white/[0.05] hover:border-white/[0.1] transition-all cursor-pointer"
+                  >
+                    <div className="flex flex-col gap-3">
+                      {/* Top row */}
+                      <div className="flex justify-between items-start">
+                        <h3 className="font-display text-lg font-semibold text-white pr-3">
+                          {idea.name}
+                        </h3>
+                        <span
+                          className={`text-xs px-2.5 py-1 rounded-full font-medium whitespace-nowrap ${status.bg} ${status.text}`}
+                        >
+                          {idea.status}
+                        </span>
+                      </div>
+
+                      {/* Description */}
+                      {idea.shortDescription && (
+                        <p className="text-sm text-white/50 leading-relaxed line-clamp-2">
+                          {idea.shortDescription}
+                        </p>
+                      )}
+
+                      {/* Bottom row */}
+                      <div className="flex flex-wrap items-center gap-3">
+                        {/* Owner avatar */}
+                        {idea.owner && (
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+                              style={{ backgroundColor: primaryColor }}
+                            >
+                              {initials}
+                            </div>
+                            <span className="text-sm text-white/40">
+                              {idea.owner}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Sector pills */}
+                        {sectors.map((sector) => {
+                          const color = getSectorColor(sector);
+                          return (
+                            <span
+                              key={sector}
+                              className="text-[11px] px-2 py-0.5 rounded-full font-medium"
+                              style={{
+                                backgroundColor: `${color}15`,
+                                color: color,
+                              }}
+                            >
+                              {sector}
+                            </span>
+                          );
+                        })}
+
+                        {/* View link */}
+                        <span className="text-sm text-aram-purple-light font-medium hover:text-aram-purple transition-colors ml-auto">
+                          View &rarr;
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Bottom bar — sectors with 0 ideas */}
+        {activeFilter === 'All' && emptySectors.length > 0 && (
+          <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 mt-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm text-white/40 mr-1">
+                Sectors still looking for ideas:
+              </span>
+              {emptySectors.map((sector) => {
+                const color = getSectorColor(sector);
+                return (
+                  <span
+                    key={sector}
+                    className="text-[11px] px-2 py-0.5 rounded-full font-medium"
+                    style={{
+                      backgroundColor: `${color}15`,
+                      color: color,
+                    }}
+                  >
+                    {sector}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  DETAIL VIEW                                                       */
+/* ------------------------------------------------------------------ */
+
+function DetailView({ idea, onBack }) {
+  const sectors = getSectors(idea);
+  const status = getStatusStyle(idea.status);
+
+  /* Readiness */
+  const readiness = idea.readiness || {};
+  const readinessValues = READINESS_KEYS.map((k) => !!readiness[k]);
+  const filledCount = readinessValues.filter(Boolean).length;
+  const hasAnyReadiness = filledCount > 0;
+  const barColor = filledCount >= 4 ? 'bg-emerald-500' : 'bg-amber-500';
+
+  /* Content sections */
+  const contentSections = [
+    { title: 'The Observation', value: idea.observation },
+    { title: 'Root Cause', value: idea.rootCause },
+    { title: 'The Idea', value: idea.description },
+    {
+      title: 'Impact',
+      value:
+        hasContent(idea.impactType) || hasContent(idea.impactDescription)
+          ? [idea.impactType, idea.impactDescription].filter(Boolean).join(' — ')
+          : null,
+    },
+    { title: 'What Changes After We Leave?', value: idea.afterWeLeave },
+    { title: 'Has Anything Similar Been Tried?', value: idea.similarTried },
+    { title: '__phases__', value: null }, // placeholder — handled separately
+    { title: 'Logistics Needed', value: idea.logisticsNeeded },
+    { title: 'Resources Needed', value: idea.resources },
+    { title: 'Success Metrics', value: idea.successMetrics },
+    { title: 'Risks & Backup', value: idea.risks },
+    { title: 'Open Questions', value: idea.openQuestions },
+    { title: 'Next Steps', value: idea.nextSteps },
+  ];
+
+  const phases = idea.phases || {};
+  const hasPhases =
+    hasContent(phases.preTrip) ||
+    hasContent(phases.onTrip) ||
+    hasContent(phases.postTrip);
+
+  /* Info grid items */
+  const infoItems = [
+    { label: 'Owner', value: idea.owner },
+    { label: 'Location', value: idea.location },
+    { label: 'Partners', value: idea.partnersNeeded },
+    { label: 'Group', value: idea.group },
+  ].filter((item) => hasContent(item.value));
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.3 }}
+      className="min-h-screen bg-aram-green-950"
+    >
+      <div className="max-w-4xl mx-auto px-4 md:px-6 pt-28 md:pt-32 pb-16">
+        {/* Back button */}
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors cursor-pointer mb-8"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to all ideas
+        </button>
+
+        {/* Header */}
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-white mb-3">
+          {idea.name}
+        </h1>
+
+        <div className="flex flex-wrap gap-2 items-center">
+          {sectors.map((sector) => {
+            const color = getSectorColor(sector);
+            return (
+              <span
+                key={sector}
+                className="text-xs px-3 py-1 rounded-full font-medium"
+                style={{
+                  backgroundColor: `${color}15`,
+                  color: color,
+                }}
+              >
+                {sector}
+              </span>
+            );
+          })}
+          <span
+            className={`text-xs px-2.5 py-1 rounded-full font-medium ${status.bg} ${status.text}`}
+          >
+            {idea.status}
+          </span>
+        </div>
+
+        {/* Readiness progress bar */}
+        {hasAnyReadiness && (
+          <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5 mt-6">
+            <p className="font-mono text-xs uppercase tracking-wider text-white/40 mb-3">
+              Readiness
+            </p>
+            <div className="grid grid-cols-6 gap-1">
+              {readinessValues.map((filled, i) => (
+                <div
+                  key={i}
+                  className={`h-2 rounded-full ${filled ? barColor : 'bg-white/10'}`}
+                />
+              ))}
+            </div>
+            <div className="grid grid-cols-6 gap-1">
+              {READINESS_LABELS.map((label) => (
+                <p
+                  key={label}
+                  className="text-[10px] text-white/30 text-center mt-1.5"
+                >
+                  {label}
+                </p>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Info grid */}
+        {infoItems.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
+            {infoItems.map((item) => (
+              <div
+                key={item.label}
+                className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4"
+              >
+                <p className="font-mono text-[11px] uppercase tracking-wider text-white/30 mb-1">
+                  {item.label}
+                </p>
+                <p className="text-sm text-white/80">{item.value}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Content sections */}
+        {contentSections.map((section) => {
+          if (section.title === '__phases__') {
+            if (!hasPhases) return null;
+            return (
+              <div key="phases" className="mt-8">
+                <h2 className="font-display text-lg font-semibold text-white mb-3">
+                  Phases
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {[
+                    { label: 'Pre-trip', value: phases.preTrip },
+                    { label: 'On-trip', value: phases.onTrip },
+                    { label: 'Post-trip', value: phases.postTrip },
+                  ]
+                    .filter((p) => hasContent(p.value))
+                    .map((phase) => (
+                      <div
+                        key={phase.label}
+                        className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4"
+                      >
+                        <p className="font-mono text-[11px] uppercase tracking-wider text-white/30 mb-2">
+                          {phase.label}
+                        </p>
+                        <p className="text-sm text-white/60 leading-relaxed whitespace-pre-line">
+                          {phase.value}
+                        </p>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            );
+          }
+
+          if (!hasContent(section.value)) return null;
+
+          return (
+            <div key={section.title} className="mt-8">
+              <h2 className="font-display text-lg font-semibold text-white mb-3">
+                {section.title}
+              </h2>
+              <p className="text-sm text-white/60 leading-relaxed whitespace-pre-line">
+                {section.value}
+              </p>
+            </div>
+          );
+        })}
+
+        {/* Action bar */}
+        <div className="flex flex-wrap gap-3 mt-10 pb-8">
+          {hasContent(idea.driveLink) && (
+            <a
+              href={idea.driveLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-white/10 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:border-white/20 transition-all flex items-center gap-2"
+            >
+              <ExternalLink className="w-4 h-4" />
+              View full template on Drive
+            </a>
+          )}
+          <a
+            href={`mailto:trip@aram.org.uk?subject=Interested in helping: ${encodeURIComponent(idea.name)}`}
+            className="bg-aram-purple text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-aram-purple-dark transition-all flex items-center gap-2"
+          >
+            <Mail className="w-4 h-4" />
+            I&apos;m interested in helping
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  MAIN CONTENT (uses useSearchParams)                               */
+/* ------------------------------------------------------------------ */
+
+function IdeasContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [authed, setAuthed] = useState(false);
+  const [selectedIdea, setSelectedIdea] = useState(null);
+  const [mounted, setMounted] = useState(false);
+
+  /* Check auth + URL param on mount */
+  useEffect(() => {
+    setMounted(true);
+    const isAuthed = sessionStorage.getItem('ideas-auth') === 'true';
+    setAuthed(isAuthed);
+
+    if (isAuthed) {
+      const idParam = searchParams.get('id');
+      if (idParam) {
+        const found = ideas.find(
+          (i) => (i.slug || i.id) === idParam
+        );
+        if (found) setSelectedIdea(found);
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function handleSelectIdea(idea) {
+    setSelectedIdea(idea);
+    const slug = idea.slug || idea.id;
+    if (slug) {
+      router.push(`/ideas?id=${slug}`, { scroll: false });
+    }
+  }
+
+  function handleBack() {
+    setSelectedIdea(null);
+    router.push('/ideas', { scroll: false });
+  }
+
+  function handleAuthSuccess() {
+    setAuthed(true);
+  }
+
+  /* Avoid hydration mismatch — render nothing until mounted */
+  if (!mounted) {
+    return <div className="min-h-screen bg-aram-green-950" />;
+  }
+
+  return (
+    <AnimatePresence mode="wait">
+      {!authed ? (
+        <PasswordGate key="gate" onSuccess={handleAuthSuccess} />
+      ) : selectedIdea ? (
+        <DetailView key="detail" idea={selectedIdea} onBack={handleBack} />
+      ) : (
+        <Overview key="overview" onSelectIdea={handleSelectIdea} />
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  PAGE EXPORT (with Suspense boundary)                              */
+/* ------------------------------------------------------------------ */
+
+export default function IdeasPage() {
+  return (
+    <Suspense
+      fallback={<div className="min-h-screen bg-aram-green-950" />}
+    >
+      <IdeasContent />
+    </Suspense>
   );
 }

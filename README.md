@@ -1,16 +1,20 @@
-# React + Vite
+# Aram website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Next.js (App Router) static-export site for The Aram Initiative, styled with Tailwind CSS and deployed on Vercel.
 
-Currently, two official plugins are available:
+## Develop
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm install
+npm run dev      # local dev server
+npm run build    # static export to ./out
+npm run lint
+```
 
-## React Compiler
+## Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `src/app/` pages: home, about, initiatives, research, trip, reports, partners, join, ideas (password-gated Ideas Hub)
+- `src/components/` UI components, initiatives and trip components, Sri Lanka map
+- `src/data/` site content (initiatives, ideas, partners, regions, research markdown)
+- `src/lib/cloudinary.js` video and image URLs served from Cloudinary
+- `google-apps-script.js` Apps Script backing the Join Us application form

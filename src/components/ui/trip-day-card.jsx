@@ -33,7 +33,6 @@ function formatDate(dateStr) {
 const TripDayCard = forwardRef(function TripDayCard({ day, isActive }, ref) {
   const primaryRegion = day.locations[0]?.region || 'western';
   const regionStyle = getRegionStyle(primaryRegion);
-  const isSplit = day.locations.length > 1 && day.locations[0].group !== null;
 
   return (
     <div
