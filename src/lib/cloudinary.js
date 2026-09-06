@@ -14,10 +14,14 @@ export function cloudinaryVideo(publicId, transforms = 'q_auto,f_auto') {
 // Cloudinary: the Cloudinary video renditions started returning broken
 // output (frozen frame / black) even though the URLs had worked earlier.
 export const heroVideos = {
+  // TODO: replace with the long Aram film once a web-encoded copy is added
+  // to public/images (see hero-home.mp4 in the README).
   home: '/images/Git_hero.mp4',
-  // TODO: replace with the research page's own clip once it is added to
-  // public/images; until then the research hero reuses the home clip.
-  research: '/images/Git_hero.mp4',
+  // Upcountry drone loop. The untransformed Cloudinary original streams
+  // fine; the q_auto/f_auto renditions do not, so it is requested as-is.
+  research: `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/Untitled_osyu5s.mp4`,
+  // Played only if the research clip above fails to load.
+  researchFallback: '/images/Git_hero.mp4',
 };
 
 // Centralised public IDs - update these to match your Cloudinary dashboard

@@ -980,6 +980,7 @@ function ResearchContent() {
             poster="/images/Community.jpg"
           >
             <source src={heroVideos.research} type="video/mp4" />
+            <source src={heroVideos.researchFallback} type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-aram-green-950/80" />
         </motion.div>
