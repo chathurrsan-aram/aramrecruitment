@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { MapContainer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { districtProjects, DISTRICT_TO_ARAM_REGION } from '@/data/districtProjects';
@@ -305,10 +305,6 @@ export default function SriLankaMap({
           [10.5, 83.0],
         ]}
       >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
-          opacity={0.35}
-        />
 
         <GeoJSON
           key={geoKey}

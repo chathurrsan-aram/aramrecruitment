@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter, DrawPath } from '@/components/ui/motion';
 import { videos } from '@/lib/cloudinary';
+import useHeroVideo from '@/components/ui/use-hero-video';
 import { partners } from '@/data/partners';
 import { regions } from '@/data/regions';
 import { ArrowRight, ChevronDown } from 'lucide-react';
@@ -22,14 +23,7 @@ function Hero() {
 
   useEffect(() => { requestAnimationFrame(() => setLoaded(true)); }, []);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.currentTime = 4.5;
-    const handleSeeked = () => { if (video.currentTime < 4.5) video.currentTime = 4.5; };
-    video.addEventListener('seeking', handleSeeked);
-    return () => video.removeEventListener('seeking', handleSeeked);
-  }, []);
+  useHeroVideo(videoRef, { startAt: 4.5 });
 
   return (
     <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -37,7 +31,7 @@ function Hero() {
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
-          autoPlay loop muted playsInline
+          autoPlay muted playsInline preload="auto"
           poster="/images/Community.png"
         >
           <source src={videos.heroMain} type="video/mp4" />
