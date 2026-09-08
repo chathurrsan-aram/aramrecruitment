@@ -42,3 +42,4 @@ out/
 
 # Tracked hero video (local fallback for the Cloudinary hero clip)
 !public/images/Git_hero.mp4
+!public/images/hero-home.mp4

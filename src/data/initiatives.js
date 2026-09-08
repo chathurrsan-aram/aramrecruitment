@@ -27,7 +27,7 @@ const initiatives = [
     partner: 'Vanni Hope',
     partnerLead: 'Seelan Anna \u2014 Head of Economic Development, Vanni Hope',
     summary: 'Revolving microcredit scheme providing fair loans and business training to war-affected communities, replacing exploitative lending with empowerment.',
-    image: '/images/initiatives/microcredit.jpg',
+    image: null,
     description: [
       "Fifteen years after Sri Lanka's civil war ended, communities in the Northern and Eastern provinces still face limited livelihood opportunities and exploitation by predatory microfinance institutions charging above 25% interest. Families \u2014 predominantly headed by women \u2014 become trapped in vicious cycles of debt, taking loans from multiple lenders just to survive, with some seeing no way out.",
       "The Aram Initiative has partnered with Vanni Hope, an Australian-based NGO with established experience in community development and microfinance, to implement a revolving microcredit scheme in Eastern Province. Our scheme offers loans at 10% interest, with repayments recycled back into the fund to grow it \u2014 creating a self-sustaining financial ecosystem that serves more people over time.",
@@ -95,7 +95,7 @@ const initiatives = [
     flag: '\u{1F1F1}\u{1F1F0}',
     partner: null,
     summary: 'Connecting Tamil-speaking children in the UK with children in Sri Lankan orphanages through handwritten letters \u2014 building literacy, empathy, and lasting friendships.',
-    image: '/images/initiatives/penpal.jpg',
+    image: null,
     description: [
       'The Pen Pal Project is an educational and cultural initiative that connects Tamil-speaking children in the UK with children living in orphanages in Sri Lanka through handwritten letters. Inspired by traditional pen pal exchanges used in foreign language learning, this project improves Tamil literacy among diaspora youth while nurturing empathy, friendship, and cross-border cultural connections.',
       "For diaspora children, Tamil can feel like a classroom obligation disconnected from their daily lives. For children in Sri Lankan orphanages, the world beyond their walls can feel impossibly distant. The Pen Pal Project bridges both gaps \u2014 giving UK children a meaningful reason to practise their Tamil, and giving Sri Lankan children a window into life abroad and the knowledge that someone is thinking of them.",
@@ -155,7 +155,7 @@ const initiatives = [
     flag: '\u{1F1F1}\u{1F1F0}',
     partner: null,
     summary: 'Diaspora professionals mentoring young people in Sri Lankan children\u2019s homes through regular virtual sessions \u2014 building skills, confidence, and pathways to opportunity.',
-    image: '/images/initiatives/mentorship.jpg',
+    image: null,
     description: [
       "When the Aram Initiative first started working in Sri Lanka, like many organisations, we believed fundraising and distributing resources was the highest form of impact. Year one was two-week trips, one-day visits, and donations. Year two was building infrastructure \u2014 laptops, wifi connections, microphones, projectors. But a conversation with a young girl at one of the homes changed everything. She'd received a tablet the previous year from another organisation. It was wonderful, she said, for the two months before it broke. No one could repair it. No one had thought about app access, updates, or maintenance.",
       "This story repeated itself in different forms across every location we visited. Educational toys gathering dust. High-tech donations sitting unused. We were creating temporary moments of joy, but not lasting change.",

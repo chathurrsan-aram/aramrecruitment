@@ -1,7 +1,6 @@
 /**
  * Shared district metadata for Sri Lanka GeoJSON maps.
- * Used by both the research page map (sri-lanka-map.jsx) and
- * the trip journey map (trip-journey-map.jsx).
+ * Used by the research page map (sri-lanka-map.jsx).
  */
 
 /* GADM NAME_1 → district code + province */

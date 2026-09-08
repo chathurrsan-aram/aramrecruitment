@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect, Suspense } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'; // eslint-disable-line no-unused-vars -- motion used in JSX as motion.div
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';  
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { StaggerContainer, StaggerItem } from '@/components/ui/motion';

@@ -617,8 +617,9 @@ function IdeasContent() {
   const [selectedIdea, setSelectedIdea] = useState(null);
   const [mounted, setMounted] = useState(false);
 
-  /* Check auth + URL param on mount */
+  /* Check auth + URL param on mount (client-only: sessionStorage) */
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional client-only mount gate
     setMounted(true);
     const isAuthed = sessionStorage.getItem('ideas-auth') === 'true';
     setAuthed(isAuthed);

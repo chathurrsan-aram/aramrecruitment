@@ -1,6 +1,5 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import Navbar from './nav';
 import Footer from './footer';
 
