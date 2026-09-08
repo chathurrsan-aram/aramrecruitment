@@ -3,17 +3,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Reveal, StaggerContainer, StaggerItem, Counter } from '@/components/ui/motion';
-import { ArrowRight, Download, Calendar, MapPin, Users, FileText, Quote, Map, X } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-/* Lazy-load the heavy scrollytelling component (includes Leaflet) */
-const TripScrollytelling = dynamic(
-  () => import('@/components/ui/trip-scrollytelling'),
-  { ssr: false }
-);
+import { ArrowRight, Download, Calendar, MapPin, Users, FileText, Quote } from 'lucide-react';
 
 /* ─── Hero ─────────────────────────────────────────── */
-function TripHero({ onLaunchJourney, showJourney, onCloseJourney }) {
+function TripHero() {
   return (
     <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#F6F2FC' }}>
       <div className="absolute inset-0">
@@ -33,29 +26,9 @@ function TripHero({ onLaunchJourney, showJourney, onCloseJourney }) {
           </h1>
         </Reveal>
         <Reveal delay={0.15}>
-          <p className="text-lg text-aram-warm-500 leading-relaxed max-w-xl mx-auto mb-8">
+          <p className="text-lg text-aram-warm-500 leading-relaxed max-w-xl mx-auto">
             The cornerstone of our mission: a yearly trip to Sri Lanka where our team connects directly with communities.
           </p>
-        </Reveal>
-        <Reveal delay={0.3}>
-          {showJourney ? (
-            <button
-              onClick={onCloseJourney}
-              className="group inline-flex items-center gap-3 bg-aram-warm-100 text-aram-green-900 font-semibold text-sm md:text-base px-7 py-3.5 rounded-full border border-aram-warm-200 hover:bg-aram-warm-200 hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <X className="w-5 h-5" />
-              Close Journey
-            </button>
-          ) : (
-            <button
-              onClick={onLaunchJourney}
-              className="group inline-flex items-center gap-3 bg-gradient-to-r from-aram-purple to-aram-purple-dark text-white font-semibold text-sm md:text-base px-7 py-3.5 rounded-full shadow-lg shadow-aram-purple/25 hover:shadow-xl hover:shadow-aram-purple/30 hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <Map className="w-5 h-5" />
-              Explore Our 2025 Journey
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
-          )}
         </Reveal>
       </div>
     </section>
@@ -170,7 +143,7 @@ function Trip2026() {
 }
 
 /* ─── Past Trips ───────────────────────────────────── */
-function PastTrips({ onLaunchJourney }) {
+function PastTrips() {
   const [activeTab, setActiveTab] = useState('2025');
 
   const trips = {
@@ -182,7 +155,6 @@ function PastTrips({ onLaunchJourney }) {
         { target: 15, suffix: '', label: 'Days' },
       ],
       reportUrl: null,
-      hasJourney: true,
     },
     '2024': {
       summary: 'Our largest trip yet: 30 volunteers deployed across three provinces, delivering healthcare camps, career guidance sessions, mentoring pilots, and technology workshops to 12+ communities.',
@@ -264,20 +236,6 @@ function PastTrips({ onLaunchJourney }) {
               ))}
             </div>
 
-            {/* Journey CTA for 2025 */}
-            {trip.hasJourney && (
-              <div className="text-center mb-8">
-                <button
-                  onClick={onLaunchJourney}
-                  className="group inline-flex items-center gap-3 bg-gradient-to-r from-aram-purple to-aram-purple-dark text-white font-semibold text-sm px-6 py-3 rounded-full shadow-lg shadow-aram-purple/20 hover:shadow-xl hover:shadow-aram-purple/30 hover:-translate-y-0.5 transition-all duration-300"
-                >
-                  <Map className="w-4 h-4" />
-                  Explore the Journey
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </button>
-              </div>
-            )}
-
             {/* Photo grid placeholder */}
             <StaggerContainer className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8" staggerDelay={0.08}>
               {[...Array(6)].map((_, i) => (
@@ -349,32 +307,12 @@ function Testimonials() {
 
 /* ─── Page ─────────────────────────────────────────── */
 export default function TripPage() {
-  const [showJourney, setShowJourney] = useState(false);
-
   return (
     <div>
-      <TripHero
-        onLaunchJourney={() => setShowJourney(true)}
-        showJourney={showJourney}
-        onCloseJourney={() => setShowJourney(false)}
-      />
-
-      {/* Journey section — inline, below hero */}
-      <AnimatePresence>
-        {showJourney && (
-          <TripScrollytelling onClose={() => setShowJourney(false)} />
-        )}
-      </AnimatePresence>
-
-      {/* Hide other sections when journey is active */}
-      {!showJourney && (
-        <>
-          <HowItWorks />
-          <Trip2026 />
-          <PastTrips onLaunchJourney={() => setShowJourney(true)} />
-        </>
-      )}
-
+      <TripHero />
+      <HowItWorks />
+      <Trip2026 />
+      <PastTrips />
       <Testimonials />
     </div>
   );
