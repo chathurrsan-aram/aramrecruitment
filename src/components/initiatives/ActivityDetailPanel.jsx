@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars -- motion used in JSX as motion.div
+import { motion } from 'framer-motion';  
 import { X, MapPin, Clock, User, ExternalLink, Lightbulb, CheckCircle2 } from 'lucide-react';
 import { activitySectorColors } from '@/data/tripActivities';
 

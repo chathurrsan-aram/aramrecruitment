@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { heroVideos } from '@/lib/cloudinary';
 import AnimatedSection from '@/components/AnimatedSection';
@@ -675,6 +675,21 @@ const getTierStyles = (tier) => {
 };
 
 // Role Relationship Chart Component
+
+const RolePill = ({ name, isCurrentRole = false }) => (
+  <div
+    className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap ${
+      isCurrentRole
+        ? 'bg-aram-purple text-white'
+        : 'bg-aram-purple-50 text-aram-purple border border-aram-purple/20'
+    }`}
+  >
+    {name}
+  </div>
+);
+
+const ConnectorLine = () => <div className="w-px h-4 bg-gray-300" />;
+
 const RoleRelationshipChart = ({ role }) => {
   const relationships = role.relationships;
   if (!relationships) return null;
@@ -684,22 +699,6 @@ const RoleRelationshipChart = ({ role }) => {
 
   // If no relationships at all, don't render
   if (!hasReportsTo && !hasManages) return null;
-
-  const RolePill = ({ name, isCurrentRole = false }) => (
-    <div
-      className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap ${
-        isCurrentRole
-          ? 'bg-aram-purple text-white'
-          : 'bg-aram-purple-50 text-aram-purple border border-aram-purple/20'
-      }`}
-    >
-      {name}
-    </div>
-  );
-
-  const ConnectorLine = () => (
-    <div className="w-px h-4 bg-gray-300" />
-  );
 
   return (
     <div className="mt-6 pt-6 border-t border-gray-200">
@@ -742,19 +741,17 @@ const RoleRelationshipChart = ({ role }) => {
 };
 
 const RoleCard = ({ role, isExpanded, onToggle, onApply, onViewDetails }) => {
-  const [showContent, setShowContent] = useState(false);
+  const [showContent, setShowContent] = useState(isExpanded);
   const contentRef = useRef(null);
 
+  // Show content immediately on expand; keep it mounted briefly on collapse
+  // so the closing transition can play.
+  if (isExpanded && !showContent) setShowContent(true);
   useEffect(() => {
-    if (isExpanded) {
-      setShowContent(true);
-    } else {
-      const timer = setTimeout(() => setShowContent(false), 300);
-      return () => clearTimeout(timer);
-    }
+    if (isExpanded) return undefined;
+    const timer = setTimeout(() => setShowContent(false), 300);
+    return () => clearTimeout(timer);
   }, [isExpanded]);
-
-  const worksWithText = Array.isArray(role.worksWith) ? role.worksWith.join(', ') : role.worksWith;
 
   return (
   <div className={`bg-card-bg rounded-xl shadow-md transition-all duration-300 border-2 ${isExpanded ? 'border-aram-purple shadow-lg' : 'border-card-border hover:shadow-lg hover:border-aram-purple/30'}`}>
@@ -888,10 +885,12 @@ const ApplicationForm = ({ selectedRole, onClose, onSubmit }) => {
       roles: selectedRoles.map(r => r.title),
     };
 
-    // If no Google Script URL is configured, fall back to the original behavior
+    // Without the Apps Script URL nothing can be recorded, so say so rather
+    // than showing a success screen for an application that went nowhere.
     if (!GOOGLE_SCRIPT_URL) {
-      console.log('Form submitted (no Google Sheets integration):', submissionData);
-      onSubmit(formData);
+      console.error('NEXT_PUBLIC_GOOGLE_SCRIPT_URL is not set; application not sent:', submissionData);
+      setSubmitError('Applications are temporarily unavailable. Please email hello@aram.org.uk with the role you are interested in.');
+      setIsSubmitting(false);
       return;
     }
 
@@ -1058,6 +1057,11 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
     };
   }, []);
 
+  const handleClose = useCallback(() => {
+    setIsVisible(false);
+    setTimeout(onClose, 300);
+  }, [onClose]);
+
   // Handle Escape key to close panel
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -1067,7 +1071,7 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleClose]);
 
   // Focus trap - keep focus within panel
   useEffect(() => {
@@ -1099,11 +1103,6 @@ const JobDetailsPanel = ({ role, onClose, onApply }) => {
     document.addEventListener('keydown', handleTabKey);
     return () => document.removeEventListener('keydown', handleTabKey);
   }, [isVisible]);
-
-  const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(onClose, 300);
-  };
 
   const handleApplyClick = () => {
     handleClose();
