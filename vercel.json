@@ -1,12 +1,5 @@
 {
-  "outputDirectory": "out",
+  "framework": "nextjs",
   "cleanUrls": true,
-  "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/members",
-      "destination": "https://aram-impact-studio.feycalf10.chatgpt.site/",
-      "permanent": false
-    }
-  ]
+  "trailingSlash": false
 }

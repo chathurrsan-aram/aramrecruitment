@@ -27,19 +27,10 @@ Copy `.env.example` to `.env.local` for local development. In Vercel the same va
 - `google-apps-script.js` the Apps Script that writes Join Us applications to the recruitment sheet
 - `generate-roles-pdf.js` regenerates `public/aram-roles-2026-2027.pdf`, the role descriptions PDF linked from the Join page
 
-## Members prototype
+## Native members dashboard
 
-`/members` temporarily redirects to the existing private Aram impact prototype:
-https://aram-impact-studio.feycalf10.chatgpt.site/ . Vercel handles this in
-`vercel.json`, so the public website remains a static export.
+`/members` now runs in this Next.js application. It does not redirect to the previous prototype. Anonymous visitors see a fictional read-only fixture, never the private owner's workspace. Login at `/members/login` uses Supabase email links with PKCE; only configured, confirmed owner emails may load or change a saved workspace. Public visitors cannot submit changes.
 
-The destination retains its ChatGPT sign-in, owner-only access and persisted
-demo workspace. No access token, member data or backend credential is included
-in this public repository. This entry point does not create public member
-accounts or move the application/database into Vercel. Financial and impact
-figures in the prototype remain demonstration data.
+Apply `docs/members-schema.sql` through Supabase migrations, populate `members_allowed_emails` administratively, and configure the server-only variables listed in `.env.example` in Vercel. Set Supabase Site URL to the canonical `/members` page and allow only canonical `/members/auth/callback` URLs. Do not expose service-role keys or use user metadata for authorization. Optional `members_workspace_imports` seeds an owner's first workspace; it never overwrites subsequent saved edits.
 
-The redirect is temporary (307), allowing `/members` to become a native member
-area later without a permanently cached redirect. A full member rollout needs
-member/admin authentication and server-side storage integrated before replacing
-this entry point. Existing routes and the Ideas Hub are unchanged.
+The API checks verified Supabase identity, database RLS, same-origin writes, bounded validated payloads and atomic version comparison. All private data/auth responses bypass shared caches. Deployment uses Next.js server routes, not static export. Run `node --test tests/*.test.mjs`, focused ESLint and `npm run build` before deploying. The old hosted prototype remains a separate private historical version.
