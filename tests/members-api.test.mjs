@@ -50,7 +50,7 @@ function environment() {
           options.cookies.setAll([{ name: 'sb-test-auth-token', value: 'test-session', options: { path: '/members' } }], { 'Cache-Control': 'private, no-store' });
           return { error: null };
         },
-        signOut: async () => { env.cookies = []; return { error: null }; },
+        signOut: async () => { if (env.signOutError) return { error: new Error('Session unavailable') }; env.cookies = []; return { error: null }; },
       },
       from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: env.allowed ? { email: env.user.email } : null, error: null }) }) }) }),
     };
@@ -182,4 +182,12 @@ test('callback failures remain private and logout GET cannot change sessions', a
   const signedOut = await logout.POST(request('/members/logout', ''));
   privateResponse(signedOut);
   assert.equal(env.cookies.length, 0);
+});
+
+
+test('logout failure reports failure without claiming the session ended', async () => {
+  const env = environment(); env.signIn(); env.signOutError = true;
+  const response = await logout.POST(request('/members/logout', ''));
+  assert.equal(response.status, 403); privateResponse(response);
+  assert.equal(env.cookies.length, 1);
 });
