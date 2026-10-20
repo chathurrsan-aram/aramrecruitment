@@ -26,3 +26,20 @@ Copy `.env.example` to `.env.local` for local development. In Vercel the same va
 - `public/geo/` district GeoJSON for the map
 - `google-apps-script.js` the Apps Script that writes Join Us applications to the recruitment sheet
 - `generate-roles-pdf.js` regenerates `public/aram-roles-2026-2027.pdf`, the role descriptions PDF linked from the Join page
+
+## Members prototype
+
+`/members` temporarily redirects to the existing private Aram impact prototype:
+https://aram-impact-studio.feycalf10.chatgpt.site/ . Vercel handles this in
+`vercel.json`, so the public website remains a static export.
+
+The destination retains its ChatGPT sign-in, owner-only access and persisted
+demo workspace. No access token, member data or backend credential is included
+in this public repository. This entry point does not create public member
+accounts or move the application/database into Vercel. Financial and impact
+figures in the prototype remain demonstration data.
+
+The redirect is temporary (307), allowing `/members` to become a native member
+area later without a permanently cached redirect. A full member rollout needs
+member/admin authentication and server-side storage integrated before replacing
+this entry point. Existing routes and the Ideas Hub are unchanged.
