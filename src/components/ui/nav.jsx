@@ -73,10 +73,10 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href="/ideas"
+            href="/members"
             className="text-xs font-semibold px-4 py-1.5 rounded-full bg-aram-purple text-white hover:bg-aram-purple-dark transition-all hover:-translate-y-0.5"
           >
-            Ideas Hub
+            Dashboard
           </Link>
         </nav>
 
@@ -106,11 +106,11 @@ export default function Navbar() {
               </Link>
             ))}
             <Link
-              href="/ideas"
+              href="/members"
               onClick={() => setMobileOpen(false)}
               className="mt-3 bg-aram-purple text-white font-semibold py-3 px-6 rounded-xl text-sm text-center transition-all duration-200"
             >
-              Ideas Hub
+              Dashboard
             </Link>
             <Link
               href="/join"

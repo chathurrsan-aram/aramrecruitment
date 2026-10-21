@@ -1,13 +1,15 @@
 /** Public editorial context only. No private strategy, contact or beneficiary data. */
 export const memberPaths = {
-  Overview: '/members', Initiatives: '/members/initiatives',
+  Overview: '/members/overview', Initiatives: '/members/initiatives',
   'Funding & ledger': '/members/funding', 'Community vote': '/members/vote',
   'Field updates': '/members/updates', 'Admin studio': '/members/studio',
   'Thought leadership': '/members/insights', 'Community events': '/members/events',
   'About this prototype': '/members/about',
 };
 export function parseMembersPath(path) {
-  const clean = path.replace(/\/$/, '');
+  const normalized = path.replace(/\/$/, '');
+  // Legacy originating links may still refer to the old overview URL.
+  const clean = normalized === '/members' ? memberPaths.Overview : normalized;
   const view = Object.keys(memberPaths).find(key => memberPaths[key] === clean);
   if (view) return { view, projectId: null };
   const match = clean.match(/^\/members\/initiatives\/([a-z0-9-]+)$/);
@@ -100,5 +102,5 @@ export function memberReturnPath(value) {
   const url = new URL(value, 'https://www.aram.org.uk');
   const route = parseMembersPath(url.pathname);
   return url.origin === 'https://www.aram.org.uk' && route.view !== 'Not found' && !route.projectId
-    ? `${url.pathname}${url.search}` : memberPaths.Initiatives;
+    ? `${url.pathname === '/members' || url.pathname === '/members/' ? memberPaths.Overview : url.pathname}${url.search}` : memberPaths.Initiatives;
 }

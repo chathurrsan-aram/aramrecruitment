@@ -42,11 +42,16 @@ test('ballot deadline follows London daylight saving and closes at the exact ins
   assert.equal(presentation.voteRemaining('2026-10-27T23:59:59.000Z',Date.parse('2026-10-27T23:59:59.000Z')),'Round closed');
 });
 test('drawer close restores an internal originating section and rejects external return targets', () => {
-  assert.equal(presentation.memberReturnPath('/members'), '/members');
+  assert.equal(presentation.memberReturnPath('/members'), '/members/overview');
   assert.equal(presentation.memberReturnPath('/members/updates?initiative=penpal'), '/members/updates?initiative=penpal');
   for (const value of ['https://evil.example/members', '//evil.example/members', '/members/login', '/members/initiatives/penpal', 'javascript:alert(1)', undefined]) {
     assert.equal(presentation.memberReturnPath(value), '/members/initiatives');
   }
+});
+test('V2 overview links and legacy drawer origins stay in the dashboard, not the version selector', () => {
+  assert.deepEqual(presentation.parseMembersPath('/members/overview'), { view: 'Overview', projectId: null });
+  assert.equal(presentation.memberReturnPath('/members/overview?welcome=1'), '/members/overview?welcome=1');
+  assert.deepEqual(presentation.memberBackgroundRoute('/members/initiatives/microcredit', '/members'), { view: 'Overview', projectId: 'microcredit', search: '' });
 });
 test('an open initiative keeps the originating section and its filters behind the panel', () => {
   assert.deepEqual(presentation.memberBackgroundRoute('/members/funding', null), { view: 'Funding & ledger', projectId: null, search: null });

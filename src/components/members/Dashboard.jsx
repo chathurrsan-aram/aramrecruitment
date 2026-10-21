@@ -13,8 +13,8 @@ import AramIdent from './AramIdent';
 import { CommunityEvents, CommunityPreview, ThoughtLeadership } from '../community/CommunityContent';
 import './members.css';
 const nav = [{ name: 'Overview', icon: Home }, { name: 'Initiatives', icon: Globe2 }, { name: 'Funding & ledger', icon: Wallet }, { name: 'Community vote', icon: Users }, { name: 'Field updates', icon: BookOpen }, { name: 'Thought leadership', icon: BookOpen }, { name: 'Community events', icon: CalendarDays }];
-const headings = { Overview: 'A community connected.', Initiatives: 'Good work, taking root.', 'Funding & ledger': 'Every contribution, accounted for.', 'Community vote': 'Your voice belongs here.', 'Field updates': 'Closer to the work.', 'Thought leadership': 'Ideas worth staying with.', 'Community events': 'Come together. Find your part.', 'Admin studio': 'Workspace studio.', 'About this prototype': 'A working beginning.' };
-const descriptions = { Overview: 'Understand the work. Find a useful way to take part.', Initiatives: 'Meet the people, partnerships and ideas behind the work.', 'Funding & ledger': 'Follow the money in and out of the shared fund.', 'Community vote': 'Explore a preference exercise before any real funding decision.', 'Field updates': 'Sample stories showing how continuing updates could work.', 'Thought leadership': 'Published perspectives from Aram Research & Insights.', 'Community events': 'Gatherings, conversations and ways to bring the community together.', 'Admin studio': 'Maintain the private demonstration workspace.', 'About this prototype': 'How this prototype works, where its content comes from, and what comes next.' };
+const headings = { Overview: 'What would you like to do?', Initiatives: 'Good work, taking root.', 'Funding & ledger': 'Every contribution, accounted for.', 'Community vote': 'Your voice belongs here.', 'Field updates': 'Closer to the work.', 'Thought leadership': 'Ideas worth staying with.', 'Community events': 'Come together. Find your part.', 'Admin studio': 'Workspace studio.', 'About this prototype': 'A working beginning.' };
+const descriptions = { Overview: 'Start with an initiative, understand the fund, or bring a skill. You can explore without signing in.', Initiatives: 'Meet the people, partnerships and ideas behind the work.', 'Funding & ledger': 'Follow the money in and out of the shared fund.', 'Community vote': 'Explore a preference exercise before any real funding decision.', 'Field updates': 'Sample stories showing how continuing updates could work.', 'Thought leadership': 'Published perspectives from Aram Research & Insights.', 'Community events': 'Gatherings, conversations and ways to bring the community together.', 'Admin studio': 'Maintain the private demonstration workspace.', 'About this prototype': 'How this prototype works, where its content comes from, and what comes next.' };
 const savedKey = 'aram-demo-saved-initiatives-v1';
 const subscribeSaved = callback => { window.addEventListener('storage', callback); window.addEventListener('aram-saved', callback); return () => { window.removeEventListener('storage', callback); window.removeEventListener('aram-saved', callback); }; };
 const savedSnapshot = () => { try { return localStorage.getItem(savedKey) || '[]'; } catch { return '[]'; } };
@@ -23,8 +23,12 @@ function Field({ label, children, hint }) { return <div className="field"><label
 function ModalShell({ title, children, onClose, returnFocus }) {
     const reduced = useReducedMotion();
     const ref = useRef(null);
-    useEffect(() => { const previous = document.activeElement, opener = returnFocus?.current; const old = document.body.style.overflow; document.body.style.overflow = 'hidden'; ref.current?.querySelector('button')?.focus(); const handler = (e) => { if (e.key === 'Escape')
-        onClose(); if (e.key === 'Tab') {
+    const closeRef = useRef(onClose);
+    useEffect(() => { closeRef.current = onClose; }, [onClose]);
+    useEffect(() => { const previous = document.activeElement, opener = returnFocus?.current; const old = document.body.style.overflow, oldPadding = document.body.style.paddingRight; const gutter = window.innerWidth - document.documentElement.clientWidth;
+      if (gutter > 0) document.body.style.paddingRight = `${(parseFloat(window.getComputedStyle(document.body).paddingRight) || 0) + gutter}px`;
+      document.body.style.overflow = 'hidden'; ref.current?.querySelector('button')?.focus({ preventScroll: true }); const handler = (e) => { if (e.key === 'Escape')
+        closeRef.current(); if (e.key === 'Tab') {
         const els = ref.current?.querySelectorAll('button:not(:disabled),input,textarea,select,a[href],video[controls]');
         if (!els?.length)
             return;
@@ -37,10 +41,10 @@ function ModalShell({ title, children, onClose, returnFocus }) {
             e.preventDefault();
             first.focus();
         }
-    } }; document.addEventListener('keydown', handler); return () => { document.body.style.overflow = old; document.removeEventListener('keydown', handler); (opener?.isConnected ? opener : previous)?.focus({ preventScroll: true }); }; }, [onClose, returnFocus]);
+    } }; document.addEventListener('keydown', handler); return () => { document.body.style.overflow = old; document.body.style.paddingRight = oldPadding; document.removeEventListener('keydown', handler); (opener?.isConnected ? opener : previous)?.focus({ preventScroll: true }); }; }, [returnFocus]);
     // The backdrop fades on its own; the panel stays opaque and slides in from its edge.
-    return <motion.div className="overlay" layoutRoot exit={{opacity:1}} transition={{duration:reduced?0:.3}} onMouseDown={e => { if (e.target === e.currentTarget)
-        onClose(); }}><motion.div className="overlay-backdrop" aria-hidden="true" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:reduced?0:.24,ease:'easeOut'}}/><motion.div className="drawer" layoutScroll initial={reduced?false:{x:'100%'}} animate={{x:0}} exit={reduced?{opacity:0}:{x:'100%',transition:panelExit}} transition={reduced?{duration:0}:panelSpring} role="dialog" aria-modal="true" aria-labelledby="drawer-title" ref={ref}><div className="drawer-top"><h2 id="drawer-title">{title}</h2><button className="icon-button" aria-label="Close panel" onClick={onClose}><X size={17}/></button></div><div className="drawer-body">{children}</div></motion.div></motion.div>;
+    return <motion.div className="overlay" exit={{opacity:1}} transition={{duration:reduced?0:.22}} onMouseDown={e => { if (e.target === e.currentTarget)
+        onClose(); }}><motion.div className="overlay-backdrop" aria-hidden="true" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:reduced?0:.2,ease:'easeOut'}}/><motion.div className="drawer" initial={reduced?false:{x:'100%'}} animate={{x:0}} exit={reduced?{opacity:0}:{x:'100%',transition:panelExit}} transition={reduced?{duration:0}:panelSpring} role="dialog" aria-modal="true" aria-labelledby="drawer-title" ref={ref}><div className="drawer-top"><h2 id="drawer-title">{title}</h2><button className="icon-button" aria-label="Close panel" onClick={onClose}><X size={17}/></button></div><div className="drawer-body">{children}</div></motion.div></motion.div>;
 }
 export default function Dashboard() {
   const reduced = useReducedMotion();
@@ -49,8 +53,6 @@ export default function Dashboard() {
   const route = parseMembersPath(pathname), scene = memberBackgroundRoute(pathname, params.get('from')), view = scene.view;
   const viewParams = route.projectId ? new URLSearchParams(scene.search || '') : params;
   const [state, setState] = useState(null), [error, setError] = useState(''), [loading, setLoading] = useState(true), [busy, setBusy] = useState(false), [toast, setToast] = useState(''), [dialog, setDialog] = useState(null), [mobile, setMobile] = useState(false), [now, setNow] = useState(null), [shareUrl, setShareUrl] = useState(''), [copied, setCopied] = useState('');
-  // The initiative opened from a card in this session; only then does its artwork travel into the panel.
-  const [flight, setFlight] = useState(null);
   const menuRef = useRef(null), menuButton = useRef(null), openerRef = useRef(null);
   const savedString = useSyncExternalStore(subscribeSaved, savedSnapshot, () => '[]');
   let savedIds = [];
@@ -59,20 +61,10 @@ export default function Dashboard() {
   const projects = state?.projects || [], updates = state?.updates || [], transactions = state?.transactions || [];
   const currentProject = projects.find(p => p.id === route.projectId);
   const modal = dialog || (currentProject ? { type: 'project', project: currentProject } : null);
-  // Moving on to a different initiative inside the panel ends the card's flight.
-  if (flight && currentProject && currentProject.id !== flight.id) setFlight(null);
   const closeModal = useCallback(() => {
     setDialog(null); setShareUrl('');
     if (route.projectId) router.replace(memberReturnPath(params.get('from')), { scroll: false });
   }, [route.projectId, router, params]);
-  // While its artwork is in the panel, the card keeps an empty place for it.
-  const landed = useCallback(() => setFlight(null), []);
-  useEffect(() => {
-    if (!flight) return;
-    const art = document.querySelector(`.view [data-art="${flight.id}"]`);
-    art?.classList.add('is-away');
-    return () => art?.classList.remove('is-away');
-  }, [flight]);
   const openModal = next => { setError(''); setShareUrl(''); setDialog(next); };
   const rememberOrigin = event => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -82,9 +74,6 @@ export default function Dashboard() {
     destination.searchParams.set('from', origin);
     const target = parseMembersPath(destination.pathname);
     if (target.projectId) openerRef.current = event.currentTarget;
-    // Remember where the card's artwork is, so it can travel into the panel and back.
-    const art = !reduced && target.projectId && event.currentTarget.querySelector('.initiative-art');
-    setFlight(art ? { id: target.projectId, from: art.getBoundingClientRect() } : null);
     router.push(`${destination.pathname}${destination.search}`, { scroll: false });
   };
   const load = useCallback(async () => {
@@ -190,7 +179,12 @@ export default function Dashboard() {
         <div className="page-heading"><div><h1>{headings[view] || 'Page not found.'}</h1><p>{descriptions[view]}</p></div>{view === 'Funding & ledger' && <Button onClick={exportLedger}><Download/>Export sample CSV</Button>}</div>
         {route.projectId && !currentProject && <div className="notice">That initiative is not available. <Link href={memberPaths.Initiatives}>Browse all initiatives</Link></div>}
         {view === 'Overview' && <>
-          <section className="hero motion-hero"><div className="hero-copy"><div className="hero-kicker"><Globe2 size={15}/>From where we are. To where we’re rooted.</div><h2>Find your part<br/>in the work.</h2><p>Meet local partners, explore continuing initiatives and bring your time, skills or curiosity.</p><a className="button primary" href="/join">Explore ways to contribute<ArrowRight size={15}/></a><Link className="source-link" href={memberPaths.Initiatives}>Meet the initiatives<ArrowRight size={14}/></Link></div><AramIdent/></section>
+          <nav className="start-actions" aria-label="Start with Aram">
+            <Link href={memberPaths.Initiatives} className="start-action"><span className="start-action-icon"><Globe2 size={22}/></span><h2>Explore initiatives</h2><p>Meet the partners and save an initiative to revisit.</p><span className="start-action-link">Find an initiative<ArrowRight size={16}/></span></Link>
+            <Link href={memberPaths['Funding & ledger']} className="start-action"><span className="start-action-icon"><Wallet size={22}/></span><h2>Understand the fund</h2><p>See money in, money out and how decisions work.</p><span className="start-action-link">Explore the sample fund<ArrowRight size={16}/></span></Link>
+            <Link href="/join" className="start-action"><span className="start-action-icon"><Users size={22}/></span><h2>Find a way to help</h2><p>Explore volunteering, mentoring or sharing a skill.</p><span className="start-action-link">See ways to contribute<ArrowRight size={16}/></span></Link>
+          </nav>
+          <section className="hero motion-hero"><div className="hero-copy"><div className="hero-kicker"><Globe2 size={15}/>From where we are. To where we’re rooted.</div><h2>Find your part<br/>in the work.</h2><p>Meet local partners, explore continuing initiatives and bring your time, skills or curiosity.</p></div><AramIdent/></section>
           <AramRoots/>
           <CommunityPreview now={now}/>
           <section className="stats" aria-label="Sample community fund totals">{stats.map(s => <div className="stat" key={s.title}><div className="stat-top">{s.title}<s.icon size={18}/></div><div className="stat-number">{s.value}</div><div className="stat-note">{s.note}</div></div>)}</section>
@@ -231,9 +225,9 @@ export default function Dashboard() {
         <footer className="bottom-note"><span>The Aram Initiative · The desire to do good.</span><a href="/about">Meet Aram<ArrowUpRight size={13}/></a></footer>
       </div>}
     </main>
-    <AnimatePresence>{modal && state && <ModalShell title={modal.type === 'project' ? 'Inside the initiative' : modal.type === 'signin' ? 'Private saved changes' : modal.type === 'edit' ? 'Initiative record' : modal.type === 'update' ? 'Field update' : modal.type === 'transaction' ? 'Ledger entry' : 'Monthly preference'} onClose={closeModal} returnFocus={openerRef}>
+    <AnimatePresence>{modal && state && <ModalShell title={modal.type === 'project' ? 'Inside the initiative' : modal.type === 'signin' ? 'Private saved changes' : modal.type === 'edit' ? 'Initiative record' : modal.type === 'update' ? 'Field update' : modal.type === 'transaction' ? 'Ledger entry' : 'Monthly preference'} onClose={closeModal} returnFocus={modal.type === 'project' ? openerRef : undefined}>
       {error && <div className="error-banner" role="alert">{error}</div>}
-      {modal.type === 'project' ? <><div className="notice">Sample workspace · Financials and updates are fictional.</div><ProjectDetails project={modal.project} state={state} flight={flight} onReturn={landed} copied={copied === modal.project.id} followed={savedIds.includes(modal.project.id)} onFollow={()=>toggleSaved(modal.project.id)} onShare={()=>share(modal.project.id)} onUpdates={()=>updateLink(modal.project.id)}/>{shareUrl && <Field label="Copy this initiative link"><input readOnly value={shareUrl} onFocus={e=>e.target.select()}/></Field>}</> : modal.type === 'signin' ? <div className="signin-prompt"><h3>Explore freely. Save privately.</h3><p>The public demo is open to everyone. Private editing is available to accounts with existing access.</p><a className="button primary" href="/members/login">Sign in<ArrowRight size={15}/></a><a className="source-link" href="/join">New to Aram? Explore joining</a></div> : <>
+      {modal.type === 'project' ? <><div className="notice">Sample workspace · Financials and updates are fictional.</div><ProjectDetails project={modal.project} state={state} copied={copied === modal.project.id} followed={savedIds.includes(modal.project.id)} onFollow={()=>toggleSaved(modal.project.id)} onShare={()=>share(modal.project.id)} onUpdates={()=>updateLink(modal.project.id)}/>{shareUrl && <Field label="Copy this initiative link"><input readOnly value={shareUrl} onFocus={e=>e.target.select()}/></Field>}</> : modal.type === 'signin' ? <div className="signin-prompt"><h3>Explore freely. Save privately.</h3><p>The public demo is open to everyone. Private editing is available to accounts with existing access.</p><a className="button primary" href="/members/login">Sign in<ArrowRight size={15}/></a><a className="source-link" href="/join">New to Aram? Explore joining</a></div> : <>
         {isPublicDemo && <div className="notice">Read-only preview. <a href="/members/login">Sign in with existing private access to save.</a></div>}
         <form className="form" onSubmit={formSubmit} key={modal.type === 'edit' ? modal.project.id : modal.type}><fieldset disabled={isPublicDemo || busy}>
           {modal.type === 'edit' ? <><Field label="Initiative name"><input name="title" defaultValue={modal.project.title} required maxLength={120}/></Field><Field label="Description"><textarea name="description" defaultValue={modal.project.description} required maxLength={2000}/></Field><Field label="Prototype status" hint={`Public source status: ${projectContext(modal.project).publicStatus}. Editing this form does not change the public programme.`}><select name="status" defaultValue={modal.project.status}><option value="active">In progress</option><option value="completed">Completed</option><option value="proposed">Proposal</option></select></Field><Field label="Illustrative planning budget (£)" hint="A planning figure, not a fundraising target or funding award."><input name="goal" type="number" defaultValue={modal.project.fundingGoalPence/100} min="0.01" max="1000000" step="0.01" required/></Field><div className="detail-stat"><strong>{money(modal.project.deployedPence)}</strong><small>Money out is calculated from the ledger. Use an entry to change it.</small></div><Field label="Fictional reach count" hint="Not a measured or attributable outcome."><input name="people" type="number" defaultValue={modal.project.peopleReached} min="0" step="1" required/></Field></> : modal.type === 'update' ? <><Field label="Initiative"><select name="projectId" required>{projects.map(p=><option key={p.id} value={p.id}>{p.title}</option>)}</select></Field><Field label="Title"><input name="title" maxLength={120} required/></Field><Field label="Sample update"><textarea name="body" maxLength={3000} required/></Field></> : modal.type === 'transaction' ? <><Field label="Entry type"><select name="kind"><option value="contribution">Money into the fund</option><option value="deployment">Money out of the fund</option></select></Field><Field label="Initiative"><select name="projectId"><option value="">General fund</option>{projects.map(p=><option key={p.id} value={p.id}>{p.title}</option>)}</select></Field><Field label="Description"><input name="description" maxLength={180} required/></Field><Field label="Amount (£)"><input name="amount" type="number" step="0.01" min="0.01" required/></Field><Field label="Record date"><input name="date" type="date" defaultValue={new Date().toISOString().slice(0,10)} required/></Field><p className="notice">Records a fictional cash entry only. No money is collected, transferred or awarded by this action.</p></> : <><p>This amount is a demonstration preference. It does not create a subscription or generate payment history.</p><Field label="Monthly preference (£)"><input name="monthly" defaultValue={state.member.monthlyPence/100} type="number" min="0" max="10000" step="0.01" required/></Field></>}

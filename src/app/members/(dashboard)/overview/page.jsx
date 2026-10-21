@@ -4,7 +4,7 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-// The dashboard itself is rendered once by the shared layout.
+// The dashboard itself is rendered once by the shared layout, after choosing V2.
 export default function MembersPage() {
   return null;
 }
