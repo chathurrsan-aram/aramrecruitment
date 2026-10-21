@@ -1,9 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
 
-/** Original transparent brand asset. The rejected video study is not part of the UI. */
-export function AramBrandMark() {
-  return <div className="aram-brand-scene"><div className="scene-composition"><div className="scene-logo"><img src="/members/aram-logo.png" alt="The Aram Initiative" width="1000" height="1000"/></div></div></div>;
-}
 export function AramRoots() {
   return <section className="aram-roots"><div className="roots-copy"><span className="eyeline">A connection that continues.</span><h2>Rooted in Sri Lanka.<br/>Connected across borders.</h2><p>Start with people and place. Explore Aram’s public research map, then meet the initiatives and the partners behind them.</p><a className="source-link" href="/research">Explore the research map<ArrowUpRight size={15}/></a><p className="roots-legend"><i/>Active work <i/>Planned work</p><small>The public research map’s highlights are context, not coverage of the sample fund.</small></div><div className="roots-map"><img src="/members/sri-lanka-districts.svg" width="184" height="304" alt="Sri Lanka’s 25 districts, preserving the public research map’s active and planned highlights"/></div><figure><img src="/members/aram-community.jpg" alt="A conversation from Aram’s public community photography"/><figcaption>Connection starts with listening.<br/>Context photograph from Aram.</figcaption></figure></section>;
 }

@@ -48,3 +48,12 @@ test('drawer close restores an internal originating section and rejects external
     assert.equal(presentation.memberReturnPath(value), '/members/initiatives');
   }
 });
+test('an open initiative keeps the originating section and its filters behind the panel', () => {
+  assert.deepEqual(presentation.memberBackgroundRoute('/members/funding', null), { view: 'Funding & ledger', projectId: null, search: null });
+  assert.deepEqual(presentation.memberBackgroundRoute('/members/initiatives/penpal', '/members'), { view: 'Overview', projectId: 'penpal', search: '' });
+  assert.deepEqual(presentation.memberBackgroundRoute('/members/initiatives/microcredit', '/members/updates?initiative=microcredit'), { view: 'Field updates', projectId: 'microcredit', search: '?initiative=microcredit' });
+  // Direct links and unsafe origins fall back to the initiative list, never an external page.
+  for (const from of [null, 'https://evil.example/members', '/members/initiatives/penpal', '/members/login']) {
+    assert.deepEqual(presentation.memberBackgroundRoute('/members/initiatives/penpal', from), { view: 'Initiatives', projectId: 'penpal', search: '' });
+  }
+});

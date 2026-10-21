@@ -1,15 +1,52 @@
 'use client';
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, ExternalLink, GraduationCap, HeartHandshake, Lightbulb, Sprout, Wallet } from 'lucide-react';
+import { animate, usePresence } from 'framer-motion';
+import { ArrowRight, Bookmark, BookmarkCheck, BookOpen, Check, ExternalLink, GraduationCap, HeartHandshake, Lightbulb, Link2, Sprout, Wallet } from 'lucide-react';
 import { filterProjects, labelStatus, ledgerRows, memberPaths, projectContext, projectFinance, projectPath } from '../../lib/members/presentation';
 
 export const money = p => new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: p % 100 ? 2 : 0 }).format(p / 100);
 export const recordDate = d => new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(d));
 const artworkIcons = { microcredit: Sprout, mentorship: GraduationCap, penpal: HeartHandshake, 'ai-curriculum': Lightbulb };
-export function InitiativeArt({ project, compact = false }) {
+/** The panel's slide; travelling artwork uses the same curve so the two stay in step. */
+export const panelSpring = { type: 'spring', bounce: 0, duration: 0.44 };
+// Leaving decelerates too, so returning artwork settles into its card instead of stopping hard.
+export const panelExit = { type: 'spring', bounce: 0, duration: 0.38 };
+export function InitiativeArt({ project, compact = false, artRef }) {
   const Icon = artworkIcons[project.id] || Sprout;
-  return <div className={`initiative-art art-${project.id} ${compact ? 'compact' : ''}`} aria-hidden="true"><div className="art-orbit"/><Icon/><span>{projectContext(project).category}</span></div>;
+  return <div ref={artRef} data-art={project.id} className={`initiative-art art-${project.id} ${compact ? 'compact' : ''}`} aria-hidden="true"><div className="art-orbit"/><Icon/><span>{projectContext(project).category}</span></div>;
+}
+/**
+ * The artwork of the card that was opened, moving into the panel and back.
+ * The panel slides in from its edge; this artwork cancels that slide on the same
+ * spring, so on screen it travels straight from the card to its place.
+ */
+function TravellingArt({ project, from, onReturn }) {
+  const ref = useRef(null);
+  const [isPresent, safeToRemove] = usePresence();
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || !from) return;
+    const to = el.getBoundingClientRect();
+    const dx = from.x - to.x, dy = from.y - to.y, sx = from.width / to.width, sy = from.height / to.height;
+    // Place it over the card before the first paint, then let it travel.
+    el.style.transformOrigin = '0 0';
+    el.style.transform = `translateX(${dx}px) translateY(${dy}px) scaleX(${sx}) scaleY(${sy})`;
+    const controls = animate(el, { x: [dx, 0], y: [dy, 0], scaleX: [sx, 1], scaleY: [sy, 1] }, panelSpring);
+    return () => controls.stop();
+  }, [from]);
+  useLayoutEffect(() => {
+    if (isPresent) return;
+    const el = ref.current, card = document.querySelector(`.view [data-art="${project.id}"]`);
+    const panel = el?.closest('.drawer');
+    if (!el || !card || !panel) { onReturn?.(); safeToRemove?.(); return; }
+    const now = el.getBoundingClientRect(), target = card.getBoundingClientRect();
+    // The panel will move right by its own width while this artwork returns to the card.
+    const controls = animate(el, { x: target.x - now.x - panel.offsetWidth, y: target.y - now.y, scaleX: target.width / now.width, scaleY: target.height / now.height }, panelExit);
+    controls.then(() => { onReturn?.(); safeToRemove?.(); });
+    return () => controls.stop();
+  }, [isPresent, project.id, onReturn, safeToRemove]);
+  return <InitiativeArt project={project} artRef={ref}/>;
 }
 export function ProjectCard({ project, onOpen, children, selected = false }) {
   const meta = projectContext(project);
@@ -50,13 +87,13 @@ export function PartnerContext({ project, projects }) {
 export function FundingExplanation() {
   return <div className="notice"><strong>One community fund, a clear decision.</strong><p>This prototype explores pooled support. Initiative cards are not separate fundraising campaigns. A saved preference does not allocate money.</p><p>The amount for a future round, the winner’s delivery scope, any direct giving and the treatment of surplus funds must be agreed before a real ballot. Surplus is not automatically redistributed.</p></div>;
 }
-export function ProjectDetails({ project, state, onFollow, followed, onShare, onUpdates }) {
+export function ProjectDetails({ project, state, onFollow, followed, onShare, onUpdates, flight = null, onReturn, copied = false }) {
   const meta = projectContext(project);
   const finance = projectFinance(state).find(row => row.projectId === project.id);
   const updates = state.updates.filter(u => u.projectId === project.id);
-  return <><InitiativeArt project={project}/><span className="pill neutral">{meta.publicStatus}</span><h3>{project.title}</h3><p className="eyeline">{project.location} · {meta.category}</p><p className="detail-description">{project.description}</p>
+  return <>{flight?.id === project.id ? <TravellingArt project={project} from={flight.from} onReturn={onReturn}/> : <InitiativeArt project={project}/>}<span className="pill neutral">{meta.publicStatus}</span><h3>{project.title}</h3><p className="eyeline">{project.location} · {meta.category}</p><p className="detail-description">{project.description}</p>
     <section className="drawer-section"><h4>Take part in the work</h4><p>{meta.participation}</p>
-      <div className="action-grid"><a className="button primary" href="/join">Explore ways to contribute<ArrowRight size={15}/></a><a className="button secondary" href="/join">Volunteer your skills</a><button className="button secondary" onClick={onFollow} aria-pressed={followed}>{followed ? 'Saved in this browser' : 'Save to follow'}</button><button className="button secondary" onClick={onShare}>Share / copy link</button></div>
+      <div className="action-grid"><a className="button primary" href="/join">Explore ways to contribute<ArrowRight size={15}/></a><a className="button secondary" href="/join">Volunteer your skills</a><button className={`button secondary state-button ${followed ? 'is-on' : ''}`} onClick={onFollow} aria-pressed={followed}><span className="state-icon" key={followed ? 'saved' : 'save'}>{followed ? <BookmarkCheck/> : <Bookmark/>}</span>{followed ? 'Saved in this browser' : 'Save to follow'}</button><button className={`button secondary state-button ${copied ? 'is-on' : ''}`} onClick={onShare}><span className="state-icon" key={copied ? 'copied' : 'copy'}>{copied ? <Check/> : <Link2/>}</span>{copied ? 'Link copied' : 'Share / copy link'}</button></div>
       <p className="panel-footnote">The join page lets you explore getting involved; it is not a payment checkout. Saved initiatives stay in this browser only. No email alerts are sent.</p>
     </section>
     <PartnerContext project={project} projects={state.projects}/>

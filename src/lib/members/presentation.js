@@ -84,6 +84,17 @@ export function voteRemaining(iso, now) {
   const hours = Math.floor(remaining / 3600000);
   return hours >= 24 ? `${Math.floor(hours / 24)} days, ${hours % 24} hours remaining` : `${hours} hours, ${Math.floor(remaining / 60000) % 60} minutes remaining`;
 }
+/**
+ * The section shown behind an open initiative panel: the page the visitor came
+ * from, with its own filters, or the initiative list for a direct link. Keeping
+ * that page in place lets the panel feel like a closer look, not a new page.
+ */
+export function memberBackgroundRoute(pathname, from) {
+  const route = parseMembersPath(pathname);
+  if (!route.projectId) return { view: route.view, projectId: null, search: null };
+  const origin = new URL(memberReturnPath(from), 'https://www.aram.org.uk');
+  return { view: parseMembersPath(origin.pathname).view, projectId: route.projectId, search: origin.search };
+}
 export function memberReturnPath(value) {
   if (typeof value !== 'string' || !value.startsWith('/members') || value.length > 512) return memberPaths.Initiatives;
   const url = new URL(value, 'https://www.aram.org.uk');
