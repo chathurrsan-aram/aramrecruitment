@@ -69,8 +69,16 @@
 @media(pointer:coarse){.aram-members .ident-button{min-height:44px}}
 @media(max-width:1100px){.aram-members .aram-ident{padding:4px 22px 28px}.aram-members .ident-stage{width:min(100%,300px)}}
 @media(max-width:700px){.aram-members .aram-ident{padding:0 18px 24px;gap:10px}.aram-members .ident-stage{width:min(100%,260px)}}
-/* An opened card's artwork travels into the panel; its place in the card waits empty. */
-.aram-members .view .initiative-art.is-away{visibility:hidden}.aram-members .drawer .initiative-art{will-change:transform}
+/* Artwork remains in normal flow and moves with its panel. */
+.aram-members .start-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:4px 0 28px}
+.aram-members .start-action{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0;padding:22px;border:1px solid var(--line);border-radius:16px;background:#fff;transition:border-color .18s,box-shadow .18s}
+.aram-members .start-action:first-child{border-color:#c8b4df;background:#f4effa}
+.aram-members .start-action:hover{border-color:#a78bc4;box-shadow:0 5px 18px #30233d0d}
+.aram-members .start-action-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--lavender);color:var(--purple)}
+.aram-members .start-action h2{font-size:18px;line-height:1.4}
+.aram-members .start-action p{font-size:14px;line-height:1.65;color:var(--muted)}
+.aram-members .start-action-link{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;margin-top:auto;padding-top:4px;font-size:13px;font-weight:550;color:var(--purple)}
+@media(max-width:700px){.aram-members .start-actions{grid-template-columns:1fr;gap:10px;margin-bottom:22px}.aram-members .start-action{display:grid;grid-template-columns:40px minmax(0,1fr);gap:6px 14px;padding:18px}.aram-members .start-action-icon{grid-row:1/4;width:40px;height:40px}.aram-members .start-action h2,.aram-members .start-action p,.aram-members .start-action-link{grid-column:2}.aram-members .start-action-link{padding-top:6px}}
 /* Save and share answer in place, where the click happened. */
 .aram-members .state-button .state-icon{display:inline-grid;place-items:center;animation:members-state .26s cubic-bezier(.22,1,.36,1) both}.aram-members .state-button.is-on{color:var(--purple);border-color:#cdbbe2;background:#f7f3fb}
 @keyframes members-state{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
