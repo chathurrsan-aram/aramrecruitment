@@ -9,6 +9,7 @@ const navLinks = [
   { href: '/about', label: 'About' },
   { href: '/initiatives', label: 'Initiatives' },
   { href: '/research', label: 'Research' },
+  { href: '/community/events', label: 'Community' },
   { href: '/trip', label: 'Trip' },
   { href: '/reports', label: 'Reports' },
   { href: '/join', label: 'Join Us' },
@@ -59,7 +60,7 @@ export default function Navbar() {
           />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-7">
+        <nav className="hidden lg:flex items-center gap-5">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -81,7 +82,7 @@ export default function Navbar() {
 
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={`md:hidden p-2 ${textColor} min-w-[44px] min-h-[44px] flex items-center justify-center`}
+          className={`lg:hidden p-2 ${textColor} min-w-[44px] min-h-[44px] flex items-center justify-center`}
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
         >
@@ -90,7 +91,7 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden border-t border-aram-warm-200 bg-white">
+        <div className="lg:hidden border-t border-aram-warm-200 bg-white">
           <nav className="flex flex-col px-6 py-4 gap-1">
             {navLinks.map((link) => (
               <Link

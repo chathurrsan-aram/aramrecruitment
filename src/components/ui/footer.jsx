@@ -21,7 +21,9 @@ export default function Footer() {
               {[
                 { href: '/about', label: 'About Us' },
                 { href: '/trip', label: 'The Trip' },
-                { href: '/research', label: 'Research & Insights' },
+                { href: '/research', label: 'Research Map' },
+                { href: '/research/insights', label: 'Thought Leadership' },
+                { href: '/community/events', label: 'Community Events' },
                 { href: '/initiatives', label: 'Initiatives' },
                 { href: '/reports', label: 'Reports' },
               ].map((link) => (

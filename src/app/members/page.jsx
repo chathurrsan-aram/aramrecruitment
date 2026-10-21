@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Dashboard from '@/components/members/Dashboard';
 
 export const metadata = {
@@ -7,5 +8,5 @@ export const metadata = {
 };
 
 export default function MembersPage() {
-  return <Dashboard />;
+  return <Suspense fallback={<p>Loading Aram…</p>}><Dashboard /></Suspense>;
 }
