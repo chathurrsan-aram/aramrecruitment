@@ -1031,6 +1031,8 @@ function ResearchContent() {
             Explore our interactive map to discover insights and organisations across Sri Lanka.
           </motion.p>
 
+          <Link href="/research/insights" className="inline-flex min-h-[44px] items-center gap-2 text-white underline underline-offset-4 mb-6 text-sm font-medium">Read our thought leadership <ChevronRight size={16}/></Link>
+
           {/* Search with autocomplete */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
